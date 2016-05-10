@@ -12,12 +12,17 @@
 		84B9AB231CE225780002B132 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84B9AB211CE225780002B132 /* Main.storyboard */; };
 		84B9AB251CE225780002B132 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84B9AB241CE225780002B132 /* Assets.xcassets */; };
 		84B9AB281CE225780002B132 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84B9AB261CE225780002B132 /* LaunchScreen.storyboard */; };
-		84B9AB301CE226280002B132 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB2F1CE226280002B132 /* CoreLocation.framework */; };
 		84B9AB321CE2263B0002B132 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB311CE2263B0002B132 /* MapKit.framework */; };
 		84B9AB381CE2326F0002B132 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB371CE2326F0002B132 /* DataService.swift */; };
 		84B9AB3B1CE233100002B132 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB3A1CE233100002B132 /* Constants.swift */; };
 		84B9AB3D1CE235D30002B132 /* ImaggaRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB3C1CE235D30002B132 /* ImaggaRouter.swift */; };
 		84B9AB401CE23A6F0002B132 /* introVideo.mov in Resources */ = {isa = PBXBuildFile; fileRef = 84B9AB3F1CE23A6F0002B132 /* introVideo.mov */; };
+		84B9AB421CE256610002B132 /* MaterialButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB411CE256610002B132 /* MaterialButton.swift */; };
+		84B9AB441CE264FE0002B132 /* MaterialTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB431CE264FE0002B132 /* MaterialTextField.swift */; };
+		84B9AB461CE266B40002B132 /* MaterialImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB451CE266B40002B132 /* MaterialImageView.swift */; };
+		84B9AB561CE27B500002B132 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB531CE27B500002B132 /* Bolts.framework */; };
+		84B9AB571CE27B500002B132 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB541CE27B500002B132 /* FBSDKCoreKit.framework */; };
+		84B9AB581CE27B500002B132 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB551CE27B500002B132 /* FBSDKLoginKit.framework */; };
 		AB40F2A6C892CB8D250BC87E /* Pods_ChatHook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,12 +36,17 @@
 		84B9AB241CE225780002B132 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		84B9AB271CE225780002B132 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84B9AB291CE225780002B132 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		84B9AB2F1CE226280002B132 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		84B9AB311CE2263B0002B132 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		84B9AB371CE2326F0002B132 /* DataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		84B9AB3A1CE233100002B132 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		84B9AB3C1CE235D30002B132 /* ImaggaRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImaggaRouter.swift; sourceTree = "<group>"; };
 		84B9AB3F1CE23A6F0002B132 /* introVideo.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = introVideo.mov; sourceTree = "<group>"; };
+		84B9AB411CE256610002B132 /* MaterialButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialButton.swift; sourceTree = "<group>"; };
+		84B9AB431CE264FE0002B132 /* MaterialTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialTextField.swift; sourceTree = "<group>"; };
+		84B9AB451CE266B40002B132 /* MaterialImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialImageView.swift; sourceTree = "<group>"; };
+		84B9AB531CE27B500002B132 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		84B9AB541CE27B500002B132 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		84B9AB551CE27B500002B132 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		9E4A6D1C186F9E739AC106F1 /* Pods-ChatHook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatHook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatHook/Pods-ChatHook.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -45,8 +55,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84B9AB561CE27B500002B132 /* Bolts.framework in Frameworks */,
+				84B9AB571CE27B500002B132 /* FBSDKCoreKit.framework in Frameworks */,
+				84B9AB581CE27B500002B132 /* FBSDKLoginKit.framework in Frameworks */,
 				84B9AB321CE2263B0002B132 /* MapKit.framework in Frameworks */,
-				84B9AB301CE226280002B132 /* CoreLocation.framework in Frameworks */,
 				AB40F2A6C892CB8D250BC87E /* Pods_ChatHook.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -66,7 +78,9 @@
 		61B4D205A0368AEB50906440 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				84B9AB2F1CE226280002B132 /* CoreLocation.framework */,
+				84B9AB531CE27B500002B132 /* Bolts.framework */,
+				84B9AB541CE27B500002B132 /* FBSDKCoreKit.framework */,
+				84B9AB551CE27B500002B132 /* FBSDKLoginKit.framework */,
 				1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */,
 				84B9AB311CE2263B0002B132 /* MapKit.framework */,
 			);
@@ -121,6 +135,9 @@
 			isa = PBXGroup;
 			children = (
 				84B9AB211CE225780002B132 /* Main.storyboard */,
+				84B9AB411CE256610002B132 /* MaterialButton.swift */,
+				84B9AB431CE264FE0002B132 /* MaterialTextField.swift */,
+				84B9AB451CE266B40002B132 /* MaterialImageView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -282,9 +299,12 @@
 			files = (
 				84B9AB381CE2326F0002B132 /* DataService.swift in Sources */,
 				84B9AB3D1CE235D30002B132 /* ImaggaRouter.swift in Sources */,
+				84B9AB421CE256610002B132 /* MaterialButton.swift in Sources */,
 				84B9AB201CE225780002B132 /* IntroViewController.swift in Sources */,
 				84B9AB1E1CE225780002B132 /* AppDelegate.swift in Sources */,
 				84B9AB3B1CE233100002B132 /* Constants.swift in Sources */,
+				84B9AB441CE264FE0002B132 /* MaterialTextField.swift in Sources */,
+				84B9AB461CE266B40002B132 /* MaterialImageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,8 +420,14 @@
 			baseConfigurationReference = 9E4A6D1C186F9E739AC106F1 /* Pods-ChatHook.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = ChatHook/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				New_Setting = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.splashscene.ChatHook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -412,8 +438,14 @@
 			baseConfigurationReference = 02C07202A720503C672BCA57 /* Pods-ChatHook.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = ChatHook/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				New_Setting = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.splashscene.ChatHook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
