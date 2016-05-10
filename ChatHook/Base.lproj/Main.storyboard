@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Intro View Controller-->
         <scene sceneID="hQu-r4-5kf">
             <objects>
-                <viewController id="7bO-BP-j6s" sceneMemberID="viewController">
+                <viewController id="7bO-BP-j6s" customClass="IntroViewController" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Y6g-o7-6WB"/>
                         <viewControllerLayoutGuide type="bottom" id="HLE-1i-umk"/>
@@ -18,6 +18,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="videoView" destination="FGu-bu-eaG" id="P7P-kg-DVa"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="k5V-1P-0ke" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
