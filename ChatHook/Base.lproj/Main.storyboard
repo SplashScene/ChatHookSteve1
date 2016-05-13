@@ -17,10 +17,16 @@
                     <view key="view" contentMode="scaleToFill" id="FGu-bu-eaG">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cdp-tF-4RT">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="videoView" destination="FGu-bu-eaG" id="P7P-kg-DVa"/>
+                        <outlet property="videoView" destination="FGu-bu-eaG" id="dWY-6d-jHk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="k5V-1P-0ke" userLabel="First Responder" sceneMemberID="firstResponder"/>

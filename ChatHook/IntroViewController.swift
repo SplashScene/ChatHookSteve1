@@ -137,10 +137,44 @@ class IntroViewController: UIViewController {
 
         containerView.addSubview(facebookView)
         
+        
+        let loginView = UIView()
+            loginView.alpha = 0.0
+            loginView.backgroundColor = UIColor.whiteColor()
+            loginView.layer.cornerRadius = 5.0
+            loginView.layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).CGColor
+            loginView.layer.shadowOpacity = 0.8
+            loginView.layer.shadowRadius = 5.0
+            loginView.layer.shadowOffset = CGSizeMake(0.0, 2.0)
+            
+            loginView.frame.size.height = 160
+            loginView.frame.size.width = ((containerView.frame.size.width - loginView.frame.size.width) - (margin * 2))
+            
+            loginView.frame.origin.x = ((containerView.frame.size.width - loginView.frame.size.width) - margin)
+            loginView.frame.origin.y = ((containerView.frame.size.height - loginView.frame.size.height) - 25)
+        
+        
+        let loginLabel = UILabel()
+            loginLabel.alpha = 1.0
+            loginLabel.text = "Email Login/Signup"
+            loginLabel.font = UIFont(name: "Avenir Medium", size:  18.0)
+            loginLabel.backgroundColor = UIColor.clearColor()
+            loginLabel.textColor = UIColor.blueColor()
+            loginLabel.sizeToFit()
+            
+            loginLabel.textAlignment = NSTextAlignment.Center
+            loginLabel.frame.origin.x = (loginView.frame.size.width - loginLabel.frame.size.width) - 175
+            loginLabel.frame.origin.y = (loginView.frame.size.height - loginLabel.frame.size.height) - 135
+        
+        loginView.addSubview(loginLabel)
+        
+        containerView.addSubview(loginView)
+        
         UIView.animateWithDuration(0.5,
                                    delay: 1.5,
                                    options: [],
-                                   animations: { facebookView.alpha = 0.75 },
+                                   animations: { facebookView.alpha = 0.75;
+                                                 loginView.alpha = 0.75},
                                    completion: nil)
     }
     
