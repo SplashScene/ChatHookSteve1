@@ -81,23 +81,67 @@ class IntroViewController: UIViewController {
     
     func createViews(containerView: UIView!){
         let margin: CGFloat = MARGIN
+        let half: CGFloat = 1.0 / 2.0
         
         let facebookView = UIView()
-        facebookView.alpha = 0.75
-        facebookView.backgroundColor = UIColor.whiteColor()
-        facebookView.layer.cornerRadius = 5.0
-        facebookView.layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).CGColor
-        facebookView.layer.shadowOpacity = 0.8
-        facebookView.layer.shadowRadius = 5.0
-        facebookView.layer.shadowOffset = CGSizeMake(0.0, 2.0)
+            facebookView.alpha = 0.0
+            facebookView.backgroundColor = UIColor.whiteColor()
+            facebookView.layer.cornerRadius = 5.0
+            facebookView.layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).CGColor
+            facebookView.layer.shadowOpacity = 0.8
+            facebookView.layer.shadowRadius = 5.0
+            facebookView.layer.shadowOffset = CGSizeMake(0.0, 2.0)
+            
+            facebookView.frame.size.height = 55
+            facebookView.frame.size.width = ((containerView.frame.size.width - facebookView.frame.size.width) - (margin * 2))
+            
+            facebookView.frame.origin.x = ((containerView.frame.size.width - facebookView.frame.size.width) - margin)
+            facebookView.frame.origin.y = ((containerView.frame.size.height - facebookView.frame.size.height) - 200)
         
-        facebookView.frame.size.height = 45
-        facebookView.frame.size.width = ((containerView.frame.size.width - facebookView.frame.size.width) - (margin * 2))
         
-        facebookView.frame.origin.x = ((containerView.frame.size.width - facebookView.frame.size.width) - margin)
-        facebookView.frame.origin.y = ((containerView.frame.size.height - facebookView.frame.size.height) - 200)
+        let fbLogo  = UIImageView()
+            fbLogo.frame.size.height = 45
+            fbLogo.frame.size.width = 45
+            fbLogo.frame.origin.x = (facebookView.frame.size.width - fbLogo.frame.size.width) - 275
+            fbLogo.frame.origin.y = (facebookView.frame.size.height - fbLogo.frame.size.height) - 5
+            fbLogo.image = UIImage(named:"fb-icon")
+        facebookView.addSubview(fbLogo)
         
+        
+        let fbLabel = UILabel()
+            fbLabel.alpha = 1.0
+            fbLabel.text = "Login With Facebook"
+            fbLabel.font = UIFont(name: "Avenir Medium", size:  24.0)
+            fbLabel.backgroundColor = UIColor.clearColor()
+            fbLabel.textColor = UIColor.blueColor()
+            fbLabel.sizeToFit()
+            
+            fbLabel.textAlignment = NSTextAlignment.Center
+            fbLabel.frame.origin.x = (facebookView.frame.size.width - fbLabel.frame.size.width) - margin
+            fbLabel.frame.origin.y = (facebookView.frame.size.height - fbLabel.frame.size.height) * half
+
+        facebookView.addSubview(fbLabel)
+        
+        
+        let fbButton = UIButton()
+            fbButton.backgroundColor = UIColor.clearColor()
+            fbButton.layer.cornerRadius = 5.0
+
+            fbButton.frame.size.width = (((facebookView.frame.size.width - fbButton.frame.size.width) - (margin * 2)))
+            fbButton.frame.size.height = 55.0
+            fbButton.frame.origin.x = (facebookView.frame.size.width - fbButton.frame.size.width)
+            fbButton.frame.origin.y = (facebookView.frame.size.height - fbButton.frame.size.height)
+            fbButton.addTarget(self, action: #selector(IntroViewController.facebookButtonPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        facebookView.addSubview(fbButton)
+
         containerView.addSubview(facebookView)
+        
+        UIView.animateWithDuration(0.5,
+                                   delay: 1.5,
+                                   options: [],
+                                   animations: { facebookView.alpha = 0.75 },
+                                   completion: nil)
     }
     
     func createLoginButtons(containerView: UIView!){
@@ -186,6 +230,10 @@ class IntroViewController: UIViewController {
     
     func registerButtonPressed(sender:UIButton!){
         print("Let's Register")
+    }
+    
+    func facebookButtonPressed(sender:UIButton!){
+        print("Tapped Facebook Button")
     }
     
     func fbButtonPressed(sender:UIButton!){
