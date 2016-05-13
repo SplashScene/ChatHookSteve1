@@ -41,7 +41,9 @@ class IntroViewController: UIViewController {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector:#selector(IntroViewController.videoDidPlayToEnd(_:)), name: "AVPlayerItemDidPlayToEndTimeNotification", object: player.currentItem)
         
-        self.createLoginButtons(self.videoView)
+        self.createViews(self.videoView)
+        
+        //self.createLoginButtons(self.videoView)
     }//end func setupView
     
     func videoDidPlayToEnd(notification: NSNotification){
@@ -76,6 +78,27 @@ class IntroViewController: UIViewController {
                                    completion: nil)
 
     }//end func logoTextCenter
+    
+    func createViews(containerView: UIView!){
+        let margin: CGFloat = MARGIN
+        
+        let facebookView = UIView()
+        facebookView.alpha = 0.75
+        facebookView.backgroundColor = UIColor.whiteColor()
+        facebookView.layer.cornerRadius = 5.0
+        facebookView.layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).CGColor
+        facebookView.layer.shadowOpacity = 0.8
+        facebookView.layer.shadowRadius = 5.0
+        facebookView.layer.shadowOffset = CGSizeMake(0.0, 2.0)
+        
+        facebookView.frame.size.height = 45
+        facebookView.frame.size.width = ((containerView.frame.size.width - facebookView.frame.size.width) - (margin * 2))
+        
+        facebookView.frame.origin.x = ((containerView.frame.size.width - facebookView.frame.size.width) - margin)
+        facebookView.frame.origin.y = ((containerView.frame.size.height - facebookView.frame.size.height) - 200)
+        
+        containerView.addSubview(facebookView)
+    }
     
     func createLoginButtons(containerView: UIView!){
         let margin: CGFloat = 15.0

@@ -77,6 +77,8 @@ let kCellWidth = 50
 let PLAYLIFE_COLOR: UIColor = UIColor(red: 184.0/255.0, green: 164.0/255.0, blue: 100.0/255.0, alpha: 1.0)
 let SHADOW_COLOR: CGFloat = 157.0/255.0
 
+let MARGIN: CGFloat = 15.0
+
 //Authentication
 //ImageShack
 
