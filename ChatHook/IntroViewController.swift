@@ -43,7 +43,6 @@ class IntroViewController: UIViewController {
         
         self.createViews(self.videoView)
         
-        //self.createLoginButtons(self.videoView)
     }//end func setupView
     
     func videoDidPlayToEnd(notification: NSNotification){
@@ -52,9 +51,9 @@ class IntroViewController: UIViewController {
     }//end func videoDidPlayToEnd
     
     func logoTextCenter(containerView: UIView!){
-        let half: CGFloat = 1.0 / 2.0
         
         let logoLabel = UILabel()
+            logoLabel.translatesAutoresizingMaskIntoConstraints = false
             logoLabel.alpha = 0.0
             logoLabel.text = "ChatHook"
             logoLabel.font = UIFont(name: "Avenir Medium", size:  60.0)
@@ -66,24 +65,40 @@ class IntroViewController: UIViewController {
             logoLabel.layer.shadowRadius = 2
 
             logoLabel.textAlignment = NSTextAlignment.Center
-            logoLabel.frame.origin.x = (containerView.frame.size.width - logoLabel.frame.size.width) * half
-            logoLabel.frame.origin.y = (containerView.frame.size.height - logoLabel.frame.size.height) * half
         
         containerView.addSubview(logoLabel)
+        
+        let logoLabelCenterXConstraint = NSLayoutConstraint(item: logoLabel,
+                                                            attribute: NSLayoutAttribute.CenterX,
+                                                            relatedBy: NSLayoutRelation.Equal,
+                                                            toItem: containerView,
+                                                            attribute: NSLayoutAttribute.CenterX,
+                                                            multiplier: 1.0,
+                                                            constant: 0)
+        
+        let logoLabelCenterYConstraint = NSLayoutConstraint(item: logoLabel,
+                                                            attribute: NSLayoutAttribute.CenterY,
+                                                            relatedBy: NSLayoutRelation.Equal,
+                                                            toItem: containerView,
+                                                            attribute: NSLayoutAttribute.CenterY,
+                                                            multiplier: 1.0,
+                                                            constant: 0)
         
         UIView.animateWithDuration(0.5,
                                    delay: 1.5,
                                    options: [],
                                    animations: { logoLabel.alpha = 1.0 },
                                    completion: nil)
+        
+        containerView.addConstraints([logoLabelCenterXConstraint,logoLabelCenterYConstraint])
 
     }//end func logoTextCenter
     
     func createViews(containerView: UIView!){
-        let margin: CGFloat = MARGIN
-        let half: CGFloat = 1.0 / 2.0
+        
         
         let facebookView = UIView()
+            facebookView.translatesAutoresizingMaskIntoConstraints = false
             facebookView.alpha = 0.0
             facebookView.backgroundColor = UIColor.whiteColor()
             facebookView.layer.cornerRadius = 5.0
@@ -91,25 +106,45 @@ class IntroViewController: UIViewController {
             facebookView.layer.shadowOpacity = 0.8
             facebookView.layer.shadowRadius = 5.0
             facebookView.layer.shadowOffset = CGSizeMake(0.0, 2.0)
-            
-            facebookView.frame.size.height = 55
-            facebookView.frame.size.width = ((containerView.frame.size.width - facebookView.frame.size.width) - (margin * 2))
-            
-            facebookView.frame.origin.x = ((containerView.frame.size.width - facebookView.frame.size.width) - margin)
-            facebookView.frame.origin.y = ((containerView.frame.size.height - facebookView.frame.size.height) - 200)
-        
         
         let fbLogo  = UIImageView()
-            fbLogo.frame.size.height = 45
-            fbLogo.frame.size.width = 45
-            fbLogo.frame.origin.x = (facebookView.frame.size.width - fbLogo.frame.size.width) - 275
-            fbLogo.frame.origin.y = (facebookView.frame.size.height - fbLogo.frame.size.height) - 5
+            fbLogo.translatesAutoresizingMaskIntoConstraints = false
             fbLogo.image = UIImage(named:"fb-icon")
         facebookView.addSubview(fbLogo)
         
+        let fbLogoHeightConstraint = NSLayoutConstraint(item: fbLogo,
+                                                        attribute: NSLayoutAttribute.Height,
+                                                        relatedBy: NSLayoutRelation.Equal,
+                                                        toItem: nil,
+                                                        attribute: NSLayoutAttribute.NotAnAttribute,
+                                                        multiplier: 1.0,
+                                                        constant: 45)
+        let fbLogoWidthConstraint = NSLayoutConstraint(item: fbLogo,
+                                                       attribute: NSLayoutAttribute.Width,
+                                                       relatedBy: NSLayoutRelation.Equal,
+                                                       toItem: nil,
+                                                       attribute: NSLayoutAttribute.NotAnAttribute,
+                                                       multiplier: 1.0,
+                                                       constant: 45)
+        let fbLogoLeadingConstraint = NSLayoutConstraint(item: fbLogo,
+                                                         attribute: NSLayoutAttribute.Leading,
+                                                         relatedBy: NSLayoutRelation.Equal,
+                                                         toItem: facebookView,
+                                                         attribute: NSLayoutAttribute.LeadingMargin,
+                                                         multiplier: 1.0,
+                                                         constant: 0)
+        let fbLogoBottomConstraint = NSLayoutConstraint(item: fbLogo,
+                                                        attribute: NSLayoutAttribute.Bottom,
+                                                        relatedBy: NSLayoutRelation.Equal,
+                                                        toItem: facebookView,
+                                                        attribute: NSLayoutAttribute.Bottom,
+                                                        multiplier: 1.0,
+                                                        constant: -5)
+        
+        facebookView.addConstraints([fbLogoHeightConstraint,fbLogoWidthConstraint, fbLogoBottomConstraint, fbLogoLeadingConstraint])
         
         let fbLabel = UILabel()
-            fbLabel.alpha = 1.0
+            fbLabel.translatesAutoresizingMaskIntoConstraints = false
             fbLabel.text = "Login With Facebook"
             fbLabel.font = UIFont(name: "Avenir Medium", size:  24.0)
             fbLabel.backgroundColor = UIColor.clearColor()
@@ -117,28 +152,107 @@ class IntroViewController: UIViewController {
             fbLabel.sizeToFit()
             
             fbLabel.textAlignment = NSTextAlignment.Center
-            fbLabel.frame.origin.x = (facebookView.frame.size.width - fbLabel.frame.size.width) - margin
-            fbLabel.frame.origin.y = (facebookView.frame.size.height - fbLabel.frame.size.height) * half
 
         facebookView.addSubview(fbLabel)
         
+        let fbLabelCenterYConstraint = NSLayoutConstraint(item: fbLabel,
+                                                          attribute: NSLayoutAttribute.CenterY,
+                                                          relatedBy: NSLayoutRelation.Equal,
+                                                          toItem: facebookView,
+                                                          attribute: NSLayoutAttribute.CenterY,
+                                                          multiplier: 1.0,
+                                                          constant: 0)
+        let fbLabelTrailingConstraint = NSLayoutConstraint(item: fbLabel,
+                                                           attribute: NSLayoutAttribute.Trailing,
+                                                           relatedBy: NSLayoutRelation.Equal,
+                                                           toItem: facebookView,
+                                                           attribute: NSLayoutAttribute.TrailingMargin,
+                                                           multiplier: 1.0,
+                                                           constant: 0)
+        facebookView.addConstraints([fbLabelCenterYConstraint, fbLabelTrailingConstraint])
         
         let fbButton = UIButton()
+            fbButton.translatesAutoresizingMaskIntoConstraints = false
             fbButton.backgroundColor = UIColor.clearColor()
             fbButton.layer.cornerRadius = 5.0
-
-            fbButton.frame.size.width = (((facebookView.frame.size.width - fbButton.frame.size.width) - (margin * 2)))
-            fbButton.frame.size.height = 55.0
-            fbButton.frame.origin.x = (facebookView.frame.size.width - fbButton.frame.size.width)
-            fbButton.frame.origin.y = (facebookView.frame.size.height - fbButton.frame.size.height)
             fbButton.addTarget(self, action: #selector(IntroViewController.facebookButtonPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         
         facebookView.addSubview(fbButton)
+        
+        let fbButtonLeadingConstraint = NSLayoutConstraint(item: fbButton,
+                                                           attribute: NSLayoutAttribute.Leading,
+                                                           relatedBy: NSLayoutRelation.Equal,
+                                                           toItem: facebookView,
+                                                           attribute: NSLayoutAttribute.Leading,
+                                                           multiplier: 1.0,
+                                                           constant: 0)
+        
+        let fbButtonTrailingConstraint = NSLayoutConstraint(item: fbButton,
+                                                            attribute: NSLayoutAttribute.Trailing,
+                                                            relatedBy: NSLayoutRelation.Equal,
+                                                            toItem: facebookView,
+                                                            attribute: NSLayoutAttribute.Trailing,
+                                                            multiplier: 1.0,
+                                                            constant: 0)
+        
+        let fbButtonBottomConstraint = NSLayoutConstraint(item: fbButton,
+                                                          attribute: NSLayoutAttribute.Bottom,
+                                                          relatedBy: NSLayoutRelation.Equal,
+                                                          toItem: facebookView,
+                                                          attribute: NSLayoutAttribute.Bottom,
+                                                          multiplier: 1.0,
+                                                          constant: 0)
+        
+        let fbButtonTopConstraint = NSLayoutConstraint(item: fbButton,
+                                                       attribute: NSLayoutAttribute.Top,
+                                                       relatedBy: NSLayoutRelation.Equal,
+                                                       toItem: facebookView,
+                                                       attribute: NSLayoutAttribute.Top,
+                                                       multiplier: 1.0,
+                                                       constant: 0)
+        
+        facebookView.addConstraints([fbButtonBottomConstraint,fbButtonTopConstraint,fbButtonLeadingConstraint, fbButtonTrailingConstraint])
+
 
         containerView.addSubview(facebookView)
         
+        let facebookViewLeadingConstraint = NSLayoutConstraint(item: facebookView,
+                                                               attribute: NSLayoutAttribute.Leading,
+                                                               relatedBy: NSLayoutRelation.Equal,
+                                                               toItem: containerView,
+                                                               attribute: NSLayoutAttribute.LeadingMargin,
+                                                               multiplier: 1.0,
+                                                               constant: 0)
+        
+        let facebookViewTrailingConstraint = NSLayoutConstraint(item: facebookView,
+                                                                attribute: NSLayoutAttribute.Trailing,
+                                                                relatedBy: NSLayoutRelation.Equal,
+                                                                toItem: containerView,
+                                                                attribute: NSLayoutAttribute.TrailingMargin,
+                                                                multiplier: 1.0,
+                                                                constant: 0)
+        
+        let facebookViewBottomConstraint = NSLayoutConstraint(item: facebookView,
+                                                              attribute: NSLayoutAttribute.Bottom,
+                                                              relatedBy: NSLayoutRelation.Equal,
+                                                              toItem: containerView,
+                                                              attribute: NSLayoutAttribute.Bottom,
+                                                              multiplier: 1.0,
+                                                              constant: -200)
+        
+        let facebookViewHeightConstraint = NSLayoutConstraint(item: facebookView,
+                                                              attribute: NSLayoutAttribute.Height,
+                                                              relatedBy: NSLayoutRelation.Equal,
+                                                              toItem: nil,
+                                                              attribute: NSLayoutAttribute.NotAnAttribute,
+                                                              multiplier: 1.0,
+                                                              constant: 55)
+        
+        containerView.addConstraints([facebookViewBottomConstraint,facebookViewHeightConstraint,facebookViewLeadingConstraint, facebookViewTrailingConstraint])
+        
         
         let loginView = UIView()
+            loginView.translatesAutoresizingMaskIntoConstraints = false
             loginView.alpha = 0.0
             loginView.backgroundColor = UIColor.whiteColor()
             loginView.layer.cornerRadius = 5.0
@@ -146,15 +260,10 @@ class IntroViewController: UIViewController {
             loginView.layer.shadowOpacity = 0.8
             loginView.layer.shadowRadius = 5.0
             loginView.layer.shadowOffset = CGSizeMake(0.0, 2.0)
-            
-            loginView.frame.size.height = 160
-            loginView.frame.size.width = ((containerView.frame.size.width - loginView.frame.size.width) - (margin * 2))
-            
-            loginView.frame.origin.x = ((containerView.frame.size.width - loginView.frame.size.width) - margin)
-            loginView.frame.origin.y = ((containerView.frame.size.height - loginView.frame.size.height) - 25)
         
         
         let loginLabel = UILabel()
+            loginLabel.translatesAutoresizingMaskIntoConstraints = false
             loginLabel.alpha = 1.0
             loginLabel.text = "Email Login/Signup"
             loginLabel.font = UIFont(name: "Avenir Medium", size:  18.0)
@@ -168,7 +277,58 @@ class IntroViewController: UIViewController {
         
         loginView.addSubview(loginLabel)
         
+        let loginLabelLeadingConstraint = NSLayoutConstraint(item: loginLabel,
+                                                             attribute: NSLayoutAttribute.Leading,
+                                                             relatedBy: NSLayoutRelation.Equal,
+                                                             toItem: loginView,
+                                                             attribute: NSLayoutAttribute.LeadingMargin,
+                                                             multiplier: 1.0,
+                                                             constant: 0)
+        let loginLabelTopConstraint = NSLayoutConstraint(item: loginLabel,
+                                                         attribute: NSLayoutAttribute.Top,
+                                                         relatedBy: NSLayoutRelation.Equal,
+                                                         toItem: loginView,
+                                                         attribute: NSLayoutAttribute.TopMargin,
+                                                         multiplier: 1.0,
+                                                         constant: 0)
+        loginView.addConstraints([loginLabelTopConstraint, loginLabelLeadingConstraint])
+        
         containerView.addSubview(loginView)
+        
+        let loginViewLeadingConstraint = NSLayoutConstraint(item: loginView,
+                                                            attribute: NSLayoutAttribute.Leading,
+                                                            relatedBy: NSLayoutRelation.Equal,
+                                                            toItem: containerView,
+                                                            attribute: NSLayoutAttribute.LeadingMargin,
+                                                            multiplier: 1.0,
+                                                            constant: 0)
+        
+        let loginViewTrailingConstraint = NSLayoutConstraint(item: loginView,
+                                                             attribute: NSLayoutAttribute.Trailing,
+                                                             relatedBy: NSLayoutRelation.Equal,
+                                                             toItem: containerView,
+                                                             attribute: NSLayoutAttribute.TrailingMargin,
+                                                             multiplier: 1.0,
+                                                             constant: 0)
+        
+        let loginViewBottomConstraint = NSLayoutConstraint(item: loginView,
+                                                           attribute: NSLayoutAttribute.Bottom,
+                                                           relatedBy: NSLayoutRelation.Equal,
+                                                           toItem: containerView,
+                                                           attribute: NSLayoutAttribute.Bottom,
+                                                           multiplier: 1.0,
+                                                           constant: -25)
+        
+        let loginViewHeightConstraint = NSLayoutConstraint(item: loginView,
+                                                              attribute: NSLayoutAttribute.Height,
+                                                              relatedBy: NSLayoutRelation.Equal,
+                                                              toItem: nil,
+                                                              attribute: NSLayoutAttribute.NotAnAttribute,
+                                                              multiplier: 1.0,
+                                                              constant: 160)
+        
+        containerView.addConstraints([loginViewBottomConstraint,loginViewHeightConstraint,loginViewLeadingConstraint, loginViewTrailingConstraint])
+
         
         UIView.animateWithDuration(0.5,
                                    delay: 1.5,
@@ -176,86 +336,6 @@ class IntroViewController: UIViewController {
                                    animations: { facebookView.alpha = 0.75;
                                                  loginView.alpha = 0.75},
                                    completion: nil)
-    }
-    
-    func createLoginButtons(containerView: UIView!){
-        let margin: CGFloat = 15.0
-        let middleSpacing: CGFloat = 7.5
-        
-        let signIn = UIButton()
-            signIn.alpha = 0.0
-            signIn.setTitle("Sign In", forState: .Normal)
-            signIn.backgroundColor = PLAYLIFE_COLOR
-            signIn.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-            signIn.titleLabel?.font = UIFont(name: FONT_AVENIR_MEDIUM, size: 18.0)
-            
-            
-            signIn.layer.cornerRadius = 5.0
-            signIn.layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).CGColor
-            signIn.layer.shadowOpacity = 0.8
-            signIn.layer.shadowRadius = 5.0
-            signIn.layer.shadowOffset = CGSizeMake(0.0, 2.0)
-
-        
-            signIn.frame.size.width = (((containerView.frame.size.width - signIn.frame.size.width) - (margin * 2)) / 2 - middleSpacing)
-            signIn.frame.size.height = 40.0
-            signIn.frame.origin.x = margin
-            signIn.frame.origin.y = ((containerView.frame.size.height - signIn.frame.size.height) - 25)
-            signIn.addTarget(self, action: #selector(IntroViewController.signInButtonPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        containerView.addSubview(signIn)
-        
-        let register = UIButton()
-            register.alpha = 0.0
-            register.setTitle("Register", forState: .Normal)
-            register.backgroundColor = PLAYLIFE_COLOR
-            register.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-            register.titleLabel?.font = UIFont(name: FONT_AVENIR_MEDIUM, size: 18.0)
-            
-            
-            register.layer.cornerRadius = 5.0
-            register.layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).CGColor
-            register.layer.shadowOpacity = 0.8
-            register.layer.shadowRadius = 5.0
-            register.layer.shadowOffset = CGSizeMake(0.0, 2.0)
-
-        
-            register.frame.size.width = (((containerView.frame.size.width - register.frame.size.width) - (margin * 2)) / 2 - middleSpacing)
-            register.frame.size.height = 40.0
-            register.frame.origin.x = ((containerView.frame.size.width - register.frame.size.width) - margin)
-            register.frame.origin.y = ((containerView.frame.size.height - register.frame.size.height) - 25)
-            register.addTarget(self, action: #selector(IntroViewController.registerButtonPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        containerView.addSubview(register)
-        
-        let fbButton = UIButton()
-            fbButton.alpha = 0.0
-            fbButton.setTitle("Login With Facebook", forState: .Normal)
-            fbButton.backgroundColor = PLAYLIFE_COLOR
-            fbButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-            fbButton.titleLabel?.font = UIFont(name: FONT_AVENIR_MEDIUM, size: 18.0)
-            
-            
-            fbButton.layer.cornerRadius = 5.0
-            fbButton.layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).CGColor
-            fbButton.layer.shadowOpacity = 0.8
-            fbButton.layer.shadowRadius = 5.0
-            fbButton.layer.shadowOffset = CGSizeMake(0.0, 2.0)
-        
-            fbButton.frame.size.width = (((containerView.frame.size.width - fbButton.frame.size.width) - (margin * 2)))
-            fbButton.frame.size.height = 40.0
-            fbButton.frame.origin.x = ((containerView.frame.size.width - fbButton.frame.size.width) - margin)
-            fbButton.frame.origin.y = ((containerView.frame.size.height - fbButton.frame.size.height) - 75)
-            fbButton.addTarget(self, action: #selector(IntroViewController.fbButtonPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        containerView.addSubview(fbButton)
-        
-        UIView.animateWithDuration(0.5,
-                                   delay: 1.5,
-                                   options: [],
-                                   animations: { signIn.alpha = 1.0; register.alpha = 1.0; fbButton.alpha = 1.0 },
-                                   completion: nil)
-
     }
     
     func signInButtonPressed(sender:UIButton!){
