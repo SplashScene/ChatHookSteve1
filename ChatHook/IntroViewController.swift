@@ -14,11 +14,20 @@ import FBSDKCoreKit
 
 class IntroViewController: UIViewController {
     @IBOutlet weak var videoView: UIView!
+    var emailTextField: MaterialTextField!
+    var passwordTextField: MaterialTextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.setupView()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) != nil{
+            self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -136,7 +145,7 @@ class IntroViewController: UIViewController {
             fbButton.translatesAutoresizingMaskIntoConstraints = false
             fbButton.backgroundColor = UIColor.clearColor()
             fbButton.layer.cornerRadius = 5.0
-            fbButton.addTarget(self, action: #selector(IntroViewController.facebookButtonPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+            fbButton.addTarget(self, action: #selector(IntroViewController.fbButtonPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         
         facebookView.addSubview(fbButton)
         
@@ -173,7 +182,7 @@ class IntroViewController: UIViewController {
         loginView.addSubview(loginLabel)
             loginLabelConstraints(loginLabel, containerView: loginView)
         
-        let emailTextField = MaterialTextField(frame: CGRect(x:0, y: 0, width: 100, height: 44))
+            emailTextField = MaterialTextField(frame: CGRect(x:0, y: 0, width: 100, height: 44))
         
             emailTextField.translatesAutoresizingMaskIntoConstraints = false
             emailTextField.placeholder = "email"
@@ -183,7 +192,7 @@ class IntroViewController: UIViewController {
             emailTextFieldConstraints(emailTextField, containerView: loginView)
         
         
-        let passwordTextField = MaterialTextField()
+            passwordTextField = MaterialTextField()
         
             passwordTextField.translatesAutoresizingMaskIntoConstraints = false
             passwordTextField.placeholder = "password"
@@ -194,8 +203,8 @@ class IntroViewController: UIViewController {
         
         let registerButton = MaterialButton(frame: CGRect(x: 0, y: 0, width: 100, height: 44))
             registerButton.translatesAutoresizingMaskIntoConstraints = false
-        registerButton.setTitle("Sign In", forState: .Normal)
-        
+            registerButton.setTitle("Sign In", forState: .Normal)
+            registerButton.addTarget(self, action: #selector(IntroViewController.attemptLogin(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         loginView.addSubview(registerButton)
         loginButtonConstraints(registerButton, containerView: loginView)
         
@@ -223,8 +232,48 @@ class IntroViewController: UIViewController {
         print("Let's Register")
     }
     
-    func facebookButtonPressed(sender:UIButton!){
-        print("Tapped Facebook Button")
+    @IBAction func attemptLogin(sender: UIButton!){
+        print("Inside Attempt Login")
+        if let email = emailTextField.text where email != "", let pwd = passwordTextField.text where pwd != ""{
+            DataService.ds.REF_BASE.authUser(email, password: pwd, withCompletionBlock: { error, authDatafi in
+                if error != nil{
+                    print(error)
+                    if error.code == STATUS_ACCOUNT_NONEXIST{
+                        print("Inside ACCOUNT DOESN'T EXIST - \(email) and password: \(pwd)")
+                        DataService.ds.REF_BASE.createUser(email, password: pwd, withValueCompletionBlock: { error, result in
+                            if error != nil{
+                                self.showErrorAlert("Could not create account", msg: "Problem creating account. Try something else")
+                            }else{
+                                NSUserDefaults.standardUserDefaults().setValue(result[KEY_UID], forKey: KEY_UID)
+                                
+                                DataService.ds.REF_BASE.authUser(email, password: pwd, withCompletionBlock: {
+                                    err, authData in
+                                    
+                                    let user = ["provider": authData.provider!, "UserName": "AnonymousPoster", "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
+                                    DataService.ds.createFirebaseUser(authData.uid, user: user)
+                                })
+                                self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
+                                
+                            }
+                        })
+                    } else if error.code == STATUS_ACCOUNT_WRONGPASSWORD{
+                        self.showErrorAlert("Incorrect Password", msg: "The password that you entered does not match the one we have for your email address")
+                    }
+                } else {
+                    self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
+                }
+            })
+            
+        }else{
+            showErrorAlert("Email and Password Required", msg: "You must enter an email and password to login")
+        }
+    }
+    
+    func showErrorAlert(title: String, msg: String){
+        let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
+        let action = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        alert.addAction(action)
+        presentViewController(alert, animated: true, completion: nil)
     }
     
     func fbButtonPressed(sender:UIButton!){
