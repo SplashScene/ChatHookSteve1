@@ -110,38 +110,12 @@ class IntroViewController: UIViewController {
         let fbLogo  = UIImageView()
             fbLogo.translatesAutoresizingMaskIntoConstraints = false
             fbLogo.image = UIImage(named:"fb-icon")
+        
         facebookView.addSubview(fbLogo)
         
-        let fbLogoHeightConstraint = NSLayoutConstraint(item: fbLogo,
-                                                        attribute: NSLayoutAttribute.Height,
-                                                        relatedBy: NSLayoutRelation.Equal,
-                                                        toItem: nil,
-                                                        attribute: NSLayoutAttribute.NotAnAttribute,
-                                                        multiplier: 1.0,
-                                                        constant: 45)
-        let fbLogoWidthConstraint = NSLayoutConstraint(item: fbLogo,
-                                                       attribute: NSLayoutAttribute.Width,
-                                                       relatedBy: NSLayoutRelation.Equal,
-                                                       toItem: nil,
-                                                       attribute: NSLayoutAttribute.NotAnAttribute,
-                                                       multiplier: 1.0,
-                                                       constant: 45)
-        let fbLogoLeadingConstraint = NSLayoutConstraint(item: fbLogo,
-                                                         attribute: NSLayoutAttribute.Leading,
-                                                         relatedBy: NSLayoutRelation.Equal,
-                                                         toItem: facebookView,
-                                                         attribute: NSLayoutAttribute.LeadingMargin,
-                                                         multiplier: 1.0,
-                                                         constant: 0)
-        let fbLogoBottomConstraint = NSLayoutConstraint(item: fbLogo,
-                                                        attribute: NSLayoutAttribute.Bottom,
-                                                        relatedBy: NSLayoutRelation.Equal,
-                                                        toItem: facebookView,
-                                                        attribute: NSLayoutAttribute.Bottom,
-                                                        multiplier: 1.0,
-                                                        constant: -5)
+            facebookLogoConstraints(fbLogo, containerView: facebookView)
         
-        facebookView.addConstraints([fbLogoHeightConstraint,fbLogoWidthConstraint, fbLogoBottomConstraint, fbLogoLeadingConstraint])
+        
         
         let fbLabel = UILabel()
             fbLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -155,21 +129,8 @@ class IntroViewController: UIViewController {
 
         facebookView.addSubview(fbLabel)
         
-        let fbLabelCenterYConstraint = NSLayoutConstraint(item: fbLabel,
-                                                          attribute: NSLayoutAttribute.CenterY,
-                                                          relatedBy: NSLayoutRelation.Equal,
-                                                          toItem: facebookView,
-                                                          attribute: NSLayoutAttribute.CenterY,
-                                                          multiplier: 1.0,
-                                                          constant: 0)
-        let fbLabelTrailingConstraint = NSLayoutConstraint(item: fbLabel,
-                                                           attribute: NSLayoutAttribute.Trailing,
-                                                           relatedBy: NSLayoutRelation.Equal,
-                                                           toItem: facebookView,
-                                                           attribute: NSLayoutAttribute.TrailingMargin,
-                                                           multiplier: 1.0,
-                                                           constant: 0)
-        facebookView.addConstraints([fbLabelCenterYConstraint, fbLabelTrailingConstraint])
+            facebookLabelConstraints(fbLabel, containerView: facebookView)
+        
         
         let fbButton = UIButton()
             fbButton.translatesAutoresizingMaskIntoConstraints = false
@@ -179,76 +140,12 @@ class IntroViewController: UIViewController {
         
         facebookView.addSubview(fbButton)
         
-        let fbButtonLeadingConstraint = NSLayoutConstraint(item: fbButton,
-                                                           attribute: NSLayoutAttribute.Leading,
-                                                           relatedBy: NSLayoutRelation.Equal,
-                                                           toItem: facebookView,
-                                                           attribute: NSLayoutAttribute.Leading,
-                                                           multiplier: 1.0,
-                                                           constant: 0)
-        
-        let fbButtonTrailingConstraint = NSLayoutConstraint(item: fbButton,
-                                                            attribute: NSLayoutAttribute.Trailing,
-                                                            relatedBy: NSLayoutRelation.Equal,
-                                                            toItem: facebookView,
-                                                            attribute: NSLayoutAttribute.Trailing,
-                                                            multiplier: 1.0,
-                                                            constant: 0)
-        
-        let fbButtonBottomConstraint = NSLayoutConstraint(item: fbButton,
-                                                          attribute: NSLayoutAttribute.Bottom,
-                                                          relatedBy: NSLayoutRelation.Equal,
-                                                          toItem: facebookView,
-                                                          attribute: NSLayoutAttribute.Bottom,
-                                                          multiplier: 1.0,
-                                                          constant: 0)
-        
-        let fbButtonTopConstraint = NSLayoutConstraint(item: fbButton,
-                                                       attribute: NSLayoutAttribute.Top,
-                                                       relatedBy: NSLayoutRelation.Equal,
-                                                       toItem: facebookView,
-                                                       attribute: NSLayoutAttribute.Top,
-                                                       multiplier: 1.0,
-                                                       constant: 0)
-        
-        facebookView.addConstraints([fbButtonBottomConstraint,fbButtonTopConstraint,fbButtonLeadingConstraint, fbButtonTrailingConstraint])
-
+        fbButtonConstraints(fbButton, containerView: facebookView)
 
         containerView.addSubview(facebookView)
         
-        let facebookViewLeadingConstraint = NSLayoutConstraint(item: facebookView,
-                                                               attribute: NSLayoutAttribute.Leading,
-                                                               relatedBy: NSLayoutRelation.Equal,
-                                                               toItem: containerView,
-                                                               attribute: NSLayoutAttribute.LeadingMargin,
-                                                               multiplier: 1.0,
-                                                               constant: 0)
+        facebookViewConstraints(facebookView, containerView: containerView)
         
-        let facebookViewTrailingConstraint = NSLayoutConstraint(item: facebookView,
-                                                                attribute: NSLayoutAttribute.Trailing,
-                                                                relatedBy: NSLayoutRelation.Equal,
-                                                                toItem: containerView,
-                                                                attribute: NSLayoutAttribute.TrailingMargin,
-                                                                multiplier: 1.0,
-                                                                constant: 0)
-        
-        let facebookViewBottomConstraint = NSLayoutConstraint(item: facebookView,
-                                                              attribute: NSLayoutAttribute.Bottom,
-                                                              relatedBy: NSLayoutRelation.Equal,
-                                                              toItem: containerView,
-                                                              attribute: NSLayoutAttribute.Bottom,
-                                                              multiplier: 1.0,
-                                                              constant: -200)
-        
-        let facebookViewHeightConstraint = NSLayoutConstraint(item: facebookView,
-                                                              attribute: NSLayoutAttribute.Height,
-                                                              relatedBy: NSLayoutRelation.Equal,
-                                                              toItem: nil,
-                                                              attribute: NSLayoutAttribute.NotAnAttribute,
-                                                              multiplier: 1.0,
-                                                              constant: 55)
-        
-        containerView.addConstraints([facebookViewBottomConstraint,facebookViewHeightConstraint,facebookViewLeadingConstraint, facebookViewTrailingConstraint])
         
         
         let loginView = UIView()
@@ -272,63 +169,43 @@ class IntroViewController: UIViewController {
             loginLabel.sizeToFit()
             
             loginLabel.textAlignment = NSTextAlignment.Center
-            loginLabel.frame.origin.x = (loginView.frame.size.width - loginLabel.frame.size.width) - 175
-            loginLabel.frame.origin.y = (loginView.frame.size.height - loginLabel.frame.size.height) - 135
         
         loginView.addSubview(loginLabel)
+            loginLabelConstraints(loginLabel, containerView: loginView)
         
-        let loginLabelLeadingConstraint = NSLayoutConstraint(item: loginLabel,
-                                                             attribute: NSLayoutAttribute.Leading,
-                                                             relatedBy: NSLayoutRelation.Equal,
-                                                             toItem: loginView,
-                                                             attribute: NSLayoutAttribute.LeadingMargin,
-                                                             multiplier: 1.0,
-                                                             constant: 0)
-        let loginLabelTopConstraint = NSLayoutConstraint(item: loginLabel,
-                                                         attribute: NSLayoutAttribute.Top,
-                                                         relatedBy: NSLayoutRelation.Equal,
-                                                         toItem: loginView,
-                                                         attribute: NSLayoutAttribute.TopMargin,
-                                                         multiplier: 1.0,
-                                                         constant: 0)
-        loginView.addConstraints([loginLabelTopConstraint, loginLabelLeadingConstraint])
+        let emailTextField = MaterialTextField(frame: CGRect(x:0, y: 0, width: 100, height: 44))
+        
+            emailTextField.translatesAutoresizingMaskIntoConstraints = false
+            emailTextField.placeholder = "email"
+
+        loginView.addSubview(emailTextField)
+        
+            emailTextFieldConstraints(emailTextField, containerView: loginView)
+        
+        
+        let passwordTextField = MaterialTextField()
+        
+            passwordTextField.translatesAutoresizingMaskIntoConstraints = false
+            passwordTextField.placeholder = "password"
+        
+        loginView.addSubview(passwordTextField)
+        
+            passwordTextFieldConstraints(passwordTextField, containerView: loginView)
+        
+        let registerButton = MaterialButton(frame: CGRect(x: 0, y: 0, width: 100, height: 44))
+            registerButton.translatesAutoresizingMaskIntoConstraints = false
+        registerButton.setTitle("Sign In", forState: .Normal)
+        
+        loginView.addSubview(registerButton)
+        loginButtonConstraints(registerButton, containerView: loginView)
+        
+
         
         containerView.addSubview(loginView)
         
-        let loginViewLeadingConstraint = NSLayoutConstraint(item: loginView,
-                                                            attribute: NSLayoutAttribute.Leading,
-                                                            relatedBy: NSLayoutRelation.Equal,
-                                                            toItem: containerView,
-                                                            attribute: NSLayoutAttribute.LeadingMargin,
-                                                            multiplier: 1.0,
-                                                            constant: 0)
+            loginViewConstraints(loginView, containerView: containerView)
         
-        let loginViewTrailingConstraint = NSLayoutConstraint(item: loginView,
-                                                             attribute: NSLayoutAttribute.Trailing,
-                                                             relatedBy: NSLayoutRelation.Equal,
-                                                             toItem: containerView,
-                                                             attribute: NSLayoutAttribute.TrailingMargin,
-                                                             multiplier: 1.0,
-                                                             constant: 0)
         
-        let loginViewBottomConstraint = NSLayoutConstraint(item: loginView,
-                                                           attribute: NSLayoutAttribute.Bottom,
-                                                           relatedBy: NSLayoutRelation.Equal,
-                                                           toItem: containerView,
-                                                           attribute: NSLayoutAttribute.Bottom,
-                                                           multiplier: 1.0,
-                                                           constant: -25)
-        
-        let loginViewHeightConstraint = NSLayoutConstraint(item: loginView,
-                                                              attribute: NSLayoutAttribute.Height,
-                                                              relatedBy: NSLayoutRelation.Equal,
-                                                              toItem: nil,
-                                                              attribute: NSLayoutAttribute.NotAnAttribute,
-                                                              multiplier: 1.0,
-                                                              constant: 160)
-        
-        containerView.addConstraints([loginViewBottomConstraint,loginViewHeightConstraint,loginViewLeadingConstraint, loginViewTrailingConstraint])
-
         
         UIView.animateWithDuration(0.5,
                                    delay: 1.5,
@@ -375,6 +252,296 @@ class IntroViewController: UIViewController {
             }//end else
         }//end facebook login handler
     }
+    
+//*******************************************************************************************************************************
+//*********************************************** CONSTRAINTS ********************************************************************
+//*******************************************************************************************************************************
+    
+    func facebookLabelConstraints(item: UIView, containerView: UIView){
+        let fbLabelCenterYConstraint = NSLayoutConstraint(item: item,
+                                                          attribute: NSLayoutAttribute.CenterY,
+                                                          relatedBy: NSLayoutRelation.Equal,
+                                                          toItem: containerView,
+                                                          attribute: NSLayoutAttribute.CenterY,
+                                                          multiplier: 1.0,
+                                                          constant: 0)
+        let fbLabelTrailingConstraint = NSLayoutConstraint(item: item,
+                                                           attribute: NSLayoutAttribute.Trailing,
+                                                           relatedBy: NSLayoutRelation.Equal,
+                                                           toItem: containerView,
+                                                           attribute: NSLayoutAttribute.TrailingMargin,
+                                                           multiplier: 1.0,
+                                                           constant: 0)
+        containerView.addConstraints([fbLabelCenterYConstraint, fbLabelTrailingConstraint])
+
+    }
+    
+    func facebookLogoConstraints(item: UIImageView, containerView: UIView){
+        let fbLogoHeightConstraint = NSLayoutConstraint(item: item,
+                                                        attribute: NSLayoutAttribute.Height,
+                                                        relatedBy: NSLayoutRelation.Equal,
+                                                        toItem: nil,
+                                                        attribute: NSLayoutAttribute.NotAnAttribute,
+                                                        multiplier: 1.0,
+                                                        constant: 45)
+        let fbLogoWidthConstraint = NSLayoutConstraint(item: item,
+                                                       attribute: NSLayoutAttribute.Width,
+                                                       relatedBy: NSLayoutRelation.Equal,
+                                                       toItem: nil,
+                                                       attribute: NSLayoutAttribute.NotAnAttribute,
+                                                       multiplier: 1.0,
+                                                       constant: 45)
+        let fbLogoLeadingConstraint = NSLayoutConstraint(item: item,
+                                                         attribute: NSLayoutAttribute.Leading,
+                                                         relatedBy: NSLayoutRelation.Equal,
+                                                         toItem: containerView,
+                                                         attribute: NSLayoutAttribute.LeadingMargin,
+                                                         multiplier: 1.0,
+                                                         constant: 0)
+        let fbLogoBottomConstraint = NSLayoutConstraint(item: item,
+                                                        attribute: NSLayoutAttribute.Bottom,
+                                                        relatedBy: NSLayoutRelation.Equal,
+                                                        toItem: containerView,
+                                                        attribute: NSLayoutAttribute.Bottom,
+                                                        multiplier: 1.0,
+                                                        constant: -5)
+        
+        containerView.addConstraints([fbLogoHeightConstraint,fbLogoWidthConstraint, fbLogoBottomConstraint, fbLogoLeadingConstraint])
+    }
+    
+    func facebookViewConstraints(item: UIView, containerView: UIView){
+        let facebookViewLeadingConstraint = NSLayoutConstraint(item: item,
+                                                               attribute: NSLayoutAttribute.Leading,
+                                                               relatedBy: NSLayoutRelation.Equal,
+                                                               toItem: containerView,
+                                                               attribute: NSLayoutAttribute.LeadingMargin,
+                                                               multiplier: 1.0,
+                                                               constant: 0)
+        
+        let facebookViewTrailingConstraint = NSLayoutConstraint(item: item,
+                                                                attribute: NSLayoutAttribute.Trailing,
+                                                                relatedBy: NSLayoutRelation.Equal,
+                                                                toItem: containerView,
+                                                                attribute: NSLayoutAttribute.TrailingMargin,
+                                                                multiplier: 1.0,
+                                                                constant: 0)
+        
+        let facebookViewBottomConstraint = NSLayoutConstraint(item: item,
+                                                              attribute: NSLayoutAttribute.Bottom,
+                                                              relatedBy: NSLayoutRelation.Equal,
+                                                              toItem: containerView,
+                                                              attribute: NSLayoutAttribute.Bottom,
+                                                              multiplier: 1.0,
+                                                              constant: -200)
+        
+        let facebookViewHeightConstraint = NSLayoutConstraint(item: item,
+                                                              attribute: NSLayoutAttribute.Height,
+                                                              relatedBy: NSLayoutRelation.Equal,
+                                                              toItem: nil,
+                                                              attribute: NSLayoutAttribute.NotAnAttribute,
+                                                              multiplier: 1.0,
+                                                              constant: 55)
+        
+        containerView.addConstraints([facebookViewBottomConstraint,facebookViewHeightConstraint,facebookViewLeadingConstraint, facebookViewTrailingConstraint])
+
+    }
+    
+    func fbButtonConstraints(item: UIButton, containerView: UIView){
+        let fbButtonLeadingConstraint = NSLayoutConstraint(item: item,
+                                                           attribute: NSLayoutAttribute.Leading,
+                                                           relatedBy: NSLayoutRelation.Equal,
+                                                           toItem: containerView,
+                                                           attribute: NSLayoutAttribute.Leading,
+                                                           multiplier: 1.0,
+                                                           constant: 0)
+        
+        let fbButtonTrailingConstraint = NSLayoutConstraint(item: item,
+                                                            attribute: NSLayoutAttribute.Trailing,
+                                                            relatedBy: NSLayoutRelation.Equal,
+                                                            toItem: containerView,
+                                                            attribute: NSLayoutAttribute.Trailing,
+                                                            multiplier: 1.0,
+                                                            constant: 0)
+        
+        let fbButtonBottomConstraint = NSLayoutConstraint(item: item,
+                                                          attribute: NSLayoutAttribute.Bottom,
+                                                          relatedBy: NSLayoutRelation.Equal,
+                                                          toItem: containerView,
+                                                          attribute: NSLayoutAttribute.Bottom,
+                                                          multiplier: 1.0,
+                                                          constant: 0)
+        
+        let fbButtonTopConstraint = NSLayoutConstraint(item: item,
+                                                       attribute: NSLayoutAttribute.Top,
+                                                       relatedBy: NSLayoutRelation.Equal,
+                                                       toItem: containerView,
+                                                       attribute: NSLayoutAttribute.Top,
+                                                       multiplier: 1.0,
+                                                       constant: 0)
+        
+        containerView.addConstraints([fbButtonBottomConstraint,fbButtonTopConstraint,fbButtonLeadingConstraint, fbButtonTrailingConstraint])
+
+    }
+    
+    func emailTextFieldConstraints(item: UITextField, containerView: UIView!){
+        let emailTextFieldLeadingConstraint = NSLayoutConstraint(item: item,
+                                                                 attribute: NSLayoutAttribute.Leading,
+                                                                 relatedBy: NSLayoutRelation.Equal,
+                                                                 toItem: containerView,
+                                                                 attribute: NSLayoutAttribute.LeadingMargin,
+                                                                 multiplier: 1.0,
+                                                                 constant: 0)
+        let emailTextFieldTrailingConstraint = NSLayoutConstraint(item: item,
+                                                                  attribute: NSLayoutAttribute.Trailing,
+                                                                  relatedBy: NSLayoutRelation.Equal,
+                                                                  toItem: containerView,
+                                                                  attribute: NSLayoutAttribute.TrailingMargin,
+                                                                  multiplier: 1.0,
+                                                                  constant: 0)
+        
+        let emailTextFieldTopConstraint = NSLayoutConstraint(item: item,
+                                                             attribute: NSLayoutAttribute.Top,
+                                                             relatedBy: NSLayoutRelation.Equal,
+                                                             toItem: containerView,
+                                                             attribute: NSLayoutAttribute.TopMargin,
+                                                             multiplier: 1.0,
+                                                             constant: 35)
+        let emailTextFieldHeightConstraint = NSLayoutConstraint(item: item,
+                                                                attribute: NSLayoutAttribute.Height,
+                                                                relatedBy: NSLayoutRelation.Equal,
+                                                                toItem: nil,
+                                                                attribute: NSLayoutAttribute.NotAnAttribute,
+                                                                multiplier: 1.0,
+                                                                constant: 35)
+        
+        containerView.addConstraints([emailTextFieldTopConstraint, emailTextFieldLeadingConstraint, emailTextFieldTrailingConstraint, emailTextFieldHeightConstraint])
+        
+    }
+    
+    func passwordTextFieldConstraints(item: UITextField, containerView: UIView!){
+        
+        let passwordTextFieldLeadingConstraint = NSLayoutConstraint(item: item,
+                                                                    attribute: NSLayoutAttribute.Leading,
+                                                                    relatedBy: NSLayoutRelation.Equal,
+                                                                    toItem: containerView,
+                                                                    attribute: NSLayoutAttribute.LeadingMargin,
+                                                                    multiplier: 1.0,
+                                                                    constant: 0)
+        let passwordTextFieldTrailingConstraint = NSLayoutConstraint(item: item,
+                                                                     attribute: NSLayoutAttribute.Trailing,
+                                                                     relatedBy: NSLayoutRelation.Equal,
+                                                                     toItem: containerView,
+                                                                     attribute: NSLayoutAttribute.TrailingMargin,
+                                                                     multiplier: 1.0,
+                                                                     constant: 0)
+        
+        let passwordTextFieldTopConstraint = NSLayoutConstraint(item: item,
+                                                                attribute: NSLayoutAttribute.Top,
+                                                                relatedBy: NSLayoutRelation.Equal,
+                                                                toItem: containerView,
+                                                                attribute: NSLayoutAttribute.TopMargin,
+                                                                multiplier: 1.0,
+                                                                constant: 75)
+        let passwordTextFieldHeightConstraint = NSLayoutConstraint(item: item,
+                                                                   attribute: NSLayoutAttribute.Height,
+                                                                   relatedBy: NSLayoutRelation.Equal,
+                                                                   toItem: nil,
+                                                                   attribute: NSLayoutAttribute.NotAnAttribute,
+                                                                   multiplier: 1.0,
+                                                                   constant: 35)
+        
+        containerView.addConstraints([passwordTextFieldLeadingConstraint, passwordTextFieldTrailingConstraint, passwordTextFieldTopConstraint, passwordTextFieldHeightConstraint])
+    }
+    
+    func loginViewConstraints(item: UIView, containerView: UIView){
+        let loginViewLeadingConstraint = NSLayoutConstraint(item: item,
+                                                            attribute: NSLayoutAttribute.Leading,
+                                                            relatedBy: NSLayoutRelation.Equal,
+                                                            toItem: containerView,
+                                                            attribute: NSLayoutAttribute.LeadingMargin,
+                                                            multiplier: 1.0,
+                                                            constant: 0)
+        
+        let loginViewTrailingConstraint = NSLayoutConstraint(item: item,
+                                                             attribute: NSLayoutAttribute.Trailing,
+                                                             relatedBy: NSLayoutRelation.Equal,
+                                                             toItem: containerView,
+                                                             attribute: NSLayoutAttribute.TrailingMargin,
+                                                             multiplier: 1.0,
+                                                             constant: 0)
+        
+        let loginViewBottomConstraint = NSLayoutConstraint(item: item,
+                                                           attribute: NSLayoutAttribute.Bottom,
+                                                           relatedBy: NSLayoutRelation.Equal,
+                                                           toItem: containerView,
+                                                           attribute: NSLayoutAttribute.Bottom,
+                                                           multiplier: 1.0,
+                                                           constant: -15)
+        
+        let loginViewHeightConstraint = NSLayoutConstraint(item: item,
+                                                           attribute: NSLayoutAttribute.Height,
+                                                           relatedBy: NSLayoutRelation.Equal,
+                                                           toItem: nil,
+                                                           attribute: NSLayoutAttribute.NotAnAttribute,
+                                                           multiplier: 1.0,
+                                                           constant: 180)
+        
+        containerView.addConstraints([loginViewBottomConstraint,loginViewHeightConstraint,loginViewLeadingConstraint, loginViewTrailingConstraint])
+
+    }
+    
+    func loginLabelConstraints(item: UILabel, containerView: UIView){
+        let loginLabelLeadingConstraint = NSLayoutConstraint(item: item,
+                                                             attribute: NSLayoutAttribute.Leading,
+                                                             relatedBy: NSLayoutRelation.Equal,
+                                                             toItem: containerView,
+                                                             attribute: NSLayoutAttribute.LeadingMargin,
+                                                             multiplier: 1.0,
+                                                             constant: 0)
+        let loginLabelTopConstraint = NSLayoutConstraint(item: item,
+                                                         attribute: NSLayoutAttribute.Top,
+                                                         relatedBy: NSLayoutRelation.Equal,
+                                                         toItem: containerView,
+                                                         attribute: NSLayoutAttribute.TopMargin,
+                                                         multiplier: 1.0,
+                                                         constant: 0)
+        containerView.addConstraints([loginLabelTopConstraint, loginLabelLeadingConstraint])
+
+    }
+    
+    func loginButtonConstraints(item: UIButton, containerView: UIView){
+        let loginButtonCenterXConstraint = NSLayoutConstraint(item: item,
+                                                            attribute: NSLayoutAttribute.CenterX,
+                                                            relatedBy: NSLayoutRelation.Equal,
+                                                            toItem: containerView,
+                                                            attribute: NSLayoutAttribute.CenterX,
+                                                            multiplier: 1.0,
+                                                            constant: 0)
+        let loginButtonHeightConstraint = NSLayoutConstraint(item: item,
+                                                              attribute: NSLayoutAttribute.Height,
+                                                              relatedBy: NSLayoutRelation.Equal,
+                                                              toItem: nil,
+                                                              attribute: NSLayoutAttribute.NotAnAttribute,
+                                                              multiplier: 1.0,
+                                                              constant: 35)
+        let loginButtonWidthConstraint = NSLayoutConstraint(item: item,
+                                                             attribute: NSLayoutAttribute.Width,
+                                                             relatedBy: NSLayoutRelation.Equal,
+                                                             toItem: nil,
+                                                             attribute: NSLayoutAttribute.NotAnAttribute,
+                                                             multiplier: 1.0,
+                                                             constant: 125)
+        let loginButtonBottomConstraint = NSLayoutConstraint(item: item,
+                                                           attribute: NSLayoutAttribute.Bottom,
+                                                           relatedBy: NSLayoutRelation.Equal,
+                                                           toItem: containerView,
+                                                           attribute: NSLayoutAttribute.Bottom,
+                                                           multiplier: 1.0,
+                                                           constant: -10)
+        containerView.addConstraints([loginButtonCenterXConstraint, loginButtonHeightConstraint,loginButtonWidthConstraint,loginButtonBottomConstraint])
+        
+    }
+
 
 }
 

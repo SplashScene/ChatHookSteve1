@@ -75,7 +75,9 @@ let COPY_SERVER_CONNECTION_ERROR = "Error connecting to server. Please try again
 let kCellWidth = 50
 
 let PLAYLIFE_COLOR: UIColor = UIColor(red: 184.0/255.0, green: 164.0/255.0, blue: 100.0/255.0, alpha: 1.0)
+let TEXTFIELD_BACKGROUND_COLOR = UIColor(red: 236.0/255.0, green: 236.0/255.0, blue: 236.0/255.0, alpha: 1.0)
 let SHADOW_COLOR: CGFloat = 157.0/255.0
+
 
 let MARGIN: CGFloat = 15.0
 
