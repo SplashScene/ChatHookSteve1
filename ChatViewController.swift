@@ -143,7 +143,7 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     private func observeTyping() {
-        let typingIndicatorRef = DataService.ds.REF_MESSAGES.childByAppendingPath("typingIndicator")
+        let typingIndicatorRef = DataService.ds.REF_BASE.childByAppendingPath("typingIndicator")
         userIsTypingRef = typingIndicatorRef.childByAppendingPath(senderId)
         userIsTypingRef.onDisconnectRemoveValue()
         
