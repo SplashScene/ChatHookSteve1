@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84A28BE21CF89706004615DB /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A28BE11CF89706004615DB /* ChatViewController.swift */; };
 		84B9AB1E1CE225780002B132 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB1D1CE225780002B132 /* AppDelegate.swift */; };
 		84B9AB201CE225780002B132 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB1F1CE225780002B132 /* IntroViewController.swift */; };
 		84B9AB231CE225780002B132 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84B9AB211CE225780002B132 /* Main.storyboard */; };
@@ -33,6 +34,7 @@
 /* Begin PBXFileReference section */
 		02C07202A720503C672BCA57 /* Pods-ChatHook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatHook.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatHook/Pods-ChatHook.release.xcconfig"; sourceTree = "<group>"; };
 		1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatHook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		84A28BE11CF89706004615DB /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		84B9AB1A1CE225780002B132 /* ChatHook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatHook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84B9AB1D1CE225780002B132 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		84B9AB1F1CE225780002B132 /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IntroViewController.swift; path = ChatHook/IntroViewController.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 			children = (
 				84B9AB1F1CE225780002B132 /* IntroViewController.swift */,
 				84D687841CF3712600944D1E /* FeedVC.swift */,
+				84A28BE11CF89706004615DB /* ChatViewController.swift */,
 			);
 			name = Controllers;
 			path = ..;
@@ -318,6 +321,7 @@
 				84B9AB1E1CE225780002B132 /* AppDelegate.swift in Sources */,
 				84B9AB3B1CE233100002B132 /* Constants.swift in Sources */,
 				84B9AB441CE264FE0002B132 /* MaterialTextField.swift in Sources */,
+				84A28BE21CF89706004615DB /* ChatViewController.swift in Sources */,
 				84D687891CF371BA00944D1E /* PostCell.swift in Sources */,
 				84B9AB461CE266B40002B132 /* MaterialImageView.swift in Sources */,
 				84D687871CF3717F00944D1E /* Post.swift in Sources */,

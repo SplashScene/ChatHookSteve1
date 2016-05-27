@@ -276,6 +276,14 @@ class IntroViewController: UIViewController {
         presentViewController(alert, animated: true, completion: nil)
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        super.prepareForSegue(segue, sender: sender)
+        let navVc = segue.destinationViewController as! UINavigationController // 1
+        let chatVc = navVc.viewControllers.first as! ChatViewController // 2
+        chatVc.senderId = DataService.ds.REF_BASE.authData.uid // 3
+        chatVc.senderDisplayName = "" // 4
+    }
+    
     func fbButtonPressed(sender:UIButton!){
         let facebookLogin = FBSDKLoginManager()
         facebookLogin.logInWithReadPermissions(["email","public_profile"], fromViewController: nil) { (facebookResult: FBSDKLoginManagerLoginResult!, facebookError: NSError!) -> Void in

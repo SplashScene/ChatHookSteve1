@@ -17,11 +17,13 @@ class DataService {
     private var _REF_BASE = Firebase(url: "\(URL_BASE)")
     private var _REF_POSTS = Firebase(url: "\(URL_BASE)/posts")
     private var _REF_USERS = Firebase(url: "\(URL_BASE)/users")
+    private var _REF_MESSAGES = Firebase(url: "\(URL_BASE)/messages")
     
     
     var REF_BASE: Firebase{ return _REF_BASE }
     var REF_POSTS: Firebase{ return _REF_POSTS }
     var REF_USERS: Firebase{ return _REF_USERS }
+    var REF_MESSAGES: Firebase{ return _REF_MESSAGES }
     
     var REF_USER_CURRENT: Firebase{
         let uid = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
