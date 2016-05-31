@@ -18,16 +18,16 @@ class ChatViewController: JSQMessagesViewController {
     
     var userIsTypingRef: Firebase!
     private var localTyping = false
-    var isTyping: Bool {
-        get {
-            return localTyping
-        }
-        set {
-            // 3
-            localTyping = newValue
-            userIsTypingRef.setValue(newValue)
-        }
-    }
+//    var isTyping: Bool {
+//        get {
+//            return localTyping
+//        }
+//        set {
+//            // 3
+//            localTyping = newValue
+//            userIsTypingRef.setValue(newValue)
+//        }
+//    }
     
     var usersTypingQuery: FQuery!
     
@@ -43,7 +43,7 @@ class ChatViewController: JSQMessagesViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         observeMessages()
-        observeTyping()
+        //observeTyping()
        
     }
     
@@ -87,7 +87,7 @@ class ChatViewController: JSQMessagesViewController {
     override func textViewDidChange(textView: UITextView) {
         super.textViewDidChange(textView)
         // If the text is not empty, the user is typing
-        isTyping = textView.text != ""
+        //isTyping = textView.text != ""
     }
     
     func addMessage(id: String, text: String) {
@@ -121,7 +121,7 @@ class ChatViewController: JSQMessagesViewController {
         
         finishSendingMessage()
         
-        isTyping = false
+        //isTyping = false
     }
     
     private func observeMessages() {
@@ -130,6 +130,8 @@ class ChatViewController: JSQMessagesViewController {
         let messagesQuery = DataService.ds.REF_MESSAGES.queryLimitedToLast(25)
         // 2
         messagesQuery.observeEventType(.ChildAdded) { (snapshot: FDataSnapshot!) in
+            print("Sender ID is: \(snapshot.value["senderId"])")
+            print("Text is: \(snapshot.value["text"])")
             // 3
             let id = snapshot.value["senderId"] as! String
             let text = snapshot.value["text"] as! String
@@ -152,9 +154,9 @@ class ChatViewController: JSQMessagesViewController {
         usersTypingQuery.observeEventType(.Value) { (data: FDataSnapshot!) in
             
             // 3 You're the only typing, don't show the indicator
-            if data.childrenCount == 1 && self.isTyping {
-                return
-            }
+//            if data.childrenCount == 1 && self.isTyping {
+//                return
+//            }
             
             // 4 Are there others typing?
             self.showTypingIndicator = data.childrenCount > 0
