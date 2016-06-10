@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="7bO-BP-j6s">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="N5W-XE-nZE">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--Intro View Controller-->
+        <!--Item-->
         <scene sceneID="hQu-r4-5kf">
             <objects>
                 <viewController id="7bO-BP-j6s" customClass="IntroViewController" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
@@ -25,6 +25,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="kLJ-qj-cBH"/>
                     <connections>
                         <outlet property="videoView" destination="FGu-bu-eaG" id="dWY-6d-jHk"/>
                         <segue destination="Hyo-00-nhn" kind="show" identifier="loggedIn" id="kvf-ZV-kkc"/>
@@ -32,7 +33,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="k5V-1P-0ke" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="8" y="292"/>
+            <point key="canvasLocation" x="463" y="173"/>
         </scene>
         <!--Chat View Controller-->
         <scene sceneID="SwR-XI-J7R">
@@ -51,7 +52,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jx7-mn-mvW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1374" y="292"/>
+            <point key="canvasLocation" x="2186" y="292"/>
         </scene>
         <!--PLAYLIFE-->
         <scene sceneID="4TM-SU-cOs">
@@ -252,7 +253,24 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hzG-6j-Exd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="650" y="292"/>
+            <point key="canvasLocation" x="1462" y="292"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="fDt-FC-VQl">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="N5W-XE-nZE" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="dYV-BE-mVz">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="7bO-BP-j6s" kind="relationship" relationship="viewControllers" id="MsZ-OQ-1As"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1N1-y3-7l1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-186" y="173"/>
         </scene>
     </scenes>
     <resources>

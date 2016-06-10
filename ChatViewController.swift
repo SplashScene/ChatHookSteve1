@@ -130,14 +130,22 @@ class ChatViewController: JSQMessagesViewController {
         let messagesQuery = DataService.ds.REF_MESSAGES.queryLimitedToLast(25)
         // 2
         messagesQuery.observeEventType(.ChildAdded) { (snapshot: FDataSnapshot!) in
-            print("Sender ID is: \(snapshot.value["senderId"])")
-            print("Text is: \(snapshot.value["text"])")
-            // 3
-            let id = snapshot.value["senderId"] as! String
-            let text = snapshot.value["text"] as! String
+                        // 3
+            if let id = snapshot.value["senderId"], let text = snapshot.value["text"]{
+                print("Sender ID is: \(id)")
+                print("Text is: \(text)")
+
+                
+                let sender = id as! String
+                let message = text as! String
+                
+                self.addMessage(sender, text: message)
+            }
+//            let id = snapshot.value["senderId"] as! String
+//            let text = snapshot.value["text"] as! String
             
             // 4
-            self.addMessage(id, text: text)
+            
             
             // 5
             self.finishReceivingMessage()
