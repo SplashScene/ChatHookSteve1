@@ -17,13 +17,16 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
     @IBOutlet weak var onlineButton: UIButton!
     
     let locationManager = CLLocationManager()
+    let regionRadius:CLLocationDistance = 1000
     var location: CLLocation?
+    //var testLocation = CLLocation(latitude: 41.924215, longitude: -88.16121)
     
     var updatingLocation = false
     var lastLocationError: NSError?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapView.delegate = self
         configureOnlineButton()
         // Do any additional setup after loading the view.
     }
@@ -95,10 +98,27 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
             onlineButton.setTitle("Go Offline", forState: .Normal)
             onlineButton.backgroundColor = UIColor.blueColor()
             messageLabel.text = "You are now online"
+            mapView.showsUserLocation = true
         }
         else{
             onlineButton.setTitle("Go Online", forState: .Normal)
         }
+    }
+    
+    func addRadiusCircle(location: CLLocation){
+        self.mapView.delegate = self
+        let circle = MKCircle(centerCoordinate: location.coordinate, radius: 500 as CLLocationDistance)
+        self.mapView.addOverlay(circle)
+    }
+    
+    func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer {
+        
+            let circle = MKCircleRenderer(overlay: overlay)
+            circle.strokeColor = UIColor.redColor()
+            circle.fillColor = UIColor(red: 255, green: 0, blue: 0, alpha: 0.1)
+            circle.lineWidth = 1
+            return circle
+        
     }
 
     @IBAction func goOnline(){
@@ -149,3 +169,32 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
     }
     
 }//end class
+
+extension CurrentLocationViewcontrollerViewController: MKMapViewDelegate{
+    func centerMapOnLocation(location:CLLocation){
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2, regionRadius * 2)
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
+    
+    func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
+        if let loc = userLocation.location{
+            centerMapOnLocation(loc)
+            addRadiusCircle(loc)
+        }
+    }
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        if annotation.isEqual(mapView.userLocation) {
+            let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "userLocation")
+            annotationView.image = UIImage(named: "ProfileIcon25")
+            return annotationView
+        }else{
+            let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "userLocation")
+            annotationView.image = UIImage(named: "heart-full")
+            return annotationView
+        }
+        
+    }
+    
+}
+
