@@ -19,15 +19,20 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
     let locationManager = CLLocationManager()
     let regionRadius:CLLocationDistance = 1000
     var location: CLLocation?
-    //var testLocation = CLLocation(latitude: 41.924215, longitude: -88.16121)
+    var online:Bool = false
     
     var updatingLocation = false
     var lastLocationError: NSError?
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        mapView.delegate = self
-        configureOnlineButton()
+        self.mapView.delegate = self
+        self.locationManager.delegate = self
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        self.locationManager.requestWhenInUseAuthorization()
+        self.locationManager.startUpdatingLocation()
+        self.mapView.showsUserLocation = true
         // Do any additional setup after loading the view.
     }
     
@@ -45,25 +50,26 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let newLocation = locations.last!
-        print("didUpdateLocations \(newLocation)")
-        if newLocation.timestamp.timeIntervalSinceNow < -5{
-            return
-        }
-        if newLocation.horizontalAccuracy < 0{
-            return
-        }
-        if location == nil || location!.horizontalAccuracy > newLocation.horizontalAccuracy{
-            lastLocationError = nil
-            location = newLocation
-            
-            if newLocation.horizontalAccuracy <= locationManager.desiredAccuracy{
-                print("*** We're done!")
-                stopLocationManager()
-            }
         
-        }
-        configureOnlineButton()
+            let newLocation = locations.last!
+            print("didUpdateLocations \(newLocation)")
+            if newLocation.timestamp.timeIntervalSinceNow < -5{
+                return
+            }
+            if newLocation.horizontalAccuracy < 0{
+                return
+            }
+            if location == nil || location!.horizontalAccuracy > newLocation.horizontalAccuracy{
+                lastLocationError = nil
+                location = newLocation
+                
+                if newLocation.horizontalAccuracy <= locationManager.desiredAccuracy{
+                    print("*** We're done!")
+                    stopLocationManager()
+                }
+            
+            }
+            configureOnlineButton()
     }
     
     func startLocationManager(){
@@ -91,20 +97,8 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
         presentViewController(alert, animated: true, completion: nil)
     }
     
-    func configureOnlineButton(){
-        if updatingLocation{
-            onlineButton.setTitle("Stop", forState: .Normal)
-        } else if location != nil{
-            onlineButton.setTitle("Go Offline", forState: .Normal)
-            onlineButton.backgroundColor = UIColor.blueColor()
-            messageLabel.text = "You are now online"
-            mapView.showsUserLocation = true
-        }
-        else{
-            onlineButton.setTitle("Go Online", forState: .Normal)
-        }
-    }
     
+    //MARK: - Overlay Functions
     func addRadiusCircle(location: CLLocation){
         self.mapView.delegate = self
         let circle = MKCircle(centerCoordinate: location.coordinate, radius: 500 as CLLocationDistance)
@@ -122,7 +116,6 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
     }
 
     @IBAction func goOnline(){
-        
             let authStatus = CLLocationManager.authorizationStatus()
             
             if authStatus == .NotDetermined{
@@ -138,14 +131,30 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
         if updatingLocation{
             stopLocationManager()
         }else{
-            location = nil
-            lastLocationError = nil
-            startLocationManager()
+            online = true
+            centerMapOnLocation(location!)
         }
             configureOnlineButton()
             configureStatusMessage()
   
     }//end go online
+    
+    func configureOnlineButton(){
+        if !online{
+            onlineButton.setTitle("Go Online", forState: .Normal)
+            return
+        }
+        if updatingLocation{
+            onlineButton.setTitle("Stop", forState: .Normal)
+        }
+        else if location != nil{
+            onlineButton.setTitle("Go Offline", forState: .Normal)
+            onlineButton.backgroundColor = UIColor.blueColor()
+            messageLabel.text = "You are now online"
+            mapView.showsUserLocation = true
+        }
+        
+    }
     
     func configureStatusMessage(){
         let statusMessage: String
@@ -170,9 +179,13 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
     
 }//end class
 
+//MARK: - Map View Delegate Functions
+
 extension CurrentLocationViewcontrollerViewController: MKMapViewDelegate{
     func centerMapOnLocation(location:CLLocation){
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * 2, regionRadius * 2)
+        
+        let radiusFactor = online ? 2 : 8
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * Double(radiusFactor), regionRadius * Double(radiusFactor))
         mapView.setRegion(coordinateRegion, animated: true)
     }
     
