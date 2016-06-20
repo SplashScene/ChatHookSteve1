@@ -16,6 +16,7 @@ class IntroViewController: UIViewController {
     @IBOutlet weak var videoView: UIView!
     var emailTextField: MaterialTextField!
     var passwordTextField: MaterialTextField!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -310,9 +311,9 @@ class IntroViewController: UIViewController {
         }//end facebook login handler
     }
     
-//*******************************************************************************************************************************
-//*********************************************** CONSTRAINTS ********************************************************************
-//*******************************************************************************************************************************
+
+//*********************************************** CONSTRAINTS *********************************************
+//*********************************************************************************************************
     
     func facebookLabelConstraints(item: UIView, containerView: UIView){
         let fbLabelCenterYConstraint = NSLayoutConstraint(item: item,
