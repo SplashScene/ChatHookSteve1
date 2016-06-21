@@ -243,12 +243,17 @@ class IntroViewController: UIViewController {
             
                 if error != nil{
                     print(error)
+                    
                     if error!.code == STATUS_ACCOUNT_NONEXIST{
                         print("Inside ACCOUNT DOESN'T EXIST - \(email) and password: \(pwd)")
                         FIRAuth.auth()?.createUserWithEmail(email, password: pwd, completion: { (user, error) in
                            
                             if error != nil{
-                                self.showErrorAlert("Could not create account", msg: "Problem creating account. Try something else")
+                                if error!.code == STATUS_ACCOUNT_WEAKPASSWORD{
+                                    self.showErrorAlert("Weak Password", msg: "The password must be 6 characters long or more.")
+                                }else{
+                                    self.showErrorAlert("Could not create account", msg: "Problem creating account. Try something else")
+                                }
                             }else{
                                 NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
                                 
