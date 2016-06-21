@@ -16,9 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    override init() {
-        Firebase.defaultConfig().persistenceEnabled = true
-    }
+//    override init() {
+//        FIRDatabaseReference.defaultConfig().persistenceEnabled = true
+//    }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -35,6 +35,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let navBarAttributesDictionary:[String: AnyObject]? = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: navBarFont]
             UINavigationBar.appearance().titleTextAttributes = navBarAttributesDictionary
         }
+        
+        FIRApp.configure()
 
         return FBSDKApplicationDelegate.sharedInstance()
             .application(application, didFinishLaunchingWithOptions: launchOptions)

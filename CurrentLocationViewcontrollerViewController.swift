@@ -120,7 +120,7 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
                 }
                 else if location != nil && onlineButton.titleLabel?.text == "Go Offline"{
                     online = false
-                    currentUser.childByAppendingPath("Online").setValue(online)
+                    currentUser.child("Online").setValue(online)
                     configureOnlineButton()
                     centerMapOnLocation(location!)
                 }
@@ -131,9 +131,9 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
     
     func postToFirebase(online: Bool, location: CLLocation){
         let currentUser = DataService.ds.REF_USER_CURRENT
-        currentUser.childByAppendingPath("Online").setValue(online)
-        currentUser.childByAppendingPath("UserLatitude").setValue(location.coordinate.latitude)
-        currentUser.childByAppendingPath("UserLongitude").setValue(location.coordinate.longitude)
+        currentUser.child("Online").setValue(online)
+        currentUser.child("UserLatitude").setValue(location.coordinate.latitude)
+        currentUser.child("UserLongitude").setValue(location.coordinate.longitude)
     }
     
     func startTimerForLocationUpdate(){

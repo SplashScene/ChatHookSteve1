@@ -9,30 +9,30 @@
 import Foundation
 import Firebase
 
-let URL_BASE = "https://chathook.firebaseio.com"
+let URL_BASE = FIRDatabase.database().reference()
 
 class DataService {
     static let ds = DataService()
     
-    private var _REF_BASE = Firebase(url: "\(URL_BASE)")
-    private var _REF_POSTS = Firebase(url: "\(URL_BASE)/posts")
-    private var _REF_USERS = Firebase(url: "\(URL_BASE)/users")
-    private var _REF_MESSAGES = Firebase(url: "\(URL_BASE)/messages")
+    private var _REF_BASE = URL_BASE
+    private var _REF_POSTS = URL_BASE.child("posts")
+    private var _REF_USERS = URL_BASE.child("users")
+    private var _REF_MESSAGES = URL_BASE.child("messages")
     
     
-    var REF_BASE: Firebase{ return _REF_BASE }
-    var REF_POSTS: Firebase{ return _REF_POSTS }
-    var REF_USERS: Firebase{ return _REF_USERS }
-    var REF_MESSAGES: Firebase{ return _REF_MESSAGES }
+    var REF_BASE: FIRDatabaseReference{ return _REF_BASE }
+    var REF_POSTS: FIRDatabaseReference{ return _REF_POSTS }
+    var REF_USERS: FIRDatabaseReference{ return _REF_USERS }
+    var REF_MESSAGES: FIRDatabaseReference{ return _REF_MESSAGES }
     
-    var REF_USER_CURRENT: Firebase{
+    var REF_USER_CURRENT: FIRDatabaseReference{
         let uid = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
-        let user = Firebase(url:"\(URL_BASE)").childByAppendingPath("users").childByAppendingPath(uid)
-        return user!
+        let user = URL_BASE.child("users").child(uid)
+        return user
     }
     
     func createFirebaseUser(uid: String, user: Dictionary<String, String>){
-        REF_USERS.childByAppendingPath(uid).setValue(user)
+        REF_USERS.child(uid).setValue(user)
     }
     
 }

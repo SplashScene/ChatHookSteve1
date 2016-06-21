@@ -16,7 +16,7 @@ class ChatViewController: JSQMessagesViewController {
     var outgoingBubbleImageView: JSQMessagesBubbleImage!
     var incomingBubbleImageView: JSQMessagesBubbleImage!
     
-    var userIsTypingRef: Firebase!
+    var userIsTypingRef: FIRDatabaseReference!
     private var localTyping = false
 //    var isTyping: Bool {
 //        get {
@@ -29,7 +29,7 @@ class ChatViewController: JSQMessagesViewController {
 //        }
 //    }
     
-    var usersTypingQuery: FQuery!
+    var usersTypingQuery: FIRDatabaseQuery!
     
     
     override func viewDidLoad() {
@@ -129,9 +129,9 @@ class ChatViewController: JSQMessagesViewController {
         
         let messagesQuery = DataService.ds.REF_MESSAGES.queryLimitedToLast(25)
         // 2
-        messagesQuery.observeEventType(.ChildAdded) { (snapshot: FDataSnapshot!) in
+        messagesQuery.observeEventType(.ChildAdded) { (snapshot: FIRDataSnapshot!) in
                         // 3
-            if let id = snapshot.value["senderId"], let text = snapshot.value["text"]{
+            if let id = snapshot.value!["senderId"], let text = snapshot.value!["text"]{
                 print("Sender ID is: \(id)")
                 print("Text is: \(text)")
 
@@ -153,13 +153,13 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     private func observeTyping() {
-        let typingIndicatorRef = DataService.ds.REF_BASE.childByAppendingPath("typingIndicator")
-        userIsTypingRef = typingIndicatorRef.childByAppendingPath(senderId)
+        let typingIndicatorRef = DataService.ds.REF_BASE.child("typingIndicator")
+        userIsTypingRef = typingIndicatorRef.child(senderId)
         userIsTypingRef.onDisconnectRemoveValue()
         
         usersTypingQuery = typingIndicatorRef.queryOrderedByValue().queryEqualToValue(true)
         
-        usersTypingQuery.observeEventType(.Value) { (data: FDataSnapshot!) in
+        usersTypingQuery.observeEventType(.Value) { (data: FIRDataSnapshot!) in
             
             // 3 You're the only typing, don't show the indicator
 //            if data.childrenCount == 1 && self.isTyping {

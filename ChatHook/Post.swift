@@ -16,7 +16,7 @@ class Post{
     private var _userName: String!
     private var _profilePic: String!
     private var _postKey: String!
-    private var _postRef: Firebase!
+    private var _postRef: FIRDatabaseReference!
     
     var postDescription: String { return _postDescription }
     var imageURL: String? { return _imageURL }
@@ -57,14 +57,14 @@ class Post{
             self._userName = "AnonymousPoster"
         }
         
-        self._postRef = DataService.ds.REF_POSTS.childByAppendingPath(self._postKey)
+        self._postRef = DataService.ds.REF_POSTS.child(self._postKey)
         
         
     }
     
     func adjustLikes(addLike: Bool){
         _likes = addLike ? _likes + 1 :  _likes - 1
-        _postRef.childByAppendingPath("Likes").setValue(_likes)
+        _postRef.child("Likes").setValue(_likes)
     }
 }
 

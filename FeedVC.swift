@@ -40,10 +40,10 @@ class FeedVC: UIViewController{
         
         currentUser.observeEventType(.Value, withBlock: {
             snapshot in
-            if let myUserName = snapshot.value.objectForKey("UserName"){
+            if let myUserName = snapshot.value!.objectForKey("UserName"){
                 self.currentUserName = myUserName as! String
             }
-            if let myProfilePic = snapshot.value.objectForKey("ProfileImage"){
+            if let myProfilePic = snapshot.value!.objectForKey("ProfileImage"){
                 self.currentProfilePicURL = myProfilePic  as! String
             }
             
@@ -55,7 +55,7 @@ class FeedVC: UIViewController{
             snapshot in
             
             self.postsArray = []
-            if let snapshots = snapshot.children.allObjects as? [FDataSnapshot]{
+            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
                 for snap in snapshots{
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
                         let key = snap.key

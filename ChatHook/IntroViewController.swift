@@ -11,6 +11,8 @@ import AVKit
 import AVFoundation
 import FBSDKLoginKit
 import FBSDKCoreKit
+import Firebase
+
 
 class IntroViewController: UIViewController {
     @IBOutlet weak var videoView: UIView!
@@ -236,28 +238,28 @@ class IntroViewController: UIViewController {
     @IBAction func attemptLogin(sender: UIButton!){
         print("Inside Attempt Login")
         if let email = emailTextField.text where email != "", let pwd = passwordTextField.text where pwd != ""{
-            DataService.ds.REF_BASE.authUser(email, password: pwd, withCompletionBlock: { error, authDatafi in
+//            DataService.ds.REF_BASE.authUser(email, password: pwd, withCompletionBlock: { error, authDatafi in
+            FIRAuth.auth()?.signInWithEmail(email, password: pwd, completion: {(user, error) in
+            
                 if error != nil{
                     print(error)
-                    if error.code == STATUS_ACCOUNT_NONEXIST{
+                    if error!.code == STATUS_ACCOUNT_NONEXIST{
                         print("Inside ACCOUNT DOESN'T EXIST - \(email) and password: \(pwd)")
-                        DataService.ds.REF_BASE.createUser(email, password: pwd, withValueCompletionBlock: { error, result in
+                        FIRAuth.auth()?.createUserWithEmail(email, password: pwd, completion: { (user, error) in
+                           
                             if error != nil{
                                 self.showErrorAlert("Could not create account", msg: "Problem creating account. Try something else")
                             }else{
-                                NSUserDefaults.standardUserDefaults().setValue(result[KEY_UID], forKey: KEY_UID)
+                                NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
                                 
-                                DataService.ds.REF_BASE.authUser(email, password: pwd, withCompletionBlock: {
-                                    err, authData in
-                                    
-                                    let user = ["provider": authData.provider!, "UserName": "AnonymousPoster", "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
-                                    DataService.ds.createFirebaseUser(authData.uid, user: user)
-                                })
+                                    let userData = ["provider": "email", "UserName": "AnonymousPoster", "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
+                                    DataService.ds.createFirebaseUser(user!.uid, user: userData)
+                                
                                 self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
                                 
                             }
                         })
-                    } else if error.code == STATUS_ACCOUNT_WRONGPASSWORD{
+                    } else if error!.code == STATUS_ACCOUNT_WRONGPASSWORD{
                         self.showErrorAlert("Incorrect Password", msg: "The password that you entered does not match the one we have for your email address")
                     }
                 } else {
@@ -294,16 +296,18 @@ class IntroViewController: UIViewController {
                 let accessToken = FBSDKAccessToken.currentAccessToken().tokenString
                 print("Successfully logged in with facebook. \(accessToken)")
                 
-                DataService.ds.REF_BASE.authWithOAuthProvider("facebook", token: accessToken, withCompletionBlock: { error, authData in
+                let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
+                FIRAuth.auth()?.signInWithCredential(credential, completion: { (user, error) in
+                    
                     if error != nil {
                         print("Login Failed. \(error)")
                     }else{
-                        print("Logged In! \(authData)")
+                        print("Logged In! \(user)")
                         
-                        let user = ["provider": authData.provider!, "UserName": "AnonymousPoster", "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
-                        DataService.ds.createFirebaseUser(authData.uid, user: user)
+                        let userData = ["provider": credential.provider, "UserName": "AnonymousPoster", "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
+                        DataService.ds.createFirebaseUser(user!.uid, user: userData)
                         
-                        NSUserDefaults.standardUserDefaults().setValue(authData.uid, forKey: KEY_UID)
+                        NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
                         //self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
                     }//end else
                 })//end withCompletionBlock
