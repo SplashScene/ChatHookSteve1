@@ -49,8 +49,6 @@ class FeedVC: UIViewController{
             
         })
         
-        
-        
         DataService.ds.REF_POSTS.observeEventType(.Value, withBlock: {
             snapshot in
             

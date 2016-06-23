@@ -38,7 +38,7 @@
         <!--Chat-->
         <scene sceneID="gYn-U6-9FF">
             <objects>
-                <viewController id="pHp-wk-JIK" customClass="ChatViewController" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="pHp-wk-JIK" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="oAq-sB-4e9"/>
                         <viewControllerLayoutGuide type="bottom" id="sPc-r7-9yd"/>

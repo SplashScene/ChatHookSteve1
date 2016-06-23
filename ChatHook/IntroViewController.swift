@@ -22,7 +22,6 @@ class IntroViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.setupView()
     }
     
@@ -303,7 +302,6 @@ class IntroViewController: UIViewController {
                 
                 let credential = FIRFacebookAuthProvider.credentialWithAccessToken(FBSDKAccessToken.currentAccessToken().tokenString)
                 FIRAuth.auth()?.signInWithCredential(credential, completion: { (user, error) in
-                    
                     if error != nil {
                         print("Login Failed. \(error)")
                     }else{

@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import CoreLocation
+import Firebase
 
 class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationManagerDelegate {
 
@@ -33,12 +34,11 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
         super.viewDidLoad()
         self.mapView.delegate = self
         self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
     }
-    
     
     //MARK: - CLLocationManagerDelegate
     
@@ -84,11 +84,11 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
     }
     
     func stopLocationManager(){
-        if updatingLocation{
+        print("Inside Stop Location Manager")
             locationManager.stopUpdatingLocation()
             locationManager.delegate = nil
             updatingLocation = false
-        }
+        
         
     }
     
@@ -117,16 +117,25 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
                     centerMapOnLocation(location!)
                     configureOnlineButton()
                     postToFirebase(online, location: location!)
+                    stopLocationManager()
+                    startTimerForLocationUpdate()
                 }
                 else if location != nil && onlineButton.titleLabel?.text == "Go Offline"{
+                    timer.invalidate()
                     online = false
                     currentUser.child("Online").setValue(online)
                     configureOnlineButton()
                     centerMapOnLocation(location!)
+                    let firebaseAuth = FIRAuth.auth()
+                    do{
+                        try firebaseAuth?.signOut()
+                    }catch let signOutError as NSError{
+                        print("Error signing out: \(signOutError)")
+                    }
                 }
         }//end switch
         
-        startTimerForLocationUpdate()
+        
     }//end go online
     
     func postToFirebase(online: Bool, location: CLLocation){
