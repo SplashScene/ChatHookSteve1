@@ -92,6 +92,7 @@ let IMAGESHACK_API_KEY = "79DFGHIQadc4d7cdf7cc6bb81f0bc1cbac0b7237"
 
 //segues
 let SEGUE_LOGGED_IN = "loggedIn"
+let SEGUE_REGISTER = "register"
 
 //Status Codes
 let STATUS_ACCOUNT_NONEXIST = 17011

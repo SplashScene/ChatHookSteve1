@@ -256,10 +256,10 @@ class IntroViewController: UIViewController {
                             }else{
                                 NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
                                 
-                                    let userData = ["provider": "email", "UserName": "AnonymousPoster", "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
+                                    let userData = ["provider": "email", "UserName": "AnonymousPoster","email":self.emailTextField.text!, "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
                                     DataService.ds.createFirebaseUser(user!.uid, user: userData)
                                 
-                                self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
+                                self.performSegueWithIdentifier(SEGUE_REGISTER, sender: nil)
                                 
                             }
                         })
@@ -282,15 +282,15 @@ class IntroViewController: UIViewController {
         alert.addAction(action)
         presentViewController(alert, animated: true, completion: nil)
     }
-    /*
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        super.prepareForSegue(segue, sender: sender)
-        let navVc = segue.destinationViewController as! UINavigationController // 1
-        let chatVc = navVc.viewControllers.first as! ChatViewController // 2
-        chatVc.senderId = DataService.ds.REF_BASE.authData.uid // 3
-        chatVc.senderDisplayName = "" // 4
+        if segue.identifier == "register"{
+            let registerVC = segue.destinationViewController as! RegisterVC
+            registerVC.emailAddress = emailTextField.text
+            registerVC.password = passwordTextField.text
+        }
     }
-    */
+ 
     func fbButtonPressed(sender:UIButton!){
         let facebookLogin = FBSDKLoginManager()
         facebookLogin.logInWithReadPermissions(["email","public_profile"], fromViewController: nil) { (facebookResult: FBSDKLoginManagerLoginResult!, facebookError: NSError!) -> Void in
