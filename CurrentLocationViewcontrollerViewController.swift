@@ -38,6 +38,8 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
         self.mapView.showsUserLocation = true
+        
+        print(DataService.ds.REF_BASE)
     }
     
     //MARK: - CLLocationManagerDelegate
@@ -119,6 +121,7 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
                     postToFirebase(online, location: location!)
                     stopLocationManager()
                     startTimerForLocationUpdate()
+                    performSegueWithIdentifier("online", sender: nil)
                 }
                 else if location != nil && onlineButton.titleLabel?.text == "Go Offline"{
                     timer.invalidate()
@@ -199,7 +202,7 @@ class CurrentLocationViewcontrollerViewController: UIViewController, CLLocationM
 
 extension CurrentLocationViewcontrollerViewController: MKMapViewDelegate{
     func centerMapOnLocation(location:CLLocation){
-        let radiusFactor = online ? 2 : 8
+        let radiusFactor = 2
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * Double(radiusFactor), regionRadius * Double(radiusFactor))
         mapView.setRegion(coordinateRegion, animated: true)
     }

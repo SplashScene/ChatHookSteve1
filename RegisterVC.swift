@@ -227,6 +227,7 @@ extension RegisterVC{
                         currentUserTags.child("tag\(i)").setValue(self.tags![i])
                     }
                 print("The number of tags in the tags array is: \(tags.count)")
+                self.performSegueWithIdentifier("registered", sender: nil)
                 
         }//end .responseJSON
     }//end func downloadTags
