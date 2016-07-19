@@ -48,9 +48,7 @@ class PublicRoom{
             self._roomName = "Kendall's House of Horrors"
         }
         
-        self._postRef = DataService.ds.REF_USERS.child(self._postKey)
-        
-        
+        self._postRef = DataService.ds.REF_USERS.child(self._postKey)   
     }
     
    

@@ -31,11 +31,7 @@ class PublicRoomCell: UITableViewCell {
     func configureCell(post: PublicRoom){
         
         self.post = post
-        print("The self post userName is: \(post.userName)")
-        print("The pic image is: \(post.profilePic)")
-        print("The room name is: \(post.roomName)")
-        print("Inside Configure Cell the user name is \(post.userName)")
-        
+    
         self.userName.text = post.userName
         self.roomName.text = post.roomName
         

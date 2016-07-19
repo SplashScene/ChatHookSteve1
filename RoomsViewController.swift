@@ -55,8 +55,6 @@ class RoomsViewController: UITableViewController {
             }
             self.tableView.reloadData()
         })
-
-
     }
 
     func promptForAddRoom(){
@@ -69,21 +67,21 @@ class RoomsViewController: UITableViewController {
         }
         ac.addAction(submitAction)
         presentViewController(ac, animated: true, completion: nil)
-
     }
     
     func postToFirebase(roomName: String?){
-        //let currentUserName: String!
         
-        let post: Dictionary<String, String> = ["RoomName": roomName!,
-                                                "Author": currentUserName,
-                                                "AuthorPic": currentProfilePicURL
-                                                ]
-
-        let firebasePost = DataService.ds.REF_CHATROOMS.childByAutoId()
-        firebasePost.setValue(post)
-
-        tableView.reloadData()
+        if let unwrappedRoomName = roomName{
+            let post: Dictionary<String, String> = ["RoomName": unwrappedRoomName,
+                                                    "Author": currentUserName,
+                                                    "AuthorPic": currentProfilePicURL
+                                                    ]
+            
+            let firebasePost = DataService.ds.REF_CHATROOMS.childByAutoId()
+            firebasePost.setValue(post)
+            
+            tableView.reloadData()
+        }
         
     }
     
@@ -92,13 +90,11 @@ class RoomsViewController: UITableViewController {
         
         if let cell = tableView.dequeueReusableCellWithIdentifier("RoomCell") as? PublicRoomCell{
             cell.request?.cancel()
-            
             cell.configureCell(post)
             return cell
         }else{
-            return PostCell()
+            return PublicRoomCell()
         }
-        
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -110,13 +106,11 @@ class RoomsViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        
         return tableView.estimatedRowHeight
-        
     }
 
 
-}
+}//end RoomsViewController
 
 
     
