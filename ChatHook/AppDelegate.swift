@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //UINavigationBar.appearance().translucent = true
         
         if let navBarFont = UIFont(name: FONT_AVENIR_MEDIUM, size: 18.0){
-            let navBarAttributesDictionary:[String: AnyObject]? = [NSForegroundColorAttributeName: UIColor.whiteColor(), NSFontAttributeName: navBarFont]
+            let navBarAttributesDictionary:[String: AnyObject]? = [NSForegroundColorAttributeName: UIColor.blackColor(), NSFontAttributeName: navBarFont]
             UINavigationBar.appearance().titleTextAttributes = navBarAttributesDictionary
         }
         

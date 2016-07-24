@@ -47,7 +47,8 @@ class RoomsViewController: UITableViewController {
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
                         let key = snap.key
                         let post = PublicRoom(postKey: key, dictionary: postDict)
-                        self.roomsArray.append(post)
+                        //self.roomsArray.append(post)
+                        self.roomsArray.insert(post, atIndex: 0)
                         print("Added to ROOM array")
                         print("The ROOM NAME IS: \(post.roomName)")
                     }
@@ -81,6 +82,7 @@ class RoomsViewController: UITableViewController {
             firebasePost.setValue(post)
             
             tableView.reloadData()
+            
         }
         
     }

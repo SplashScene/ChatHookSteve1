@@ -39,7 +39,7 @@
         <!--Home-->
         <scene sceneID="pOd-pf-SOg">
             <objects>
-                <viewController id="GAC-qx-OHZ" customClass="CurrentLocationViewcontrollerViewController" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CurrentLocationViewController" id="GAC-qx-OHZ" customClass="CurrentLocationViewcontrollerViewController" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="cyK-kp-3zs"/>
                         <viewControllerLayoutGuide type="bottom" id="Q7E-z4-PfI"/>
@@ -301,12 +301,163 @@
                         <outlet property="txtFullName" destination="2CI-rZ-0zh" id="U1E-Kq-uvC"/>
                         <outlet property="txtPassword" destination="13u-Mm-N1m" id="lHH-VJ-eFQ"/>
                         <outlet property="txtUserName" destination="vC8-c3-71m" id="fV9-He-KEZ"/>
-                        <segue destination="GAC-qx-OHZ" kind="show" identifier="registered" id="3Nv-gx-rSW"/>
+                        <segue destination="8Nb-6O-pv8" kind="show" identifier="registered" id="yNk-Kv-I4y"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y7c-n7-Kc6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-340" y="501"/>
+        </scene>
+        <!--Tutorial-->
+        <scene sceneID="mIe-OB-kGr">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="eM9-nf-uWG" customClass="TutorialPageViewController" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" title="Tutorial" id="VT9-mO-wYD">
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="iRr-6f-3zj">
+                            <connections>
+                                <action selector="doneButtonTapped:" destination="eM9-nf-uWG" id="zBz-m8-s8a"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4zv-1D-bCf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="477" y="1178"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="2Rr-Nh-AKu">
+            <objects>
+                <viewController storyboardIdentifier="Tutorial1" useStoryboardIdentifierAsRestorationIdentifier="YES" id="317-PS-7JL" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6ir-ca-pe7"/>
+                        <viewControllerLayoutGuide type="bottom" id="V6e-wi-gLJ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8Sj-7U-jai">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Tutorial1" translatesAutoresizingMaskIntoConstraints="NO" id="tmP-cW-boO">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tutorial 1 Copy" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="llZ-XV-HTe">
+                                <rect key="frame" x="20" y="273" width="560" height="54"/>
+                                <color key="backgroundColor" red="0.69587361879999998" green="0.066544515240000005" blue="0.073133842520000006" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="560" id="Cgd-sD-eTI"/>
+                                    <constraint firstAttribute="height" constant="54" id="VLU-cw-lSv"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Baskerville" family="Baskerville" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="llZ-XV-HTe" firstAttribute="centerY" secondItem="8Sj-7U-jai" secondAttribute="centerY" id="1OW-XB-V4B"/>
+                            <constraint firstAttribute="trailing" secondItem="tmP-cW-boO" secondAttribute="trailing" id="F4b-Z2-vwG"/>
+                            <constraint firstItem="tmP-cW-boO" firstAttribute="leading" secondItem="8Sj-7U-jai" secondAttribute="leading" id="nMx-Rr-G1H"/>
+                            <constraint firstItem="llZ-XV-HTe" firstAttribute="centerX" secondItem="8Sj-7U-jai" secondAttribute="centerX" id="tMM-HU-HTD"/>
+                            <constraint firstItem="V6e-wi-gLJ" firstAttribute="top" secondItem="tmP-cW-boO" secondAttribute="bottom" id="wh2-d1-11i"/>
+                            <constraint firstItem="tmP-cW-boO" firstAttribute="top" secondItem="8Sj-7U-jai" secondAttribute="top" id="znk-Wp-2au"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wz3-dU-qPx" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-592" y="1861"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="7oN-XR-JO6">
+            <objects>
+                <viewController storyboardIdentifier="Tutorial2" useStoryboardIdentifierAsRestorationIdentifier="YES" id="au9-Dt-2eg" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="H9O-YL-dnq"/>
+                        <viewControllerLayoutGuide type="bottom" id="hv0-5D-HL7"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3za-eE-cTQ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tutorial4" translatesAutoresizingMaskIntoConstraints="NO" id="Bl5-Jo-nVO">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tutorial 2 Copy" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="93G-me-nOu">
+                                <rect key="frame" x="20" y="273" width="560" height="54"/>
+                                <color key="backgroundColor" red="0.69587361879999998" green="0.066544515240000005" blue="0.073133842520000006" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="560" id="oHD-MR-d2s"/>
+                                    <constraint firstAttribute="height" constant="54" id="xyv-Xa-cjJ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Baskerville" family="Baskerville" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="93G-me-nOu" firstAttribute="centerY" secondItem="3za-eE-cTQ" secondAttribute="centerY" id="MJc-47-ppI"/>
+                            <constraint firstItem="93G-me-nOu" firstAttribute="centerX" secondItem="3za-eE-cTQ" secondAttribute="centerX" id="VC6-c2-L6q"/>
+                            <constraint firstItem="Bl5-Jo-nVO" firstAttribute="top" secondItem="3za-eE-cTQ" secondAttribute="top" id="YAW-Ng-AQg"/>
+                            <constraint firstItem="hv0-5D-HL7" firstAttribute="top" secondItem="Bl5-Jo-nVO" secondAttribute="bottom" id="ZG0-fn-FVD"/>
+                            <constraint firstAttribute="trailing" secondItem="Bl5-Jo-nVO" secondAttribute="trailing" id="pT7-Hw-wWN"/>
+                            <constraint firstItem="Bl5-Jo-nVO" firstAttribute="leading" secondItem="3za-eE-cTQ" secondAttribute="leading" id="uje-Xn-AnT"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dP3-l8-iWf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="36" y="1857"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="Vex-2A-RHU">
+            <objects>
+                <viewController storyboardIdentifier="Tutorial3" useStoryboardIdentifierAsRestorationIdentifier="YES" id="uD0-Iz-4Z9" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Uvp-NH-owx"/>
+                        <viewControllerLayoutGuide type="bottom" id="nFY-R5-Tje"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="pT7-aY-Owx">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Tutorial3" translatesAutoresizingMaskIntoConstraints="NO" id="HxG-gr-pi1">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tutorial 3 Copy" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A59-1x-WzI">
+                                <rect key="frame" x="20" y="273" width="560" height="54"/>
+                                <color key="backgroundColor" red="0.69587361879999998" green="0.066544515240000005" blue="0.073133842520000006" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="54" id="Z6h-3V-S05"/>
+                                    <constraint firstAttribute="width" constant="560" id="jCd-7o-9tR"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Baskerville" family="Baskerville" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HVq-FY-OVC" customClass="MaterialButton" customModule="ChatHook" customModuleProvider="target">
+                                <rect key="frame" x="502" y="528" width="46" height="30"/>
+                                <state key="normal" title="Got It"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="HxG-gr-pi1" secondAttribute="trailing" id="4Cq-pX-STT"/>
+                            <constraint firstItem="HxG-gr-pi1" firstAttribute="top" secondItem="pT7-aY-Owx" secondAttribute="top" id="GeP-Fp-CuJ"/>
+                            <constraint firstItem="nFY-R5-Tje" firstAttribute="top" secondItem="HVq-FY-OVC" secondAttribute="bottom" constant="42" id="eRe-Aq-IZG"/>
+                            <constraint firstItem="A59-1x-WzI" firstAttribute="centerX" secondItem="pT7-aY-Owx" secondAttribute="centerX" id="ggL-5I-JBh"/>
+                            <constraint firstItem="HxG-gr-pi1" firstAttribute="leading" secondItem="pT7-aY-Owx" secondAttribute="leading" id="k1L-vS-H9X"/>
+                            <constraint firstItem="nFY-R5-Tje" firstAttribute="top" secondItem="HxG-gr-pi1" secondAttribute="bottom" id="kSI-iG-jlf"/>
+                            <constraint firstItem="A59-1x-WzI" firstAttribute="centerY" secondItem="pT7-aY-Owx" secondAttribute="centerY" id="le5-bi-Qbx"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="HVq-FY-OVC" secondAttribute="trailing" constant="32" id="xZC-qQ-N3O"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <segue destination="bza-sj-vmh" kind="show" identifier="postTutorial" id="tm7-XC-dCM"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="If7-7r-Zff" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="653" y="1854"/>
         </scene>
         <!--Peeps-->
         <scene sceneID="2bx-0K-6id">
@@ -518,7 +669,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V7C-b4-7Gd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1875" y="1026"/>
+            <point key="canvasLocation" x="1877" y="902"/>
         </scene>
         <!--Chat-->
         <scene sceneID="LPN-jm-foU">
@@ -537,17 +688,38 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Iz6-sB-okz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1063" y="1026"/>
+            <point key="canvasLocation" x="1175" y="891"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="AHR-Qt-c5h">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="8Nb-6O-pv8" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="9xt-Jc-gFV">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="eM9-nf-uWG" kind="relationship" relationship="rootViewController" id="dUB-dZ-PXV"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Pff-LT-iGh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-335" y="1178"/>
         </scene>
     </scenes>
     <resources>
         <image name="ChatIcon25" width="25" height="25"/>
         <image name="GlobeIcon25" width="25" height="25"/>
+        <image name="Tutorial1" width="450" height="450"/>
+        <image name="Tutorial3" width="600" height="600"/>
         <image name="cameraIcon" width="256" height="256"/>
         <image name="peeps" width="30" height="30"/>
         <image name="registerBackScreen" width="1433" height="1356"/>
+        <image name="tutorial4" width="450" height="300"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="raj-MQ-2MT"/>
+        <segue reference="4Iz-7T-u3T"/>
     </inferredMetricsTieBreakers>
 </document>
