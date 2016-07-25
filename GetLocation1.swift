@@ -116,7 +116,13 @@ extension GetLocation1: CLLocationManagerDelegate{
             userLocation = CLLocation(latitude: 41.92413, longitude: -88.161242)
         }
     }
-}
+    
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == .AuthorizedAlways || status == .AuthorizedWhenInUse{
+            locationManager?.requestLocation()
+        }
+    }
+}//end extension
 
 //MARK: - Map View Delegate Functions
 

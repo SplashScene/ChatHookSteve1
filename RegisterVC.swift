@@ -236,7 +236,10 @@ extension RegisterVC{
                         if self.tags![i] == "brunette"{
                             self.currentUser.child("HairColor").setValue("brunette")
                         }
-                        if self.tags![i] == "causcasian"{
+                        if self.tags![i] == "blond"{
+                            self.currentUser.child("HairColor").setValue("blond")
+                        }
+                        if self.tags![i] == "caucasian"{
                             self.currentUser.child("Ethnicity").setValue("caucasian")
                         }
                     }

@@ -33,7 +33,7 @@ class TutorialPageViewController: UIPageViewController {
     }
 
     @IBAction func doneButtonTapped(sender: AnyObject) {
-        let nextView:CurrentLocationViewcontrollerViewController = self.storyboard?.instantiateViewControllerWithIdentifier("CurrentLocationViewController") as! CurrentLocationViewcontrollerViewController
+        let nextView = self.storyboard?.instantiateViewControllerWithIdentifier("ChatHookTabBar") as! UITabBarController
         
         let appdelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         
