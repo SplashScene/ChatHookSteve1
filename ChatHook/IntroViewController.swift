@@ -267,6 +267,7 @@ class IntroViewController: UIViewController {
                         self.showErrorAlert("Incorrect Password", msg: "The password that you entered does not match the one we have for your email address")
                     }
                 } else {
+                    NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID) //set only to allow different signins
                     self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
                 }
             })

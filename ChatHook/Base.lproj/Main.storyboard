@@ -39,7 +39,7 @@
         <!--Home-->
         <scene sceneID="pOd-pf-SOg">
             <objects>
-                <viewController storyboardIdentifier="CurrentLocationViewController" id="GAC-qx-OHZ" customClass="CurrentLocationViewcontrollerViewController" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CurrentLocationViewController" id="GAC-qx-OHZ" customClass="GetLocation1" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="cyK-kp-3zs"/>
                         <viewControllerLayoutGuide type="bottom" id="Q7E-z4-PfI"/>

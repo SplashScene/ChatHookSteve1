@@ -16,7 +16,7 @@ class PostCell: UITableViewCell {
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var profileImg: UIImageView!
     
-    var post: Post!
+    var user: User!
     var request: Request?
     var likeRef: FIRDatabaseReference!
     
@@ -27,14 +27,9 @@ class PostCell: UITableViewCell {
     }
     
     
-    func configureCell(post: Post){
+    func configureCell(post: User){
         
-        self.post = post
-        print("The self post userName is: \(post.userName)")
-        print("The pic image is: \(post.profilePic)")
-
-        print("Inside Configure Cell the user name is \(post.userName)")
-        
+        self.user = post
             self.userName.text = post.userName
         
             request = Alamofire.request(.GET, post.profilePic).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in

@@ -24,6 +24,8 @@ class RegisterVC: UIViewController {
     private var tags: [String]?
     private var _userPicLink: String?
     
+    let currentUser = DataService.ds.REF_USER_CURRENT
+    
     var emailAddress:String? = ""
     var password:String? = ""
  
@@ -225,8 +227,20 @@ extension RegisterVC{
                 let currentUserTags = DataService.ds.REF_USER_CURRENT.child("tags")
                     for i in 0..<self.tags!.count{
                         currentUserTags.child("tag\(i)").setValue(self.tags![i])
+                        if self.tags![i] == "female" || self.tags![i] == "women" || self.tags![i] == "lady"{
+                            self.currentUser.child("Gender").setValue("female")
+                        }
+                        if self.tags![i] == "man" || self.tags![i] == "men" || self.tags![i] == "male" || self.tags![i] == "guy" {
+                            self.currentUser.child("Gender").setValue("male")
+                        }
+                        if self.tags![i] == "brunette"{
+                            self.currentUser.child("HairColor").setValue("brunette")
+                        }
+                        if self.tags![i] == "causcasian"{
+                            self.currentUser.child("Ethnicity").setValue("caucasian")
+                        }
                     }
-                print("The number of tags in the tags array is: \(tags.count)")
+                //print("The number of tags in the tags array is: \(tags.count)")
                 self.performSegueWithIdentifier("registered", sender: nil)       
         }//end .responseJSON
     }//end func downloadTags

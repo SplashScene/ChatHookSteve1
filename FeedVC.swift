@@ -18,9 +18,7 @@ class FeedVC: UIViewController{
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
     
-   
-    
-    var postsArray = [Post]()
+    var usersArray:[User] = []
     static var imageCache = NSCache()
     
     var postedImage: UIImage?
@@ -37,6 +35,7 @@ class FeedVC: UIViewController{
         
         tableView.estimatedRowHeight = 65
         let currentUser = DataService.ds.REF_USER_CURRENT
+        //let refUsers = DataService.ds.REF_USERS.queryOrderedByChild("Online").queryEqualToValue("true")
         
         currentUser.observeEventType(.Value, withBlock: {
             snapshot in
@@ -49,25 +48,23 @@ class FeedVC: UIViewController{
             
         })
         
-        DataService.ds.REF_USERS.observeEventType(.Value, withBlock: {
+        DataService.ds.REF_USERS.queryOrderedByChild("Online").observeEventType(.Value, withBlock: {
             snapshot in
             
-            self.postsArray = []
+            self.usersArray = []
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
                 for snap in snapshots{
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
                         let key = snap.key
-                        let post = Post(postKey: key, dictionary: postDict)
-                        self.postsArray.append(post)
-                        print("Added to post array")
+                        let post = User(postKey: key, dictionary: postDict)
+                        self.usersArray.append(post)
+                        //print("Added to post array")
                     }
                 }
             }
             self.tableView.reloadData()
-            for i in 0...(self.postsArray.count-1){
-                print("The profile Image of the user is: \(self.postsArray[i].profilePic) - Kevin")
-            }
         })
+        
     }
     
 }//end class
@@ -76,7 +73,8 @@ class FeedVC: UIViewController{
 extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let post = postsArray[indexPath.row]
+        
+        let post = usersArray[indexPath.row]
         
         if let cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as? PostCell{
             cell.request?.cancel()
@@ -94,7 +92,8 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return postsArray.count
+        print("The count of the USER array is: \(usersArray.count)")
+        return usersArray.count
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

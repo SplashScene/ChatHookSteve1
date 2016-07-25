@@ -15,6 +15,8 @@
 		8472896C1D3E989E007E82DB /* TutorialPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */; };
 		84A28BE21CF89706004615DB /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A28BE11CF89706004615DB /* ChatViewController.swift */; };
 		84A9DB8C1D45702C00842B50 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9DB8B1D45702C00842B50 /* User.swift */; };
+		84A9DB901D46725200842B50 /* MyHouse.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 84A9DB8F1D46725200842B50 /* MyHouse.gpx */; };
+		84A9DB921D46B63F00842B50 /* GetLocation1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9DB911D46B63F00842B50 /* GetLocation1.swift */; };
 		84B9AB1E1CE225780002B132 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB1D1CE225780002B132 /* AppDelegate.swift */; };
 		84B9AB201CE225780002B132 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B9AB1F1CE225780002B132 /* IntroViewController.swift */; };
 		84B9AB231CE225780002B132 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84B9AB211CE225780002B132 /* Main.storyboard */; };
@@ -51,6 +53,8 @@
 		8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialPageViewController.swift; sourceTree = "<group>"; };
 		84A28BE11CF89706004615DB /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		84A9DB8B1D45702C00842B50 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		84A9DB8F1D46725200842B50 /* MyHouse.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MyHouse.gpx; sourceTree = "<group>"; };
+		84A9DB911D46B63F00842B50 /* GetLocation1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetLocation1.swift; sourceTree = "<group>"; };
 		84B9AB1A1CE225780002B132 /* ChatHook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatHook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84B9AB1D1CE225780002B132 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		84B9AB1F1CE225780002B132 /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IntroViewController.swift; path = ChatHook/IntroViewController.swift; sourceTree = "<group>"; };
@@ -147,6 +151,7 @@
 				84B9AB261CE225780002B132 /* LaunchScreen.storyboard */,
 				84B9AB291CE225780002B132 /* Info.plist */,
 				842F00A71D18625600398793 /* GoogleService-Info.plist */,
+				84A9DB8F1D46725200842B50 /* MyHouse.gpx */,
 			);
 			path = ChatHook;
 			sourceTree = "<group>";
@@ -162,6 +167,7 @@
 				847289611D3D48F7007E82DB /* RoomsViewController.swift */,
 				847289631D3D490F007E82DB /* Example.swift */,
 				8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */,
+				84A9DB911D46B63F00842B50 /* GetLocation1.swift */,
 			);
 			name = Controllers;
 			path = ..;
@@ -281,6 +287,7 @@
 				84B9AB401CE23A6F0002B132 /* introVideo.mov in Resources */,
 				842F00A81D18625600398793 /* GoogleService-Info.plist in Resources */,
 				84B9AB251CE225780002B132 /* Assets.xcassets in Resources */,
+				84A9DB901D46725200842B50 /* MyHouse.gpx in Resources */,
 				84B9AB231CE225780002B132 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -351,6 +358,7 @@
 				84B9AB201CE225780002B132 /* IntroViewController.swift in Sources */,
 				84B9AB1E1CE225780002B132 /* AppDelegate.swift in Sources */,
 				84B9AB3B1CE233100002B132 /* Constants.swift in Sources */,
+				84A9DB921D46B63F00842B50 /* GetLocation1.swift in Sources */,
 				84B9AB441CE264FE0002B132 /* MaterialTextField.swift in Sources */,
 				847289681D3E6481007E82DB /* PublicRoomCell.swift in Sources */,
 				84F45A541D1C339B003F9367 /* RegisterVC.swift in Sources */,
