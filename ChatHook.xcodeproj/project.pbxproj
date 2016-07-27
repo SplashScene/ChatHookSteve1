@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		842F00A81D18625600398793 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 842F00A71D18625600398793 /* GoogleService-Info.plist */; };
 		847289621D3D48F7007E82DB /* RoomsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289611D3D48F7007E82DB /* RoomsViewController.swift */; };
-		847289641D3D490F007E82DB /* Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289631D3D490F007E82DB /* Example.swift */; };
 		847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289651D3E62A0007E82DB /* PublicRoom.swift */; };
 		847289681D3E6481007E82DB /* PublicRoomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289671D3E6481007E82DB /* PublicRoomCell.swift */; };
 		8472896C1D3E989E007E82DB /* TutorialPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */; };
@@ -47,7 +46,6 @@
 		1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatHook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		842F00A71D18625600398793 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		847289611D3D48F7007E82DB /* RoomsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomsViewController.swift; sourceTree = "<group>"; };
-		847289631D3D490F007E82DB /* Example.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Example.swift; sourceTree = "<group>"; };
 		847289651D3E62A0007E82DB /* PublicRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoom.swift; sourceTree = "<group>"; };
 		847289671D3E6481007E82DB /* PublicRoomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoomCell.swift; sourceTree = "<group>"; };
 		8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialPageViewController.swift; sourceTree = "<group>"; };
@@ -165,7 +163,6 @@
 				84C8CC881D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift */,
 				84F45A531D1C339B003F9367 /* RegisterVC.swift */,
 				847289611D3D48F7007E82DB /* RoomsViewController.swift */,
-				847289631D3D490F007E82DB /* Example.swift */,
 				8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */,
 				84A9DB911D46B63F00842B50 /* GetLocation1.swift */,
 			);
@@ -351,7 +348,6 @@
 				84B9AB381CE2326F0002B132 /* DataService.swift in Sources */,
 				84B9AB3D1CE235D30002B132 /* ImaggaRouter.swift in Sources */,
 				847289621D3D48F7007E82DB /* RoomsViewController.swift in Sources */,
-				847289641D3D490F007E82DB /* Example.swift in Sources */,
 				84D6878B1CF3799700944D1E /* MaterialView.swift in Sources */,
 				8472896C1D3E989E007E82DB /* TutorialPageViewController.swift in Sources */,
 				84B9AB421CE256610002B132 /* MaterialButton.swift in Sources */,
