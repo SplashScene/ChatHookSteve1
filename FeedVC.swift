@@ -97,9 +97,11 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        
         return tableView.estimatedRowHeight
-        
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        performSegueWithIdentifier("GoToChatPost", sender: nil)
     }
     
 }//end extension
