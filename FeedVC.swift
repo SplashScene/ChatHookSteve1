@@ -24,6 +24,8 @@ class FeedVC: UIViewController{
     var postedImage: UIImage?
     var currentUserName: String!
     var currentProfilePicURL: String!
+    var currentUserUID: String!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +38,7 @@ class FeedVC: UIViewController{
         tableView.estimatedRowHeight = 65
         let currentUser = DataService.ds.REF_USER_CURRENT
         //let refUsers = DataService.ds.REF_USERS.queryOrderedByChild("Online").queryEqualToValue("true")
-        
+        currentUserUID = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
         currentUser.observeEventType(.Value, withBlock: {
             snapshot in
             if let myUserName = snapshot.value!.objectForKey("UserName"){
@@ -45,7 +47,6 @@ class FeedVC: UIViewController{
             if let myProfilePic = snapshot.value!.objectForKey("ProfileImage"){
                 self.currentProfilePicURL = myProfilePic  as! String
             }
-            
         })
         
         DataService.ds.REF_USERS.queryOrderedByChild("Online").observeEventType(.Value, withBlock: {
@@ -101,7 +102,16 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        performSegueWithIdentifier("GoToChatPost", sender: nil)
+        performSegueWithIdentifier("ChatChat", sender: nil)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "ChatChat"{
+            print("The current USERID is: \(currentUserUID)")
+            let privateChatVC = segue.destinationViewController as! ChatViewController
+            privateChatVC.senderId = currentUserUID
+            privateChatVC.senderDisplayName = currentUserName
+        }
     }
     
 }//end extension

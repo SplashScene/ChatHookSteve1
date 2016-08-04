@@ -166,7 +166,7 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
             var img: UIImage?
             
             if let url = post.imageURL{
-                img = PostVC.imageCache.objectForKey(url) as? UIImage
+                img = PostsVC.imageCache.objectForKey(url) as? UIImage
             }
             
             cell.configureCell(post, img: img)

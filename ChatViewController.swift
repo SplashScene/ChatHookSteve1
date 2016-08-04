@@ -11,7 +11,7 @@ import Firebase
 import JSQMessagesViewController
 
 class ChatViewController: JSQMessagesViewController {
-    
+ 
     var messages = [JSQMessage]()
     var outgoingBubbleImageView: JSQMessagesBubbleImage!
     var incomingBubbleImageView: JSQMessagesBubbleImage!
@@ -172,5 +172,5 @@ class ChatViewController: JSQMessagesViewController {
         }
         
     }
-    
+   
 }

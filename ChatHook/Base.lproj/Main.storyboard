@@ -605,12 +605,31 @@
                         <outlet property="activityIndicatorView" destination="EI2-Ay-zfG" id="k1R-5z-Qic"/>
                         <outlet property="progressView" destination="hvM-fx-0gE" id="zU1-6S-pEp"/>
                         <outlet property="tableView" destination="aLZ-ys-Rtc" id="hOU-Ew-WhW"/>
+                        <segue destination="9ZE-Ls-cxS" kind="show" identifier="ChatChat" id="NGI-OW-JeV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Uax-Sq-a1r" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="as7-dx-5B8"/>
             </objects>
-            <point key="canvasLocation" x="579" y="231"/>
+            <point key="canvasLocation" x="440" y="367"/>
+        </scene>
+        <!--Chat View Controller-->
+        <scene sceneID="vqm-16-crk">
+            <objects>
+                <viewController id="9ZE-Ls-cxS" customClass="ChatViewController" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="xPM-gT-3qf"/>
+                        <viewControllerLayoutGuide type="bottom" id="4VZ-ga-ug1"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="YiE-fP-srr">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="55X-zT-NTa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="438" y="1019"/>
         </scene>
         <!--Rooms View Controller-->
         <scene sceneID="NoE-6w-seg">
@@ -682,7 +701,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V7C-b4-7Gd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1877" y="902"/>
+            <point key="canvasLocation" x="1241" y="933"/>
         </scene>
         <!--Chat-->
         <scene sceneID="LPN-jm-foU">
