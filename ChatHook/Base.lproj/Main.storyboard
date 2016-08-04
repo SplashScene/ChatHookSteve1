@@ -129,7 +129,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="GAC-qx-OHZ" kind="relationship" relationship="viewControllers" id="pu9-2V-xAE"/>
-                        <segue destination="yR8-nn-Fti" kind="relationship" relationship="viewControllers" id="RdO-YW-WaI"/>
+                        <segue destination="6rp-lb-pap" kind="relationship" relationship="viewControllers" id="RdO-YW-WaI"/>
                         <segue destination="Swr-Y1-UTm" kind="relationship" relationship="viewControllers" id="JKZ-NN-kKz"/>
                     </connections>
                 </tabBarController>
@@ -471,7 +471,7 @@
             </objects>
             <point key="canvasLocation" x="242" y="1837"/>
         </scene>
-        <!--Peeps-->
+        <!--FeedVC-->
         <scene sceneID="2bx-0K-6id">
             <objects>
                 <viewController id="yR8-nn-Fti" customClass="FeedVC" customModule="ChatHook" customModuleProvider="target" sceneMemberID="viewController">
@@ -600,7 +600,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Peeps" image="peeps" id="W9g-PX-Pp7"/>
+                    <navigationItem key="navigationItem" id="ExO-pZ-gbb"/>
                     <connections>
                         <outlet property="activityIndicatorView" destination="EI2-Ay-zfG" id="k1R-5z-Qic"/>
                         <outlet property="progressView" destination="hvM-fx-0gE" id="zU1-6S-pEp"/>
@@ -611,7 +611,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Uax-Sq-a1r" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="as7-dx-5B8"/>
             </objects>
-            <point key="canvasLocation" x="440" y="367"/>
+            <point key="canvasLocation" x="1252" y="367"/>
         </scene>
         <!--Chat View Controller-->
         <scene sceneID="vqm-16-crk">
@@ -701,7 +701,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V7C-b4-7Gd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1241" y="933"/>
+            <point key="canvasLocation" x="2053" y="933"/>
         </scene>
         <!--Chat-->
         <scene sceneID="LPN-jm-foU">
@@ -720,7 +720,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Iz6-sB-okz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1241" y="255"/>
+            <point key="canvasLocation" x="2053" y="255"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="AHR-Qt-c5h">
@@ -987,6 +987,25 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1877" y="1558"/>
+        </scene>
+        <!--Peeps-->
+        <scene sceneID="KPk-aX-55Z">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="6rp-lb-pap" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Peeps" image="peeps" id="W9g-PX-Pp7"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="iVD-5C-GSK">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="yR8-nn-Fti" kind="relationship" relationship="rootViewController" id="b0p-w4-0wg"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0zh-7o-wYO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="440" y="367"/>
         </scene>
     </scenes>
     <resources>
