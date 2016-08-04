@@ -38,15 +38,17 @@ class FeedVC: UIViewController{
         tableView.estimatedRowHeight = 65
         let currentUser = DataService.ds.REF_USER_CURRENT
         //let refUsers = DataService.ds.REF_USERS.queryOrderedByChild("Online").queryEqualToValue("true")
-        currentUserUID = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
+        
         currentUser.observeEventType(.Value, withBlock: {
             snapshot in
+            self.currentUserUID = snapshot.key
             if let myUserName = snapshot.value!.objectForKey("UserName"){
                 self.currentUserName = myUserName as! String
             }
             if let myProfilePic = snapshot.value!.objectForKey("ProfileImage"){
                 self.currentProfilePicURL = myProfilePic  as! String
             }
+            
         })
         
         DataService.ds.REF_USERS.queryOrderedByChild("Online").observeEventType(.Value, withBlock: {
@@ -57,8 +59,8 @@ class FeedVC: UIViewController{
                 for snap in snapshots{
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
                         let key = snap.key
-                        let post = User(postKey: key, dictionary: postDict)
-                        self.usersArray.append(post)
+                        let user = User(postKey: key, dictionary: postDict)
+                        self.usersArray.append(user)
                         //print("Added to post array")
                     }
                 }
