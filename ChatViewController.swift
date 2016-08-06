@@ -19,16 +19,16 @@ class ChatViewController: JSQMessagesViewController {
     
     var userIsTypingRef: FIRDatabaseReference!
     private var localTyping = false
-    var isTyping: Bool {
-        get {
-            return localTyping
-        }
-        set {
-            // 3
-            localTyping = newValue
-            userIsTypingRef.setValue(newValue)
-        }
-    }
+//    var isTyping: Bool {
+//        get {
+//            return localTyping
+//        }
+//        set {
+//            // 3
+////            localTyping = newValue
+////            userIsTypingRef.setValue(newValue)
+//        }
+//    }
     
     var usersTypingQuery: FIRDatabaseQuery!
     
@@ -94,7 +94,7 @@ class ChatViewController: JSQMessagesViewController {
     override func textViewDidChange(textView: UITextView) {
         super.textViewDidChange(textView)
         // If the text is not empty, the user is typing
-        isTyping = textView.text != ""
+       // isTyping = textView.text != ""
     }
     
     func addMessage(id: String, text: String) {
@@ -125,7 +125,7 @@ class ChatViewController: JSQMessagesViewController {
         
         finishSendingMessage()
         
-        isTyping = false
+        ///isTyping = false
     }
     
     private func observeMessages() {
@@ -153,9 +153,9 @@ class ChatViewController: JSQMessagesViewController {
         usersTypingQuery.observeEventType(.Value) { (data: FIRDataSnapshot!) in
             
             // 3 You're the only typing, don't show the indicator
-            if data.childrenCount == 1 && self.isTyping {
-                return
-            }
+//            if data.childrenCount == 1 && self.isTyping {
+//                return
+//            }
             
             // 4 Are there others typing?
             self.showTypingIndicator = data.childrenCount > 0
