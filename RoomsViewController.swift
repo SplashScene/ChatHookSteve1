@@ -47,10 +47,9 @@ class RoomsViewController: UITableViewController {
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
                         let key = snap.key
                         let post = PublicRoom(postKey: key, dictionary: postDict)
-                        //self.roomsArray.append(post)
                         self.roomsArray.insert(post, atIndex: 0)
-                        print("Added to ROOM array")
-                        print("The ROOM NAME IS: \(post.roomName)")
+//                        print("Added to ROOM array")
+//                        print("The ROOM NAME IS: \(post.roomName)")
                     }
                 }
             }
@@ -59,14 +58,15 @@ class RoomsViewController: UITableViewController {
     }
 
     func promptForAddRoom(){
-        let ac = UIAlertController(title: "Enter Room Name", message: nil, preferredStyle: .Alert)
-        ac.addTextFieldWithConfigurationHandler(nil)
-        
-        let submitAction = UIAlertAction(title: "Submit", style: .Default){[unowned self, ac](action: UIAlertAction!) in
-            let roomName = ac.textFields![0]
-            self.postToFirebase(roomName.text!)
+        let ac = UIAlertController(title: "Enter Room Name", message: "What is the name of your public room?", preferredStyle: .Alert)
+        ac.addTextFieldWithConfigurationHandler{ (textField: UITextField) in
+            textField.placeholder = "You Room Name"
         }
-        ac.addAction(submitAction)
+        
+        ac.addAction(UIAlertAction(title: "Submit", style: .Default){[unowned self, ac](action: UIAlertAction!) in
+                let roomName = ac.textFields![0]
+                self.postToFirebase(roomName.text!)
+            })
         presentViewController(ac, animated: true, completion: nil)
     }
     
