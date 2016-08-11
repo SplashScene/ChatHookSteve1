@@ -15,11 +15,12 @@ class PostCell: UITableViewCell {
     
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var profileImg: UIImageView!
+    @IBOutlet weak var distanceLabel: UILabel!
+    
     
     var user: User!
     var request: Request?
     var likeRef: FIRDatabaseReference!
-    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,8 +28,7 @@ class PostCell: UITableViewCell {
     }
     
     
-    func configureCell(post: User){
-        
+    func configureCell(post: User, distance: String){
         self.user = post
             self.userName.text = post.userName
         
@@ -36,7 +36,7 @@ class PostCell: UITableViewCell {
             if err == nil {
                 let img = UIImage(data: data!)!
                 self.profileImg.image = img
-                
+                self.distanceLabel.text = distance
             }// end if err
         })//end completion handler
         

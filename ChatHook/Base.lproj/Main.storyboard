@@ -512,12 +512,12 @@
                                                     <rect key="frame" x="8" y="8" width="544" height="53"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Anything" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j1Z-km-zYM">
-                                                            <rect key="frame" x="61" y="8" width="363" height="37"/>
+                                                            <rect key="frame" x="61" y="4" width="363" height="25"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="363" id="sXU-7V-zma"/>
-                                                                <constraint firstAttribute="height" constant="37" id="ykl-kG-6vg"/>
+                                                                <constraint firstAttribute="height" constant="25" id="ykl-kG-6vg"/>
                                                             </constraints>
-                                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                                                             <color key="textColor" red="0.69587361879999998" green="0.066544515240000005" blue="0.073133842520000006" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
@@ -528,15 +528,33 @@
                                                                 <constraint firstAttribute="height" constant="45" id="Z2c-ok-La3"/>
                                                             </constraints>
                                                         </imageView>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JZX-5c-SIe">
+                                                            <rect key="frame" x="61" y="32" width="214" height="21"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="21" id="BoP-kC-zR2"/>
+                                                                <constraint firstAttribute="width" constant="214" id="Ynq-Ml-G0g"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" name="HelveticaNeue-LightItalic" family="Helvetica Neue" pointSize="15"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
+                                                        <constraint firstItem="JZX-5c-SIe" firstAttribute="leading" secondItem="lrx-Aa-IF4" secondAttribute="trailing" constant="8" id="HwH-Rm-vbs"/>
                                                         <constraint firstItem="lrx-Aa-IF4" firstAttribute="leading" secondItem="0pE-lV-KQ4" secondAttribute="leading" constant="8" id="Qrd-lL-lvd"/>
-                                                        <constraint firstItem="j1Z-km-zYM" firstAttribute="top" secondItem="0pE-lV-KQ4" secondAttribute="top" constant="8" id="Tsl-fq-bkq"/>
+                                                        <constraint firstItem="j1Z-km-zYM" firstAttribute="top" secondItem="0pE-lV-KQ4" secondAttribute="top" constant="4" id="Tsl-fq-bkq"/>
+                                                        <constraint firstItem="JZX-5c-SIe" firstAttribute="top" secondItem="0pE-lV-KQ4" secondAttribute="top" constant="8" id="aec-2V-N5c"/>
                                                         <constraint firstItem="lrx-Aa-IF4" firstAttribute="centerY" secondItem="0pE-lV-KQ4" secondAttribute="centerY" id="lEU-Ad-UJp"/>
                                                         <constraint firstItem="j1Z-km-zYM" firstAttribute="leading" secondItem="0pE-lV-KQ4" secondAttribute="leading" constant="61" id="lUf-jE-lug"/>
+                                                        <constraint firstAttribute="bottom" secondItem="JZX-5c-SIe" secondAttribute="bottom" constant="4" id="peS-DF-yqD"/>
                                                         <constraint firstAttribute="width" constant="544" id="rce-Uc-zyO"/>
                                                     </constraints>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="aec-2V-N5c"/>
+                                                        </mask>
+                                                    </variation>
                                                 </view>
                                             </subviews>
                                             <constraints>
@@ -551,6 +569,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" red="0.90196078430000004" green="0.90196078430000004" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
+                                            <outlet property="distanceLabel" destination="JZX-5c-SIe" id="Mlu-Pw-UIf"/>
                                             <outlet property="profileImg" destination="lrx-Aa-IF4" id="TU6-1Z-q7H"/>
                                             <outlet property="userName" destination="j1Z-km-zYM" id="d34-G3-fA7"/>
                                         </connections>

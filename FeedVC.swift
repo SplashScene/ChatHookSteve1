@@ -11,6 +11,7 @@
 import UIKit
 import Firebase
 import Alamofire
+import CoreLocation
 
 class FeedVC: UIViewController{
     
@@ -25,6 +26,7 @@ class FeedVC: UIViewController{
     var currentUserName: String!
     var currentProfilePicURL: String!
     var currentUserUID: String!
+    var currentUserLocation: CLLocation!
     
     
     override func viewDidLoad() {
@@ -42,13 +44,14 @@ class FeedVC: UIViewController{
         currentUser.observeEventType(.Value, withBlock: {
             snapshot in
             self.currentUserUID = snapshot.key
-            if let myUserName = snapshot.value!.objectForKey("UserName"){
-                self.currentUserName = myUserName as! String
+            if let myUserName = snapshot.value!.objectForKey("UserName"),
+               let myProfilePic = snapshot.value!.objectForKey("ProfileImage"),
+               let userLat = snapshot.value!.objectForKey("UserLatitude"),
+               let userLong = snapshot.value?.objectForKey("UserLongitude"){
+                    self.currentUserName = myUserName as! String
+                    self.currentProfilePicURL = myProfilePic  as! String
+                    self.currentUserLocation = CLLocation(latitude: userLat as! Double, longitude: userLong as! Double)
             }
-            if let myProfilePic = snapshot.value!.objectForKey("ProfileImage"){
-                self.currentProfilePicURL = myProfilePic  as! String
-            }
-            
         })
         
         DataService.ds.REF_USERS.queryOrderedByChild("Online").observeEventType(.Value, withBlock: {
@@ -61,7 +64,6 @@ class FeedVC: UIViewController{
                         let key = snap.key
                         let user = User(postKey: key, dictionary: postDict)
                         self.usersArray.append(user)
-                        //print("Added to post array")
                     }
                 }
             }
@@ -79,10 +81,15 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
         
         let post = usersArray[indexPath.row]
         
+        let distanceInMeters = currentUserLocation.distanceFromLocation(post.location)
+        let distanceInMiles = (distanceInMeters / 1000) * 0.62137
+        let stringDistance = String(format: "%.2f", distanceInMiles)
+        let passedString = "\(stringDistance) miles away"
+        
         if let cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as? PostCell{
             cell.request?.cancel()
             
-            cell.configureCell(post)
+            cell.configureCell(post, distance: passedString)
             return cell
         }else{
             return PostCell()
