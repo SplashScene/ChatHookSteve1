@@ -53,8 +53,21 @@ class FeedVC: UIViewController{
                     self.currentUserLocation = CLLocation(latitude: userLat as! Double, longitude: userLong as! Double)
             }
         })
+        /*
+         let typingIndicatorRef = DataService.ds.REF_BASE.child("typingIndicator")
+         userIsTypingRef = typingIndicatorRef.child(senderId)
+         userIsTypingRef.onDisconnectRemoveValue()
+         
+         usersTypingQuery = typingIndicatorRef.queryOrderedByValue().queryEqualToValue(true)
+         
+         usersTypingQuery.observeEventType(.Value) { (data: FIRDataSnapshot!) in
+
+ 
+        let userRef = DataService.ds.REF_USERS
+        let userOnlineRef = userRef.child("Online")
+        let usersOnline = userOnlineRef.queryOrderedByValue().queryEqualToValue(true)
         
-        DataService.ds.REF_USERS.queryOrderedByChild("Online").observeEventType(.Value, withBlock: {
+        usersOnline.observeEventType(.Value, withBlock: {
             snapshot in
             
             self.usersArray = []
@@ -69,7 +82,27 @@ class FeedVC: UIViewController{
             }
             self.tableView.reloadData()
         })
-        
+ */
+
+        DataService.ds.REF_USERS.queryOrderedByChild("Online").observeEventType(.Value, withBlock: {
+            snapshot in
+            
+            self.usersArray = []
+            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
+                for snap in snapshots{
+                    if let postDict = snap.value as? Dictionary<String, AnyObject>{
+                        let online = postDict["Online"] as! Bool
+                            if online{
+                                let key = snap.key
+                                let user = User(postKey: key, dictionary: postDict)
+                                self.usersArray.append(user)
+                            }
+                    }
+                }
+            }
+            self.tableView.reloadData()
+        })
+      
     }
     
 }//end class
