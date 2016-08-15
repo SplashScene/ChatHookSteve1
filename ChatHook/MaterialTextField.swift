@@ -22,7 +22,8 @@ class MaterialTextField: UITextField {
         layer.borderWidth = 1.0
         layer.backgroundColor = TEXTFIELD_BACKGROUND_COLOR.CGColor
         textColor = UIColor.darkGrayColor()
-        font = UIFont(name: "FONT_ANENIR_LIGHT", size: 14.0)   
+        font = UIFont(name: "FONT_ANENIR_LIGHT", size: 14.0)
+        autocapitalizationType = .None
     }
 
     

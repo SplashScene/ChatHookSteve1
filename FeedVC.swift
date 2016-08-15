@@ -27,6 +27,8 @@ class FeedVC: UIViewController{
     var currentProfilePicURL: String!
     var currentUserUID: String!
     var currentUserLocation: CLLocation!
+    var messageUserName: String?
+    var messageProfilePicURL: String?
     
     
     override func viewDidLoad() {
@@ -44,23 +46,24 @@ class FeedVC: UIViewController{
     
     func getCurrentUser(){
         let currentUser = DataService.ds.REF_USER_CURRENT
-        //let refUsers = DataService.ds.REF_USERS.queryOrderedByChild("Online").queryEqualToValue("true")
         
         currentUser.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            self.currentUserUID = snapshot.key
-                if let myUserName = snapshot.value!.objectForKey("UserName"),
-                    let myProfilePic = snapshot.value!.objectForKey("ProfileImage"),
-                    let userLat = snapshot.value!.objectForKey("UserLatitude"),
-                    let userLong = snapshot.value?.objectForKey("UserLongitude"){
-                    self.currentUserName = myUserName as! String
-                    self.currentProfilePicURL = myProfilePic  as! String
-                    self.currentUserLocation = CLLocation(latitude: userLat as! Double, longitude: userLong as! Double)
+            if let dictionary = snapshot.value as? [String: AnyObject]{
+                self.currentUserUID = snapshot.key
+                if let myUserName = dictionary["UserName"] as? String,
+                    let myProfilePic = dictionary["ProfileImage"] as? String,
+                    let userLat = dictionary["UserLatitude"] as? Double,
+                    let userLong = dictionary["UserLongitude"] as? Double{
+                        self.currentUserName = myUserName
+                        self.currentProfilePicURL = myProfilePic
+                        self.currentUserLocation = CLLocation(latitude: userLat, longitude: userLong)
                 }
-            }, withCancelBlock: nil)
-    }
+            }
+        }, withCancelBlock: nil)
+    }//end getCurrentUser
     
     func getAllUsersOnline(){
-        DataService.ds.REF_USERS.queryOrderedByChild("Online").observeEventType(.Value, withBlock: {
+        DataService.ds.REF_USERS.observeEventType(.Value, withBlock: {
             snapshot in
             
             self.usersArray = []
@@ -88,16 +91,12 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let post = usersArray[indexPath.row]
-        
-        let distanceInMeters = currentUserLocation.distanceFromLocation(post.location)
-        let distanceInMiles = (distanceInMeters / 1000) * 0.62137
-        let stringDistance = String(format: "%.2f", distanceInMiles)
-        let passedString = "\(stringDistance) miles away"
+        let distanceString = calculateDistance(post.location)
         
         if let cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as? PostCell{
             cell.request?.cancel()
             
-            cell.configureCell(post, distance: passedString)
+            cell.configureCell(post, distance: distanceString)
             return cell
         }else{
             return PostCell()
@@ -118,6 +117,9 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let messageUser = usersArray[indexPath.row]
+        messageUserName = messageUser.userName
+        messageProfilePicURL = messageUser.profilePic
         performSegueWithIdentifier("ChatChat", sender: nil)
     }
     
@@ -125,9 +127,19 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
         if segue.identifier == "ChatChat"{
             //print("The current USERID is: \(currentUserUID)")
             let privateChatVC = segue.destinationViewController as! ChatViewController
-            privateChatVC.senderId = currentUserUID
-            privateChatVC.senderDisplayName = currentUserName
+                privateChatVC.senderId = currentUserUID
+                privateChatVC.senderDisplayName = currentUserName
+                privateChatVC.messageUserName = self.messageUserName
+                privateChatVC.messageProfilePicURL = self.messageProfilePicURL
         }
+    }
+    
+    func calculateDistance(otherLocation: CLLocation) -> String {
+        let distanceInMeters = currentUserLocation.distanceFromLocation(otherLocation)
+        let distanceInMiles = (distanceInMeters / 1000) * 0.62137
+        let stringDistance = String(format: "%.2f", distanceInMiles)
+        let passedString = "\(stringDistance) miles away"
+        return passedString
     }
     
 }//end extension

@@ -15,6 +15,8 @@ class ChatViewController: JSQMessagesViewController {
     var messages = [JSQMessage]()
     var outgoingBubbleImageView: JSQMessagesBubbleImage!
     var incomingBubbleImageView: JSQMessagesBubbleImage!
+    var messageUserName: String!
+    var messageProfilePicURL: String!
     
     
     var userIsTypingRef: FIRDatabaseReference!
@@ -24,9 +26,8 @@ class ChatViewController: JSQMessagesViewController {
             return localTyping
         }
         set {
-            // 3
-//            localTyping = newValue
-//            userIsTypingRef.setValue(newValue)
+            localTyping = newValue
+            userIsTypingRef.setValue(newValue)
         }
     }
     
@@ -35,13 +36,14 @@ class ChatViewController: JSQMessagesViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+            title = messageUserName
 //        title = "ChatHook"
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 38, height: 38))
-        imageView.contentMode = .ScaleAspectFit
-        let titleImage = UIImage(named: "profile")
-        imageView.image = titleImage
-        imageView.layer.cornerRadius = 10
-        self.navigationItem.titleView = imageView
+//        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 38, height: 38))
+//        imageView.contentMode = .ScaleAspectFit
+//        let titleImage = UIImage(named: "profile")
+//        imageView.image = titleImage
+//        imageView.layer.cornerRadius = 10
+//        self.navigationItem.titleView = imageView
         setupBubbles()
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
