@@ -35,55 +35,31 @@ class FeedVC: UIViewController{
         tableView.dataSource = self
         progressView.hidden = true
         activityIndicatorView.hidden = true
-        
-        
         tableView.estimatedRowHeight = 65
+        
+        getCurrentUser()
+        getAllUsersOnline()
+        
+    }
+    
+    func getCurrentUser(){
         let currentUser = DataService.ds.REF_USER_CURRENT
         //let refUsers = DataService.ds.REF_USERS.queryOrderedByChild("Online").queryEqualToValue("true")
         
-        currentUser.observeEventType(.Value, withBlock: {
-            snapshot in
+        currentUser.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             self.currentUserUID = snapshot.key
-            if let myUserName = snapshot.value!.objectForKey("UserName"),
-               let myProfilePic = snapshot.value!.objectForKey("ProfileImage"),
-               let userLat = snapshot.value!.objectForKey("UserLatitude"),
-               let userLong = snapshot.value?.objectForKey("UserLongitude"){
+                if let myUserName = snapshot.value!.objectForKey("UserName"),
+                    let myProfilePic = snapshot.value!.objectForKey("ProfileImage"),
+                    let userLat = snapshot.value!.objectForKey("UserLatitude"),
+                    let userLong = snapshot.value?.objectForKey("UserLongitude"){
                     self.currentUserName = myUserName as! String
                     self.currentProfilePicURL = myProfilePic  as! String
                     self.currentUserLocation = CLLocation(latitude: userLat as! Double, longitude: userLong as! Double)
-            }
-        })
-        /*
-         let typingIndicatorRef = DataService.ds.REF_BASE.child("typingIndicator")
-         userIsTypingRef = typingIndicatorRef.child(senderId)
-         userIsTypingRef.onDisconnectRemoveValue()
-         
-         usersTypingQuery = typingIndicatorRef.queryOrderedByValue().queryEqualToValue(true)
-         
-         usersTypingQuery.observeEventType(.Value) { (data: FIRDataSnapshot!) in
-
- 
-        let userRef = DataService.ds.REF_USERS
-        let userOnlineRef = userRef.child("Online")
-        let usersOnline = userOnlineRef.queryOrderedByValue().queryEqualToValue(true)
-        
-        usersOnline.observeEventType(.Value, withBlock: {
-            snapshot in
-            
-            self.usersArray = []
-            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
-                for snap in snapshots{
-                    if let postDict = snap.value as? Dictionary<String, AnyObject>{
-                        let key = snap.key
-                        let user = User(postKey: key, dictionary: postDict)
-                        self.usersArray.append(user)
-                    }
                 }
-            }
-            self.tableView.reloadData()
-        })
- */
-
+            }, withCancelBlock: nil)
+    }
+    
+    func getAllUsersOnline(){
         DataService.ds.REF_USERS.queryOrderedByChild("Online").observeEventType(.Value, withBlock: {
             snapshot in
             
@@ -92,17 +68,16 @@ class FeedVC: UIViewController{
                 for snap in snapshots{
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
                         let online = postDict["Online"] as! Bool
-                            if online{
-                                let key = snap.key
-                                let user = User(postKey: key, dictionary: postDict)
-                                self.usersArray.append(user)
-                            }
+                        if online{
+                            let key = snap.key
+                            let user = User(postKey: key, dictionary: postDict)
+                            self.usersArray.append(user)
+                        }
                     }
                 }
             }
             self.tableView.reloadData()
         })
-      
     }
     
 }//end class
@@ -135,7 +110,6 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("The count of the USER array is: \(usersArray.count)")
         return usersArray.count
     }
     
@@ -149,7 +123,7 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ChatChat"{
-            print("The current USERID is: \(currentUserUID)")
+            //print("The current USERID is: \(currentUserUID)")
             let privateChatVC = segue.destinationViewController as! ChatViewController
             privateChatVC.senderId = currentUserUID
             privateChatVC.senderDisplayName = currentUserName

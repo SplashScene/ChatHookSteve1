@@ -107,7 +107,6 @@ class IntroViewController: UIViewController {
     
     func createViews(containerView: UIView!){
         
-        
         let facebookView = UIView()
             facebookView.translatesAutoresizingMaskIntoConstraints = false
             facebookView.alpha = 0.0
@@ -126,8 +125,6 @@ class IntroViewController: UIViewController {
         
             facebookLogoConstraints(fbLogo, containerView: facebookView)
         
-        
-        
         let fbLabel = UILabel()
             fbLabel.translatesAutoresizingMaskIntoConstraints = false
             fbLabel.text = "Login With Facebook"
@@ -135,7 +132,6 @@ class IntroViewController: UIViewController {
             fbLabel.backgroundColor = UIColor.clearColor()
             fbLabel.textColor = UIColor.blueColor()
             fbLabel.sizeToFit()
-            
             fbLabel.textAlignment = NSTextAlignment.Center
 
         facebookView.addSubview(fbLabel)
@@ -225,27 +221,23 @@ class IntroViewController: UIViewController {
                                                  loginView.alpha = 0.75},
                                    completion: nil)
     }
-    
-    func signInButtonPressed(sender:UIButton!){
-        print("Let's Sign In")
-    }
-    
-    func registerButtonPressed(sender:UIButton!){
-        print("Let's Register")
-    }
-    
+        
     @IBAction func attemptLogin(sender: UIButton!){
         print("Inside Attempt Login")
-        if let email = emailTextField.text where email != "", let pwd = passwordTextField.text where pwd != ""{
-//            DataService.ds.REF_BASE.authUser(email, password: pwd, withCompletionBlock: { error, authDatafi in
-            FIRAuth.auth()?.signInWithEmail(email, password: pwd, completion: {(user, error) in
+        
+        guard let email = emailTextField.text, password = passwordTextField.text else {
+            showErrorAlert("Email and Password Required", msg: "You must enter an email and password to login")
+            return
+        }
+    
+            FIRAuth.auth()?.signInWithEmail(email, password: password, completion: {(user, error) in
             
                 if error != nil{
                     print(error)
                     
                     if error!.code == STATUS_ACCOUNT_NONEXIST{
-                        print("Inside ACCOUNT DOESN'T EXIST - \(email) and password: \(pwd)")
-                        FIRAuth.auth()?.createUserWithEmail(email, password: pwd, completion: { (user, error) in
+                        print("Inside ACCOUNT DOESN'T EXIST - \(email) and password: \(password)")
+                        FIRAuth.auth()?.createUserWithEmail(email, password: password, completion: { (user, error) in
                            
                             if error != nil{
                                 if error!.code == STATUS_ACCOUNT_WEAKPASSWORD{
@@ -256,7 +248,10 @@ class IntroViewController: UIViewController {
                             }else{
                                 NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
                                 
-                                    let userData = ["provider": "email", "UserName": "AnonymousPoster","email":self.emailTextField.text!, "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
+                                    let userData = ["provider": "email",
+                                                    "UserName": "AnonymousPoster",
+                                                    "email": email,
+                                                    "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
                                     DataService.ds.createFirebaseUser(user!.uid, user: userData)
                                 
                                 self.performSegueWithIdentifier(SEGUE_REGISTER, sender: nil)
@@ -267,14 +262,11 @@ class IntroViewController: UIViewController {
                         self.showErrorAlert("Incorrect Password", msg: "The password that you entered does not match the one we have for your email address")
                     }
                 } else {
-                    NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID) //set only to allow different signins
+                    //set only to allow different signins
+                    NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
                     self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
                 }
             })
-            
-        }else{
-            showErrorAlert("Email and Password Required", msg: "You must enter an email and password to login")
-        }
     }
     
     func showErrorAlert(title: String, msg: String){
@@ -308,7 +300,9 @@ class IntroViewController: UIViewController {
                     }else{
                         print("Logged In! \(user)")
                         
-                        let userData = ["provider": credential.provider, "UserName": "AnonymousPoster", "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
+                        let userData = ["provider": credential.provider,
+                                        "UserName": "AnonymousPoster",
+                                        "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
                         DataService.ds.createFirebaseUser(user!.uid, user: userData)
                         
                         NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
