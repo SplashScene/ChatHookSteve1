@@ -40,6 +40,7 @@
 		84D687871CF3717F00944D1E /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D687861CF3717F00944D1E /* Post.swift */; };
 		84D687891CF371BA00944D1E /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D687881CF371BA00944D1E /* PostCell.swift */; };
 		84D6878B1CF3799700944D1E /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6878A1CF3799700944D1E /* MaterialView.swift */; };
+		84DA2AED1D6349CA00B3861B /* Register1VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DA2AEC1D6349CA00B3861B /* Register1VC.swift */; };
 		84F45A541D1C339B003F9367 /* RegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F45A531D1C339B003F9367 /* RegisterVC.swift */; };
 		AB40F2A6C892CB8D250BC87E /* Pods_ChatHook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */; };
 /* End PBXBuildFile section */
@@ -82,6 +83,7 @@
 		84D687861CF3717F00944D1E /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		84D687881CF371BA00944D1E /* PostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		84D6878A1CF3799700944D1E /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
+		84DA2AEC1D6349CA00B3861B /* Register1VC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Register1VC.swift; sourceTree = "<group>"; };
 		84F45A531D1C339B003F9367 /* RegisterVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterVC.swift; sourceTree = "<group>"; };
 		9E4A6D1C186F9E739AC106F1 /* Pods-ChatHook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatHook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatHook/Pods-ChatHook.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -180,6 +182,7 @@
 				8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */,
 				84A9DB911D46B63F00842B50 /* GetLocation1.swift */,
 				8437C26B1D50D5E400C5CF59 /* PostsVC.swift */,
+				84DA2AEC1D6349CA00B3861B /* Register1VC.swift */,
 			);
 			name = Controllers;
 			path = ..;
@@ -369,6 +372,7 @@
 				84D6878B1CF3799700944D1E /* MaterialView.swift in Sources */,
 				8472896C1D3E989E007E82DB /* TutorialPageViewController.swift in Sources */,
 				84B9AB421CE256610002B132 /* MaterialButton.swift in Sources */,
+				84DA2AED1D6349CA00B3861B /* Register1VC.swift in Sources */,
 				84B9AB201CE225780002B132 /* IntroViewController.swift in Sources */,
 				84B9AB1E1CE225780002B132 /* AppDelegate.swift in Sources */,
 				84B9AB3B1CE233100002B132 /* Constants.swift in Sources */,

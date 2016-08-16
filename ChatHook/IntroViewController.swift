@@ -194,6 +194,7 @@ class IntroViewController: UIViewController {
         
             passwordTextField.translatesAutoresizingMaskIntoConstraints = false
             passwordTextField.placeholder = "password"
+            passwordTextField.secureTextEntry = true
         
         loginView.addSubview(passwordTextField)
         
@@ -250,10 +251,10 @@ class IntroViewController: UIViewController {
                                 
                                     let userData = ["provider": "email",
                                                     "UserName": "AnonymousPoster",
-                                                    "Online": "False",
+                                                    "Online": false,
                                                     "email": email,
                                                     "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
-                                    DataService.ds.createFirebaseUser(user!.uid, user: userData)
+                                    DataService.ds.createFirebaseUser(user!.uid, user: userData as! Dictionary<String, AnyObject>)
                                 
                                 self.performSegueWithIdentifier(SEGUE_REGISTER, sender: nil)
                                 

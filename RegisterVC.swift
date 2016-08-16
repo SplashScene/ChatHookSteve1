@@ -39,14 +39,7 @@ class RegisterVC: UIViewController {
             txtEmailAddress.text = email
             txtPassword.text = pwd
         }
-//        btnRegister.enabled = false
-        
 
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     @IBAction func cameraButtonTapped(sender: UIButton) {
@@ -54,44 +47,54 @@ class RegisterVC: UIViewController {
     }
 
     @IBAction func registerButtonTapped(sender: UIButton) {
-        if let userName = txtUserName.text where userName != "",
-           let fullName = txtFullName.text where fullName != "",
-           let email = txtEmailAddress.text where email != "",
-           let pwd = txtPassword.text where pwd != "",
-           let picLink = _userPicLink where picLink != ""{
-            
+        
+        guard let userName = txtUserName.text where userName != "",
+               let fullName = txtFullName.text where fullName != "",
+               let email = txtEmailAddress.text where email != "",
+               let pwd = txtPassword.text where pwd != "" else { return }
+        
             btnRegister.enabled = true
             imgCameraIcon.hidden = true
             progressView.progress = 0.0
             progressView.hidden = false
             activityIndicator.hidden = false
             activityIndicator.startAnimating()
-            
-            uploadImaggaImage(self.imgProfilePic.image!,
-                              progress: {[unowned self] percent in
-                                self.progressView.setProgress(percent, animated: true)
-                },
-                              completion: {[unowned self] tags in
-                                
-                                self.progressView.hidden = true
-                                self.activityIndicator.stopAnimating()
-                                self.activityIndicator.hidden = true
-                                self.tags = tags
-                })
-            
-            postRegisteredUserToFirebase(picLink)
+        
+        
+        let imageName = NSUUID().UUIDString
+        let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).png")
+        
+        if let uploadData = UIImagePNGRepresentation(self.imgProfilePic.image!){
+            storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
+                if error != nil{
+                    print(error.debugDescription)
+                    return
+                }
+                if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
+                    let values = ["UserName": userName,
+                                  "email":email,
+                                  "ProfileImage": profileImageUrl,
+                                  "FullName": fullName]
+                    self.postRegisteredUserToFirebase(values, progress: {[unowned self] percent in
+                        self.progressView.setProgress(percent, animated: true)
+                        })
+                }
+            })
         }
-    }
+}
 
     @IBAction func cancelButtonTapped(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func postRegisteredUserToFirebase(picLink:String){
-        let currentUser = DataService.ds.REF_USER_CURRENT
-        currentUser.child("UserName").setValue(txtUserName.text)
-        currentUser.child("FullName").setValue(txtFullName.text)
-        currentUser.child("ProfileImage").setValue(picLink)
+    func postRegisteredUserToFirebase(values:[String: String], progress: (percent: Float) -> Void){
+        currentUser.child("UserName").setValue(values["UserName"])
+        currentUser.child("FullName").setValue(values["FullName"])
+        currentUser.child("ProfileImage").setValue(values["ProfileImage"])
+        self.progressView.hidden = true
+        self.activityIndicator.stopAnimating()
+        self.activityIndicator.hidden = true
+        self.performSegueWithIdentifier("registered", sender: nil)
     }
     
     func showErrorAlert(title: String, msg: String){
@@ -103,210 +106,22 @@ class RegisterVC: UIViewController {
 
 }
 
-extension RegisterVC{
-    func handleRegister(){
-        guard let email = txtEmailAddress.text, password = txtPassword.text, name = txtUserName.text else { return }
-        FIRAuth.auth()?.createUserWithEmail(email, password: password) {(user: FIRUser?, error) in
-            if error != nil {
-                print(error?.description)
-                return
-            }
-            
-            guard let uid = user?.uid else { return }
-            let imageName = NSUUID().UUIDString
-            let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).png")
-            
-            if let uploadData = UIImagePNGRepresentation(self.imgProfilePic.image!){
-                storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
-                    if error != nil{
-                        print(error.debugDescription)
-                        return
-                    }
-                    if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
-                        let values = ["name": name, "email":email, "profileImageUrl": profileImageUrl]
-                        self.registerUserIntoDatabaseWithUID(uid, values: values)
-                    }
-                })
-            }
-        }
-    }
-    
-    private func registerUserIntoDatabaseWithUID(uid: String, values: [String : AnyObject]){
-        
-        let usersReference = DataService.ds.REF_USERS.child(uid)
-        
-        usersReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
-            if err != nil {
-                print(err?.description)
-                return
-            }
-            self.dismissViewControllerAnimated(true, completion: nil)
-        })
-    }
-
-    func uploadImage(image: UIImage){
-        guard let imageData = UIImageJPEGRepresentation(image, 0.2)else{
-            print("Count not get JPEG representation of UIImage")
-            return
-        }
-        
-        let urlStr = IMAGESHACK_URL
-        let url = NSURL(string: urlStr)!
-        let keyData = IMAGESHACK_API_KEY.dataUsingEncoding(NSUTF8StringEncoding)!
-        let keyJSON = "json".dataUsingEncoding(NSUTF8StringEncoding)!
-        
-        Alamofire.upload(.POST, url, multipartFormData: {
-            multipartFormData in
-            multipartFormData.appendBodyPart(data: imageData, name: "fileupload", fileName:"image", mimeType: "image/jpg")
-            multipartFormData.appendBodyPart(data: keyData, name: "key")
-            multipartFormData.appendBodyPart(data: keyJSON, name: "format")
-        }){
-            encodingResult in
-            
-            switch encodingResult{
-            case .Success(let upload, _,_):
-                upload.validate()
-                upload.responseJSON {
-                    response in
-                    guard response.result.isSuccess else{
-                        print("Error while uploading file: \(response.result.error)")
-                        return
-                    }
-                    if let info = response.result.value as? Dictionary<String, AnyObject>{
-                        print("In RESULT")
-                        if let links = info["links"] as? Dictionary<String, AnyObject>{
-                            if let imgLink = links["image_link"] as? String{
-                                print("LINK: \(imgLink)")
-                                self._userPicLink = imgLink
-                            }//end if let imgLink
-                        }//end if let links
-                    }//end if let info
-                    
-                }//end case success
-                
-            case .Failure(let encodingError):
-                print(encodingError)
-                
-            }//end switch
-        }
-    }
-    
-    func uploadImaggaImage(image:UIImage, progress: (percent: Float) -> Void,
-                           completion: (tags: [String]) -> Void){
-        guard let imageData = UIImageJPEGRepresentation(image, 0.5) else{
-            print("Could not get JPEG representation of UIImage")
-            return
-        }
-        Alamofire.upload(ImaggaRouter.Content,
-         multipartFormData: { multipartFormData in
-            multipartFormData.appendBodyPart(data: imageData, name: "imagefile", fileName: "image.jpg", mimeType: "image/jpeg")
-            },
-         encodingCompletion: {encodingResult in
-            switch encodingResult{
-            case .Success(let upload, _,_):
-                upload.progress {bytesWritten, totalBytesWritten, totalBytesExpectedToWrite in
-                    dispatch_async(dispatch_get_main_queue()){
-                        let percent = (Float(totalBytesWritten) / Float(totalBytesExpectedToWrite))
-                        progress(percent: percent)
-                    }//end dispatch async
-                }//end upload.progress
-                upload.validate()
-                upload.responseJSON{ response in
-                    guard response.result.isSuccess else{
-                        print("Error while uploading file: \(response.result.error)")
-                        completion(tags: [String]())
-                        return
-                    }
-                    guard let responseJSON =
-                        response.result.value as? [String: AnyObject],
-                        uploadedFiles = responseJSON["uploaded"] as? [AnyObject],
-                        firstFile = uploadedFiles.first as? [String: AnyObject],
-                        firstFileID = firstFile["id"] as? String else{
-                            print("Invalid information received from service")
-                            completion(tags: [String]())
-                            return
-                    }
-                    
-                    print("Content uploaded with ID: \(firstFileID)")
-                    
-                    self.downloadTags(firstFileID){ tags in
-                            completion(tags: tags)
-                    }//end self.downloadTags completion
-                    
-            }//end upload.responseJSON
-            case .Failure(let encodingError): print(encodingError)
-            }//end switch statement
-        })//end Alamofire.upload
-        
-    }
-    
-    func downloadTags(contentID: String, completion: ([String]) -> Void){
-        Alamofire.request( ImaggaRouter.Tags(contentID) )
-            .responseJSON{ response in
-                guard response.result.isSuccess else {
-                    print("Error while fetching tags: \(response.result.error)")
-                    completion([String]())
-                    return
-                }// end guard
-                
-                guard let responseJSON = response.result.value as? [String: AnyObject],
-                    results = responseJSON["results"] as? [AnyObject],
-                    firstResult = results.first,
-                    tagsAndConfidences = firstResult["tags"] as? [[String: AnyObject]]  else{
-                        print("Invalid tag information received from service")
-                        completion([String]())
-                        return
-                }//end guard
-                print(responseJSON)
-                let tags = tagsAndConfidences.flatMap({ dict in
-                    return dict["tag"] as? String
-                })
-                
-                completion(tags)
-                
-                let currentUserTags = DataService.ds.REF_USER_CURRENT.child("tags")
-                    for i in 0..<self.tags!.count{
-                        currentUserTags.child("tag\(i)").setValue(self.tags![i])
-                        if self.tags![i] == "female" || self.tags![i] == "women" || self.tags![i] == "lady"{
-                            self.currentUser.child("Gender").setValue("female")
-                        }
-                        if self.tags![i] == "man" || self.tags![i] == "men" || self.tags![i] == "male" || self.tags![i] == "guy" {
-                            self.currentUser.child("Gender").setValue("male")
-                        }
-                        if self.tags![i] == "brunette"{
-                            self.currentUser.child("HairColor").setValue("brunette")
-                        }
-                        if self.tags![i] == "blond"{
-                            self.currentUser.child("HairColor").setValue("blond")
-                        }
-                        if self.tags![i] == "caucasian"{
-                            self.currentUser.child("Ethnicity").setValue("caucasian")
-                        }
-                    }
-                //print("The number of tags in the tags array is: \(tags.count)")
-                self.performSegueWithIdentifier("registered", sender: nil)       
-        }//end .responseJSON
-    }//end func downloadTags
-
-
-    
-}//end extension
 
 extension RegisterVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     func takePhotoWithCamera(){
         let imagePicker = UIImagePickerController()
-        imagePicker.sourceType = .Camera
-        imagePicker.delegate = self
-        imagePicker.allowsEditing = true
+            imagePicker.sourceType = .Camera
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
         presentViewController(imagePicker, animated: true, completion: nil)
         
     }
     
     func choosePhotoFromLibrary(){
         let imagePicker = UIImagePickerController()
-        imagePicker.sourceType = .PhotoLibrary
-        imagePicker.delegate = self
-        imagePicker.allowsEditing = true
+            imagePicker.sourceType = .PhotoLibrary
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
         presentViewController(imagePicker, animated: true, completion: nil)
     }
     
@@ -347,7 +162,7 @@ extension RegisterVC:UIImagePickerControllerDelegate, UINavigationControllerDele
             dismissViewControllerAnimated(true, completion: nil)
             return
         }
-        uploadImage(image)
+//        uploadImage(image)
         imgProfilePic.image = image
         imgCameraIcon.hidden = true
         
