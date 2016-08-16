@@ -241,11 +241,10 @@ class IntroViewController: UIViewController {
                         FIRAuth.auth()?.createUserWithEmail(email, password: password, completion: { (user, error) in
                            
                             if error != nil{
-                                if error!.code == STATUS_ACCOUNT_WEAKPASSWORD{
-                                    self.showErrorAlert("Weak Password", msg: "The password must be 6 characters long or more.")
-                                }else{
-                                    self.showErrorAlert("Could not create account", msg: "Problem creating account. Try something else")
-                                }
+                                error!.code == STATUS_ACCOUNT_WEAKPASSWORD ?
+                                    self.showErrorAlert("Weak Password", msg: "The password must be more than 5 characters.") :
+                                    self.showErrorAlert("Could not create account",
+                                        msg: "Problem creating account. Try something else")
                             }else{
                                 NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
                                 
@@ -254,10 +253,10 @@ class IntroViewController: UIViewController {
                                                     "Online": false,
                                                     "email": email,
                                                     "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
+                                
                                     DataService.ds.createFirebaseUser(user!.uid, user: userData as! Dictionary<String, AnyObject>)
                                 
                                 self.performSegueWithIdentifier(SEGUE_REGISTER, sender: nil)
-                                
                             }
                         })
                     } else if error!.code == STATUS_ACCOUNT_WRONGPASSWORD{
@@ -316,7 +315,7 @@ class IntroViewController: UIViewController {
         }//end facebook login handler
     }
     
-
+//*********************************************************************************************************
 //*********************************************** CONSTRAINTS *********************************************
 //*********************************************************************************************************
     
