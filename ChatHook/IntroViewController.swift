@@ -304,11 +304,12 @@ class IntroViewController: UIViewController {
                         
                         let userData = ["provider": credential.provider,
                                         "UserName": "AnonymousPoster",
+                                        "Online": false,
                                         "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
-                        DataService.ds.createFirebaseUser(user!.uid, user: userData)
+                        DataService.ds.createFirebaseUser(user!.uid, user: userData as! Dictionary<String, AnyObject>)
                         
                         NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
-                        //self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
+                        self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
                     }//end else
                 })//end withCompletionBlock
             }//end else
