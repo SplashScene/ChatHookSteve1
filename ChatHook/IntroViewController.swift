@@ -250,6 +250,7 @@ class IntroViewController: UIViewController {
                                 
                                     let userData = ["provider": "email",
                                                     "UserName": "AnonymousPoster",
+                                                    "Online": "False",
                                                     "email": email,
                                                     "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
                                     DataService.ds.createFirebaseUser(user!.uid, user: userData)

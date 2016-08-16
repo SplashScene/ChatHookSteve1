@@ -9,6 +9,7 @@ pod 'Firebase/Database'
 pod 'Firebase/Auth'
 pod 'Alamofire', '~> 3.4’
 pod ‘JSQMessagesViewController’
+pod ‘Firebase/Storage’
 
 end
 

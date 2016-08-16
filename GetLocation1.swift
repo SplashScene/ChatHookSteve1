@@ -114,6 +114,8 @@ extension GetLocation1: CLLocationManagerDelegate{
         if userLocation == nil{
             //userLocation = locations.first
             userLocation = CLLocation(latitude: 41.92413, longitude: -88.161242)
+            currentUser.child("UserLatitude").setValue(userLocation?.coordinate.latitude)
+            currentUser.child("UserLongitude").setValue(userLocation?.coordinate.longitude)
         }
     }
     

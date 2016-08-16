@@ -104,6 +104,46 @@ class RegisterVC: UIViewController {
 }
 
 extension RegisterVC{
+    func handleRegister(){
+        guard let email = txtEmailAddress.text, password = txtPassword.text, name = txtUserName.text else { return }
+        FIRAuth.auth()?.createUserWithEmail(email, password: password) {(user: FIRUser?, error) in
+            if error != nil {
+                print(error?.description)
+                return
+            }
+            
+            guard let uid = user?.uid else { return }
+            let imageName = NSUUID().UUIDString
+            let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).png")
+            
+            if let uploadData = UIImagePNGRepresentation(self.imgProfilePic.image!){
+                storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
+                    if error != nil{
+                        print(error.debugDescription)
+                        return
+                    }
+                    if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
+                        let values = ["name": name, "email":email, "profileImageUrl": profileImageUrl]
+                        self.registerUserIntoDatabaseWithUID(uid, values: values)
+                    }
+                })
+            }
+        }
+    }
+    
+    private func registerUserIntoDatabaseWithUID(uid: String, values: [String : AnyObject]){
+        
+        let usersReference = DataService.ds.REF_USERS.child(uid)
+        
+        usersReference.updateChildValues(values, withCompletionBlock: { (err, ref) in
+            if err != nil {
+                print(err?.description)
+                return
+            }
+            self.dismissViewControllerAnimated(true, completion: nil)
+        })
+    }
+
     func uploadImage(image: UIImage){
         guard let imageData = UIImageJPEGRepresentation(image, 0.2)else{
             print("Count not get JPEG representation of UIImage")
