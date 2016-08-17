@@ -95,49 +95,7 @@ class ChatPostCell: UITableViewCell {
         })
     }//end configureCell
     
-    //    func configureCell(post: Post, img: UIImage?, profilePic: UIImage?){
-    //
-    //        self.post = post
-    //        self.descriptionText.text = post.postDescription
-    //        self.likesLbl.text = "\(post.likes)"
-    //        self.userName.text = post.userName
-    //        likeRef = DataService.ds.REF_USER_CURRENT.childByAppendingPath("Likes").childByAppendingPath(post.postKey)
-    //
-    //        if post.imageURL != nil{
-    //            if img != nil{
-    //                print("I got an image passed to me: \(img!) for cell: \(post.postDescription)")
-    //                self.profileImg.image = img!
-    //            }else{
-    //                print("I had to download picture (none passed) for cell: \(post.postDescription)")
-    //                request = Alamofire.request(.GET, post.imageURL!).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
-    //                    if err == nil {
-    //                        let img = UIImage(data: data!)!
-    //                        self.showcaseImg.image = img
-    //                        FeedVC.imageCache.setObject(img, forKey: self.post.imageURL!)
-    //                    }// end if err
-    //                })//end completion handler
-    //            }//end else
-    //        }else{
-    //            self.showcaseImg.image = UIImage(named: "camera")
-    //            //self.showcaseImg.hidden = true
-    //        }//end else
-    
-    
-    //            if profilePic != nil{
-    //                self.profileImg.image = profilePic!
-    //            }else{
-    //                request = Alamofire.request(.GET, post.profilePic).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
-    //                    if err == nil {
-    //                        let img = UIImage(data: data!)!
-    //                        self.profileImg.image = img
-    //                        FeedVC.profileCache.setObject(img, forKey: self.post.profilePic)
-    //                    }// end if err
-    //                })//end completion handler
-    //            }//end else
-    
-    
-    
-    
+ 
     func likeTapped(sender: UITapGestureRecognizer){
         likeRef.observeSingleEventOfType(.Value, withBlock: { snapshot in
             if let _ = snapshot.value as? NSNull{

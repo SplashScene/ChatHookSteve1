@@ -12,14 +12,14 @@ import CoreLocation
 
 class User{
     private var _userName: String!
-    private var _profilePic: String!
+    private var _profilePic: String?
     private var _postKey: String!
     private var _postRef: FIRDatabaseReference!
     private var _location: CLLocation?
     private var _online: Bool!
     
     var userName: String { return _userName }
-    var profilePic: String { return _profilePic }
+    var profilePic: String? { return _profilePic }
     var postKey: String { return _postKey }
     var location: CLLocation { return _location! }
     var online: Bool { return _online }

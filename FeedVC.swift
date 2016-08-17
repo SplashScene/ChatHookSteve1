@@ -95,14 +95,41 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
         
         if let cell = tableView.dequeueReusableCellWithIdentifier("PostCell") as? PostCell{
             cell.request?.cancel()
+            var img: UIImage?
             
-            cell.configureCell(post, distance: distanceString)
+            if let url = post.profilePic{
+                img = FeedVC.imageCache.objectForKey(url) as? UIImage
+            }
+            
+            cell.configureCell(post, img:img, distance: distanceString)
             return cell
         }else{
             return PostCell()
         }
         
     }
+    /*
+     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+     let post = postsArray[indexPath.row]
+     print("ROW: \(indexPath.row) : \(post.postDescription) -> \(post.imageURL)")
+     
+     if let cell = tableView.dequeueReusableCellWithIdentifier("ChatPostCell") as? ChatPostCell{
+     cell.request?.cancel()
+     var img: UIImage?
+     
+     if let url = post.imageURL{
+     img = PostsVC.imageCache.objectForKey(url) as? UIImage
+     }
+     
+     cell.configureCell(post, img: img)
+     return cell
+     }else{
+     return ChatPostCell()
+     }
+     
+     }
+
+ */
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1

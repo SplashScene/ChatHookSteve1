@@ -28,18 +28,38 @@ class PostCell: UITableViewCell {
     }
     
     
-    func configureCell(post: User, distance: String){
-        self.user = post
-            self.userName.text = post.userName
-        
-            request = Alamofire.request(.GET, post.profilePic).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
-            if err == nil {
-                let img = UIImage(data: data!)!
+    func configureCell(post: User, img: UIImage?, distance: String){
+        if post.profilePic != nil{
+            if img != nil {
                 self.profileImg.image = img
+                print("I GOT AN IMAGE PASSED TO ME!!!!")
+            }else{
+                print("I had to download the image again")
+                request = Alamofire.request(.GET, post.profilePic!).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
+                    if err == nil {
+                        let img = UIImage(data: data!)!
+                        self.profileImg.image = img
+                        FeedVC.imageCache.setObject(img, forKey: post.profilePic!)
+                        
+                    }// end if err
+                })//end completion handler
                 self.distanceLabel.text = distance
-            }// end if err
-        })//end completion handler
+            }
+        }else{
+            self.profileImg.image = UIImage(named: "profileToon.jpg")
+            //self.showcaseImg.hidden = true
+        }//end else
+    }
+//        self.user = post
+//            self.userName.text = post.userName
+//        
+//            request = Alamofire.request(.GET, post.profilePic).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
+//            if err == nil {
+//                let img = UIImage(data: data!)!
+//                self.profileImg.image = img
+//
+//            }// end if err
+//        })//end completion handler
         
-    }//end configureCell
 
 }//end class PostCell
