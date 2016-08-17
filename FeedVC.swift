@@ -108,29 +108,7 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
         }
         
     }
-    /*
-     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-     let post = postsArray[indexPath.row]
-     print("ROW: \(indexPath.row) : \(post.postDescription) -> \(post.imageURL)")
-     
-     if let cell = tableView.dequeueReusableCellWithIdentifier("ChatPostCell") as? ChatPostCell{
-     cell.request?.cancel()
-     var img: UIImage?
-     
-     if let url = post.imageURL{
-     img = PostsVC.imageCache.objectForKey(url) as? UIImage
-     }
-     
-     cell.configureCell(post, img: img)
-     return cell
-     }else{
-     return ChatPostCell()
-     }
-     
-     }
-
- */
-    
+       
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
@@ -153,11 +131,16 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ChatChat"{
             //print("The current USERID is: \(currentUserUID)")
+            var img: UIImage?
+            if let url = messageProfilePicURL{
+                img = (FeedVC.imageCache.objectForKey(url) as? UIImage)!
+            }
             let privateChatVC = segue.destinationViewController as! ChatViewController
                 privateChatVC.senderId = currentUserUID
                 privateChatVC.senderDisplayName = currentUserName
                 privateChatVC.messageUserName = self.messageUserName
                 privateChatVC.messageProfilePicURL = self.messageProfilePicURL
+                privateChatVC.messageImage = img
         }
     }
     

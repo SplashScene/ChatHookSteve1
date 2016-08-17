@@ -17,6 +17,7 @@ class ChatViewController: JSQMessagesViewController {
     var incomingBubbleImageView: JSQMessagesBubbleImage!
     var messageUserName: String!
     var messageProfilePicURL: String!
+    var messageImage: UIImage!
     
     
     var userIsTypingRef: FIRDatabaseReference!
@@ -36,17 +37,10 @@ class ChatViewController: JSQMessagesViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-            title = messageUserName
-//        title = "ChatHook"
-//        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 38, height: 38))
-//        imageView.contentMode = .ScaleAspectFit
-//        let titleImage = UIImage(named: "profile")
-//        imageView.image = titleImage
-//        imageView.layer.cornerRadius = 10
-//        self.navigationItem.titleView = imageView
         setupBubbles()
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
+        setupNavBarWithUser()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -55,6 +49,52 @@ class ChatViewController: JSQMessagesViewController {
         observeTyping()
        
     }
+    
+    func setupNavBarWithUser(){
+        //self.navigationItem.title = user.name
+        
+        let titleView = UIView()
+        titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+        //titleView.backgroundColor = UIColor.redColor()
+        
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        titleView.addSubview(containerView)
+        
+        let profileImageView = UIImageView()
+        profileImageView.translatesAutoresizingMaskIntoConstraints = false
+        profileImageView.contentMode = .ScaleAspectFill
+        profileImageView.layer.cornerRadius = 20
+        profileImageView.clipsToBounds = true
+        profileImageView.image = messageImage
+//        if let profileImageUrl = user.profileImageUrl{
+//            profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+//        }
+        
+        containerView.addSubview(profileImageView)
+        
+        profileImageView.leftAnchor.constraintEqualToAnchor(containerView.leftAnchor).active = true
+        profileImageView.centerYAnchor.constraintEqualToAnchor(containerView.centerYAnchor).active = true
+        profileImageView.widthAnchor.constraintEqualToConstant(40).active = true
+        profileImageView.heightAnchor.constraintEqualToConstant(40).active = true
+        
+        let nameLabel = UILabel()
+        containerView.addSubview(nameLabel)
+        nameLabel.text = messageUserName
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        nameLabel.leftAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 8).active = true
+        nameLabel.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
+        nameLabel.rightAnchor.constraintEqualToAnchor(containerView.rightAnchor).active = true
+        nameLabel.heightAnchor.constraintEqualToAnchor(profileImageView.heightAnchor).active = true
+        
+        containerView.centerXAnchor.constraintEqualToAnchor(titleView.centerXAnchor).active = true
+        containerView.centerYAnchor.constraintEqualToAnchor(titleView.centerYAnchor).active = true
+        
+        self.navigationItem.titleView = titleView
+    }
+
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
