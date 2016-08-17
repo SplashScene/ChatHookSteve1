@@ -20,13 +20,11 @@ class PostCell: UITableViewCell {
     
     var user: User!
     var request: Request?
-    var likeRef: FIRDatabaseReference!
+    //var likeRef: FIRDatabaseReference!
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
     }
-    
     
     func configureCell(post: User, img: UIImage?, distance: String){
         if post.profilePic != nil{
@@ -36,14 +34,12 @@ class PostCell: UITableViewCell {
             }else{
                 print("I had to download the image again")
                 request = Alamofire.request(.GET, post.profilePic!).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
-                    if err == nil {
-                        let img = UIImage(data: data!)!
-                        self.profileImg.image = img
-                        FeedVC.imageCache.setObject(img, forKey: post.profilePic!)
-                        
-                    }// end if err
+                        if err == nil {
+                            let img = UIImage(data: data!)!
+                            self.profileImg.image = img
+                            FeedVC.imageCache.setObject(img, forKey: post.profilePic!)
+                        }// end if err
                 })//end completion handler
-                
             }
         }else{
             self.profileImg.image = UIImage(named: "profileToon.jpg")

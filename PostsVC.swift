@@ -79,10 +79,9 @@ class PostsVC: UIViewController{
         activityIndicatorView.startAnimating()
         
         if let unwrappedImage = postedImage{
-            uploadImage(unwrappedImage, progress:{[unowned self] percent in
-                self.progressView.setProgress(percent, animated: true)
-                })
-        } else if let postedText = postField.text where postedText != ""{
+            uploadFirebaseImage(unwrappedImage)
+        }
+         else if let postedText = postField.text where postedText != ""{
             self.postToFirebase(nil)
         }
     }
@@ -249,7 +248,23 @@ extension PostsVC{
         }
         
     }
-    
+    func uploadFirebaseImage(image: UIImage){
+        let imageName = NSUUID().UUIDString
+        let storageRef = FIRStorage.storage().reference().child("post_images").child("\(imageName).jpg")
+        
+        if let uploadData = UIImageJPEGRepresentation(image, 0.2){
+            storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
+                if error != nil{
+                    print(error.debugDescription)
+                    return
+                }
+                if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
+                    self.postToFirebase(profileImageUrl)
+                }
+            })
+        }
+
+    }
     func postToFirebase(imgURL: String?){
         //let currentUserName: String!
         

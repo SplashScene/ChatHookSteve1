@@ -62,9 +62,9 @@ class RegisterVC: UIViewController {
         
         
         let imageName = NSUUID().UUIDString
-        let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).png")
+        let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
         
-        if let uploadData = UIImagePNGRepresentation(self.imgProfilePic.image!){
+        if let uploadData = UIImageJPEGRepresentation(self.imgProfilePic.image!, 0.2){
             storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
                 if error != nil{
                     print(error.debugDescription)
