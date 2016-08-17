@@ -43,23 +43,15 @@ class PostCell: UITableViewCell {
                         
                     }// end if err
                 })//end completion handler
-                self.distanceLabel.text = distance
+                
             }
         }else{
             self.profileImg.image = UIImage(named: "profileToon.jpg")
             //self.showcaseImg.hidden = true
         }//end else
+        self.userName.text = post.userName
+        self.distanceLabel.text = distance
     }
-//        self.user = post
-//            self.userName.text = post.userName
-//        
-//            request = Alamofire.request(.GET, post.profilePic).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
-//            if err == nil {
-//                let img = UIImage(data: data!)!
-//                self.profileImg.image = img
-//
-//            }// end if err
-//        })//end completion handler
-        
+    
 
 }//end class PostCell
