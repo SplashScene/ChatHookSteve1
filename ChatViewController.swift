@@ -15,10 +15,8 @@ class ChatViewController: JSQMessagesViewController {
     var messages = [JSQMessage]()
     var outgoingBubbleImageView: JSQMessagesBubbleImage!
     var incomingBubbleImageView: JSQMessagesBubbleImage!
-    var messageUserName: String!
-    var messageProfilePicURL: String!
     var messageImage: UIImage!
-    
+    var user: User?
     
     var userIsTypingRef: FIRDatabaseReference!
     private var localTyping = false
@@ -51,11 +49,9 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     func setupNavBarWithUser(){
-        //self.navigationItem.title = user.name
         
         let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
-        //titleView.backgroundColor = UIColor.redColor()
         
         let containerView = UIView()
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -68,9 +64,6 @@ class ChatViewController: JSQMessagesViewController {
         profileImageView.layer.cornerRadius = 20
         profileImageView.clipsToBounds = true
         profileImageView.image = messageImage
-//        if let profileImageUrl = user.profileImageUrl{
-//            profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
-//        }
         
         containerView.addSubview(profileImageView)
         
@@ -81,7 +74,7 @@ class ChatViewController: JSQMessagesViewController {
         
         let nameLabel = UILabel()
         containerView.addSubview(nameLabel)
-        nameLabel.text = messageUserName
+        nameLabel.text = user?.userName
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         nameLabel.leftAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 8).active = true
@@ -158,9 +151,9 @@ class ChatViewController: JSQMessagesViewController {
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!,
                                      senderDisplayName: String!, date: NSDate!) {
-        
+        let toId = user?.postKey
         let itemRef = DataService.ds.REF_MESSAGES.childByAutoId()
-        let messageItem = ["text": text,"senderId": senderId]
+        let messageItem = ["text": text,"senderId": senderId, "toId": toId]
         itemRef.setValue(messageItem)
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()

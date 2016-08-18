@@ -29,6 +29,7 @@ class FeedVC: UIViewController{
     var currentUserLocation: CLLocation!
     var messageUserName: String?
     var messageProfilePicURL: String?
+    var messagedUser: User?
     
     
     override func viewDidLoad() {
@@ -122,9 +123,8 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let messageUser = usersArray[indexPath.row]
-        messageUserName = messageUser.userName
-        messageProfilePicURL = messageUser.profilePic
+        messagedUser = usersArray[indexPath.row]
+        messageProfilePicURL = messagedUser?.profilePic
         performSegueWithIdentifier("ChatChat", sender: nil)
     }
     
@@ -137,9 +137,8 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
             let privateChatVC = segue.destinationViewController as! ChatViewController
                 privateChatVC.senderId = currentUserUID
                 privateChatVC.senderDisplayName = currentUserName
-                privateChatVC.messageUserName = self.messageUserName
-                privateChatVC.messageProfilePicURL = self.messageProfilePicURL
                 privateChatVC.messageImage = img
+                privateChatVC.user = messagedUser
         }
     }
     
