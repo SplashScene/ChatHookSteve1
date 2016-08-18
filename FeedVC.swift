@@ -130,7 +130,6 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ChatChat"{
-            //print("The current USERID is: \(currentUserUID)")
             var img: UIImage?
             if let url = messageProfilePicURL{
                 img = (FeedVC.imageCache.objectForKey(url) as? UIImage)!

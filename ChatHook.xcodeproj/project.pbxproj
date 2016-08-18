@@ -274,6 +274,7 @@
 				TargetAttributes = {
 					84B9AB191CE225780002B132 = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = V7QA668XYK;
 					};
 				};
 			};
@@ -504,6 +505,8 @@
 			baseConfigurationReference = 9E4A6D1C186F9E739AC106F1 /* Pods-ChatHook.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -514,6 +517,7 @@
 				New_Setting = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.splashscene.ChatHook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -522,6 +526,8 @@
 			baseConfigurationReference = 02C07202A720503C672BCA57 /* Pods-ChatHook.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -532,6 +538,7 @@
 				New_Setting = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.splashscene.ChatHook;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
