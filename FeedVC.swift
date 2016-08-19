@@ -6,8 +6,6 @@
 //  Copyright © 2016 splashscene. All rights reserved.
 //
 
-
-
 import UIKit
 import Firebase
 import Alamofire
@@ -27,8 +25,6 @@ class FeedVC: UIViewController{
     var currentProfilePicURL: String!
     var currentUserUID: String!
     var currentUserLocation: CLLocation!
-    var messageUserName: String?
-    var messageProfilePicURL: String?
     var messagedUser: User?
     
     
@@ -124,14 +120,13 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         messagedUser = usersArray[indexPath.row]
-        messageProfilePicURL = messagedUser?.profilePic
         performSegueWithIdentifier("ChatChat", sender: nil)
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ChatChat"{
             var img: UIImage?
-            if let url = messageProfilePicURL{
+            if let url = messagedUser?.profilePic{
                 img = (FeedVC.imageCache.objectForKey(url) as? UIImage)!
             }
             let privateChatVC = segue.destinationViewController as! ChatViewController

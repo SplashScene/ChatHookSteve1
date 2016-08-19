@@ -50,7 +50,6 @@ class ChatPostCell: UITableViewCell {
     }
     
     func configureCell(post: ChatPost, img: UIImage?){
-        print("INSIDE CONFIGURE CELL")
         self.post = post
         self.descriptionText.text = post.postDescription
         self.likesLbl.text = "\(post.likes)"

@@ -13,7 +13,7 @@ class RoomsViewController: UITableViewController {
     var currentUserName: String!
     var currentProfilePicURL: String!
     var roomsArray = [PublicRoom]()
-
+    var chosenRoom: PublicRoom?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,8 +48,6 @@ class RoomsViewController: UITableViewController {
                         let key = snap.key
                         let post = PublicRoom(postKey: key, dictionary: postDict)
                         self.roomsArray.insert(post, atIndex: 0)
-//                        print("Added to ROOM array")
-//                        print("The ROOM NAME IS: \(post.roomName)")
                     }
                 }
             }
@@ -71,18 +69,22 @@ class RoomsViewController: UITableViewController {
     }
     
     func postToFirebase(roomName: String?){
-        
+        let timestamp: NSNumber = NSDate().timeIntervalSince1970
+        let authorID = FIRAuth.auth()!.currentUser!.uid
+
         if let unwrappedRoomName = roomName{
-            let post: Dictionary<String, String> = ["RoomName": unwrappedRoomName,
-                                                    "Author": currentUserName,
-                                                    "AuthorPic": currentProfilePicURL
-                                                    ]
+            let post: Dictionary<String, AnyObject> =
+                
+                ["RoomName": unwrappedRoomName,
+                 "Author": currentUserName,
+                 "AuthorPic": currentProfilePicURL,
+                 "timestamp": timestamp,
+                 "AuthorID" : authorID]
             
             let firebasePost = DataService.ds.REF_CHATROOMS.childByAutoId()
             firebasePost.setValue(post)
             
             tableView.reloadData()
-            
         }
         
     }
@@ -110,11 +112,24 @@ class RoomsViewController: UITableViewController {
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return tableView.estimatedRowHeight
     }
-
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        chosenRoom = roomsArray[indexPath.row]
+        performSegueWithIdentifier("GoToChatPost", sender: nil)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "GoToChatPost"{
+            let publicPosts = segue.destinationViewController as! PostsVC
+            
+            publicPosts.roomID = chosenRoom?.postKey
+            publicPosts.roomName = chosenRoom?.roomName
+        }
+    }
 
 }//end RoomsViewController
 
 
-    
+
 
 

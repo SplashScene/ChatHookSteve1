@@ -59,11 +59,11 @@ class ChatViewController: JSQMessagesViewController {
         titleView.addSubview(containerView)
         
         let profileImageView = UIImageView()
-        profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileImageView.contentMode = .ScaleAspectFill
-        profileImageView.layer.cornerRadius = 20
-        profileImageView.clipsToBounds = true
-        profileImageView.image = messageImage
+            profileImageView.translatesAutoresizingMaskIntoConstraints = false
+            profileImageView.contentMode = .ScaleAspectFill
+            profileImageView.layer.cornerRadius = 20
+            profileImageView.clipsToBounds = true
+            profileImageView.image = messageImage
         
         containerView.addSubview(profileImageView)
         
@@ -73,9 +73,10 @@ class ChatViewController: JSQMessagesViewController {
         profileImageView.heightAnchor.constraintEqualToConstant(40).active = true
         
         let nameLabel = UILabel()
+            nameLabel.text = user?.userName
+            nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         containerView.addSubview(nameLabel)
-        nameLabel.text = user?.userName
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         nameLabel.leftAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 8).active = true
         nameLabel.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
@@ -153,7 +154,8 @@ class ChatViewController: JSQMessagesViewController {
                                      senderDisplayName: String!, date: NSDate!) {
         let toId = user?.postKey
         let itemRef = DataService.ds.REF_MESSAGES.childByAutoId()
-        let messageItem = ["text": text,"senderId": senderId, "toId": toId]
+        let timestamp: NSNumber = Int(NSDate().timeIntervalSince1970)
+        let messageItem : [String: AnyObject] = ["text": text, "senderId": senderId, "toId": toId!, "timestamp" : timestamp]
         itemRef.setValue(messageItem)
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()

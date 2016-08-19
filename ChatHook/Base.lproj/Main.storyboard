@@ -707,7 +707,6 @@
                                     <outlet property="profileImg" destination="Qb8-dQ-JLw" id="80h-ED-XuX"/>
                                     <outlet property="roomName" destination="Hgv-e2-jkZ" id="68t-Oa-tbN"/>
                                     <outlet property="userName" destination="4OP-kl-Bda" id="A9S-bw-6uK"/>
-                                    <segue destination="bGh-yT-nNv" kind="show" identifier="GoToChatPost" id="KOA-Ls-bbO"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -717,6 +716,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="Z4o-Si-mzv"/>
+                    <connections>
+                        <segue destination="bGh-yT-nNv" kind="show" identifier="GoToChatPost" id="kfp-eg-XWI"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V7C-b4-7Gd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1005,7 +1007,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1877" y="1558"/>
+            <point key="canvasLocation" x="1990" y="1649"/>
         </scene>
         <!--Peeps-->
         <scene sceneID="KPk-aX-55Z">

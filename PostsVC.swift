@@ -24,6 +24,8 @@ class PostsVC: UIViewController{
     var postedImage: UIImage?
     var currentUserName: String!
     var currentProfilePicURL: String!
+    var roomID: String!
+    var roomName: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,8 +34,15 @@ class PostsVC: UIViewController{
         progressView.hidden = true
         activityIndicatorView.hidden = true
         
+        title = roomName
         
         tableView.estimatedRowHeight = 375
+        
+        fetchCurrentUser()
+        fetchPosts()
+    }
+    
+    func fetchCurrentUser(){
         let currentUser = DataService.ds.REF_USER_CURRENT
         
         currentUser.observeEventType(.Value, withBlock: {
@@ -44,11 +53,10 @@ class PostsVC: UIViewController{
             if let myProfilePic = snapshot.value!.objectForKey("ProfileImage"){
                 self.currentProfilePicURL = myProfilePic  as! String
             }
-            
         })
-        
-        
-        
+    }
+    
+    func fetchPosts(){
         DataService.ds.REF_POSTS.observeEventType(.Value, withBlock: {
             snapshot in
             
@@ -66,7 +74,6 @@ class PostsVC: UIViewController{
             self.tableView.reloadData()
         })
     }
-    
     
     @IBAction func cameraImageTapped(sender: UITapGestureRecognizer) {
         self.pickPhoto()
@@ -197,58 +204,7 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
 }//end extension
 
 extension PostsVC{
-    func uploadImage(image: UIImage, progress: (percent: Float) -> Void)  {
-        guard let imageData = UIImageJPEGRepresentation(image, 0.2)else{
-            print("Count not get JPEG representation of UIImage")
-            return
-        }
-        
-        let urlStr = IMAGESHACK_URL
-        let url = NSURL(string: urlStr)!
-        let keyData = IMAGESHACK_API_KEY.dataUsingEncoding(NSUTF8StringEncoding)!
-        let keyJSON = "json".dataUsingEncoding(NSUTF8StringEncoding)!
-        
-        Alamofire.upload(.POST, url, multipartFormData: { multipartFormData in
-            multipartFormData.appendBodyPart(data: imageData, name: "fileupload", fileName: "image", mimeType: "image/jpg")
-            multipartFormData.appendBodyPart(data: keyData, name: "key")
-            multipartFormData.appendBodyPart(data: keyJSON, name: "format")
-        }) { encodingResult in
-            switch encodingResult{
-            case .Success(let upload, _, _):
-                upload.progress {bytesWritten, totalBytesWritten, totalBytesExpectedToWrite in
-                    dispatch_async(dispatch_get_main_queue()){
-                        let percent = (Float(totalBytesWritten) / Float(totalBytesExpectedToWrite))
-                        progress(percent: percent)
-                    }
-                }
-                upload.validate()
-                upload.responseJSON {response in
-                    guard response.result.isSuccess else{
-                        print("Error while uploading file: \(response.result.error)")
-                        return
-                    }
-                    if let info = response.result.value as? Dictionary<String, AnyObject>{
-                        
-                        if let links = info["links"] as? Dictionary<String, AnyObject>{
-                            if let imgLink = links["image_link"] as? String{
-                                print("LINK: \(imgLink)")
-                                self.postToFirebase(imgLink)
-                            }//end if let imgLink
-                        }//end if let links
-                        
-                    }//end if let info
-                }
-                
-            case .Failure(let encodingError):
-                print(encodingError)
-            }//end switch
-            self.progressView.hidden = true
-            self.activityIndicatorView.stopAnimating()
-            
-        }
-        
-    }
-    func uploadFirebaseImage(image: UIImage){
+       func uploadFirebaseImage(image: UIImage){
         let imageName = NSUUID().UUIDString
         let storageRef = FIRStorage.storage().reference().child("post_images").child("\(imageName).jpg")
         
@@ -260,6 +216,7 @@ extension PostsVC{
                 }
                 if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
                     self.postToFirebase(profileImageUrl)
+                    self.activityIndicatorView.hidden = true
                 }
             })
         }
@@ -267,12 +224,18 @@ extension PostsVC{
     }
     func postToFirebase(imgURL: String?){
         //let currentUserName: String!
+        let timestamp: NSNumber = NSDate().timeIntervalSince1970
+        let authorID = FIRAuth.auth()!.currentUser!.uid
+        let toRoom = roomID
         
         var post: Dictionary<String, AnyObject> = [
             "Description": postField.text!,
             "Likes": 0,
             "Author": currentUserName,
-            "AuthorPic": currentProfilePicURL
+            "AuthorPic": currentProfilePicURL,
+            "AuthorID" : authorID,
+            "timestamp": timestamp,
+            "toRoom" : toRoom
         ]
         
         if imgURL != nil {
