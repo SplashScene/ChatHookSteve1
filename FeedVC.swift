@@ -94,7 +94,7 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
             cell.request?.cancel()
             var img: UIImage?
             
-            if let url = post.profilePic{
+            if let url = post.profileImageUrl{
                 img = FeedVC.imageCache.objectForKey(url) as? UIImage
             }
             
@@ -126,7 +126,7 @@ extension FeedVC:UITableViewDelegate, UITableViewDataSource{
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ChatChat"{
             var img: UIImage?
-            if let url = messagedUser?.profilePic{
+            if let url = messagedUser?.profileImageUrl{
                 img = (FeedVC.imageCache.objectForKey(url) as? UIImage)!
             }
             let privateChatVC = segue.destinationViewController as! ChatViewController

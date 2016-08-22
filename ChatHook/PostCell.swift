@@ -27,17 +27,17 @@ class PostCell: UITableViewCell {
     }
     
     func configureCell(post: User, img: UIImage?, distance: String){
-        if post.profilePic != nil{
+        if post.profileImageUrl != nil{
             if img != nil {
                 self.profileImg.image = img
                 print("I GOT AN IMAGE PASSED TO ME!!!!")
             }else{
                 print("I had to download the image again")
-                request = Alamofire.request(.GET, post.profilePic!).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
+                request = Alamofire.request(.GET, post.profileImageUrl!).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
                         if err == nil {
                             let img = UIImage(data: data!)!
                             self.profileImg.image = img
-                            FeedVC.imageCache.setObject(img, forKey: post.profilePic!)
+                            FeedVC.imageCache.setObject(img, forKey: post.profileImageUrl!)
                         }// end if err
                 })//end completion handler
             }

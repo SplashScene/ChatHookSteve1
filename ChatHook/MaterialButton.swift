@@ -12,7 +12,8 @@ import UIKit
 class MaterialButton: UIButton {
     
     override func awakeFromNib() {
-        backgroundColor = PLAYLIFE_COLOR
+        //backgroundColor = PLAYLIFE_COLOR
+        backgroundColor = UIColor.blueColor()
         setTitleColor(UIColor.whiteColor(), forState: .Normal)
         titleLabel?.font = UIFont(name: FONT_AVENIR_MEDIUM, size: 18.0)
         
@@ -29,7 +30,8 @@ class MaterialButton: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = PLAYLIFE_COLOR
+        //backgroundColor = PLAYLIFE_COLOR
+        backgroundColor = UIColor.blueColor()
         setTitleColor(UIColor.whiteColor(), forState: .Normal)
         titleLabel?.font = UIFont(name: FONT_AVENIR_MEDIUM, size: 18.0)
 

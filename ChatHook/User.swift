@@ -12,25 +12,27 @@ import CoreLocation
 
 class User{
     private var _userName: String!
-    private var _profilePic: String?
+    private var _profileImageUrl: String?
     private var _postKey: String!
     private var _postRef: FIRDatabaseReference!
     private var _location: CLLocation?
     private var _online: Bool!
+    private var _email: String!
     
     var userName: String { return _userName }
-    var profilePic: String? { return _profilePic }
+    var profileImageUrl: String? { return _profileImageUrl }
     var postKey: String { return _postKey }
     var location: CLLocation { return _location! }
     var online: Bool { return _online }
+    var email: String { return _email }
     
     init(postKey: String, dictionary: Dictionary<String, AnyObject>){
         self._postKey = postKey
         
         if let profileURL = dictionary["ProfileImage"] as? String{
-            self._profilePic = profileURL
+            self._profileImageUrl = profileURL
         }else{
-            self._profilePic = "http://imageshack.com/a/img922/8259/MrQ96I.png"
+            self._profileImageUrl = "http://imageshack.com/a/img922/8259/MrQ96I.png"
         }
         
         if let profileName = dictionary["UserName"] as? String{
@@ -46,6 +48,10 @@ class User{
         
         if let userOnline = dictionary["Online"] as? Bool{
             self._online = userOnline
+        }
+        
+        if let userEmail = dictionary["email"] as? String{
+            self._email = userEmail
         }
         
         self._postRef = DataService.ds.REF_USERS.child(self._postKey)

@@ -11,6 +11,14 @@
 		8437C2671D4FF10A00C5CF59 /* ChatPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8437C2661D4FF10A00C5CF59 /* ChatPost.swift */; };
 		8437C2691D4FF19300C5CF59 /* ChatPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8437C2681D4FF19300C5CF59 /* ChatPostCell.swift */; };
 		8437C26C1D50D5E400C5CF59 /* PostsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8437C26B1D50D5E400C5CF59 /* PostsVC.swift */; };
+		8458F5ED1D69F2420083BA0B /* FinishRegisterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5EC1D69F2420083BA0B /* FinishRegisterController.swift */; };
+		8458F5EF1D6B38AB0083BA0B /* MainTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5EE1D6B38AB0083BA0B /* MainTabBar.swift */; };
+		8458F5F11D6B3D2A0083BA0B /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5F01D6B3D2A0083BA0B /* MapViewController.swift */; };
+		8458F5F31D6B3DE00083BA0B /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5F21D6B3DE00083BA0B /* MessagesController.swift */; };
+		8458F5F51D6B3E200083BA0B /* NewMessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5F41D6B3E200083BA0B /* NewMessagesController.swift */; };
+		8458F5F71D6B3E6A0083BA0B /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5F61D6B3E6A0083BA0B /* UserCell.swift */; };
+		8458F5F91D6B3EAE0083BA0B /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5F81D6B3EAE0083BA0B /* ChatLogController.swift */; };
+		8458F5FB1D6B3F5B0083BA0B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5FA1D6B3F5B0083BA0B /* Message.swift */; };
 		847289621D3D48F7007E82DB /* RoomsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289611D3D48F7007E82DB /* RoomsViewController.swift */; };
 		847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289651D3E62A0007E82DB /* PublicRoom.swift */; };
 		847289681D3E6481007E82DB /* PublicRoomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289671D3E6481007E82DB /* PublicRoomCell.swift */; };
@@ -40,7 +48,6 @@
 		84D687871CF3717F00944D1E /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D687861CF3717F00944D1E /* Post.swift */; };
 		84D687891CF371BA00944D1E /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D687881CF371BA00944D1E /* PostCell.swift */; };
 		84D6878B1CF3799700944D1E /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6878A1CF3799700944D1E /* MaterialView.swift */; };
-		84DA2AED1D6349CA00B3861B /* Register1VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DA2AEC1D6349CA00B3861B /* Register1VC.swift */; };
 		84F45A541D1C339B003F9367 /* RegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F45A531D1C339B003F9367 /* RegisterVC.swift */; };
 		AB40F2A6C892CB8D250BC87E /* Pods_ChatHook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */; };
 /* End PBXBuildFile section */
@@ -52,6 +59,14 @@
 		8437C2661D4FF10A00C5CF59 /* ChatPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPost.swift; sourceTree = "<group>"; };
 		8437C2681D4FF19300C5CF59 /* ChatPostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPostCell.swift; sourceTree = "<group>"; };
 		8437C26B1D50D5E400C5CF59 /* PostsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsVC.swift; sourceTree = "<group>"; };
+		8458F5EC1D69F2420083BA0B /* FinishRegisterController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FinishRegisterController.swift; sourceTree = "<group>"; };
+		8458F5EE1D6B38AB0083BA0B /* MainTabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBar.swift; sourceTree = "<group>"; };
+		8458F5F01D6B3D2A0083BA0B /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		8458F5F21D6B3DE00083BA0B /* MessagesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
+		8458F5F41D6B3E200083BA0B /* NewMessagesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMessagesController.swift; sourceTree = "<group>"; };
+		8458F5F61D6B3E6A0083BA0B /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		8458F5F81D6B3EAE0083BA0B /* ChatLogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
+		8458F5FA1D6B3F5B0083BA0B /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		847289611D3D48F7007E82DB /* RoomsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomsViewController.swift; sourceTree = "<group>"; };
 		847289651D3E62A0007E82DB /* PublicRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoom.swift; sourceTree = "<group>"; };
 		847289671D3E6481007E82DB /* PublicRoomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoomCell.swift; sourceTree = "<group>"; };
@@ -83,7 +98,6 @@
 		84D687861CF3717F00944D1E /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		84D687881CF371BA00944D1E /* PostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		84D6878A1CF3799700944D1E /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
-		84DA2AEC1D6349CA00B3861B /* Register1VC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Register1VC.swift; sourceTree = "<group>"; };
 		84F45A531D1C339B003F9367 /* RegisterVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterVC.swift; sourceTree = "<group>"; };
 		9E4A6D1C186F9E739AC106F1 /* Pods-ChatHook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatHook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatHook/Pods-ChatHook.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -182,7 +196,12 @@
 				8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */,
 				84A9DB911D46B63F00842B50 /* GetLocation1.swift */,
 				8437C26B1D50D5E400C5CF59 /* PostsVC.swift */,
-				84DA2AEC1D6349CA00B3861B /* Register1VC.swift */,
+				8458F5EC1D69F2420083BA0B /* FinishRegisterController.swift */,
+				8458F5EE1D6B38AB0083BA0B /* MainTabBar.swift */,
+				8458F5F01D6B3D2A0083BA0B /* MapViewController.swift */,
+				8458F5F21D6B3DE00083BA0B /* MessagesController.swift */,
+				8458F5F41D6B3E200083BA0B /* NewMessagesController.swift */,
+				8458F5F81D6B3EAE0083BA0B /* ChatLogController.swift */,
 			);
 			name = Controllers;
 			path = ..;
@@ -199,6 +218,7 @@
 				84D6878A1CF3799700944D1E /* MaterialView.swift */,
 				847289671D3E6481007E82DB /* PublicRoomCell.swift */,
 				8437C2681D4FF19300C5CF59 /* ChatPostCell.swift */,
+				8458F5F61D6B3E6A0083BA0B /* UserCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -210,6 +230,7 @@
 				847289651D3E62A0007E82DB /* PublicRoom.swift */,
 				84A9DB8B1D45702C00842B50 /* User.swift */,
 				8437C2661D4FF10A00C5CF59 /* ChatPost.swift */,
+				8458F5FA1D6B3F5B0083BA0B /* Message.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -365,16 +386,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8458F5EF1D6B38AB0083BA0B /* MainTabBar.swift in Sources */,
 				84D687851CF3712600944D1E /* FeedVC.swift in Sources */,
 				84B9AB381CE2326F0002B132 /* DataService.swift in Sources */,
+				8458F5F31D6B3DE00083BA0B /* MessagesController.swift in Sources */,
 				84B9AB3D1CE235D30002B132 /* ImaggaRouter.swift in Sources */,
 				8437C2691D4FF19300C5CF59 /* ChatPostCell.swift in Sources */,
+				8458F5F51D6B3E200083BA0B /* NewMessagesController.swift in Sources */,
 				847289621D3D48F7007E82DB /* RoomsViewController.swift in Sources */,
+				8458F5F71D6B3E6A0083BA0B /* UserCell.swift in Sources */,
 				84D6878B1CF3799700944D1E /* MaterialView.swift in Sources */,
 				8472896C1D3E989E007E82DB /* TutorialPageViewController.swift in Sources */,
 				84B9AB421CE256610002B132 /* MaterialButton.swift in Sources */,
-				84DA2AED1D6349CA00B3861B /* Register1VC.swift in Sources */,
 				84B9AB201CE225780002B132 /* IntroViewController.swift in Sources */,
+				8458F5FB1D6B3F5B0083BA0B /* Message.swift in Sources */,
+				8458F5F91D6B3EAE0083BA0B /* ChatLogController.swift in Sources */,
 				84B9AB1E1CE225780002B132 /* AppDelegate.swift in Sources */,
 				84B9AB3B1CE233100002B132 /* Constants.swift in Sources */,
 				84A9DB921D46B63F00842B50 /* GetLocation1.swift in Sources */,
@@ -387,8 +413,10 @@
 				8437C26C1D50D5E400C5CF59 /* PostsVC.swift in Sources */,
 				84B9AB461CE266B40002B132 /* MaterialImageView.swift in Sources */,
 				84C8CC891D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift in Sources */,
+				8458F5F11D6B3D2A0083BA0B /* MapViewController.swift in Sources */,
 				84D687871CF3717F00944D1E /* Post.swift in Sources */,
 				847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */,
+				8458F5ED1D69F2420083BA0B /* FinishRegisterController.swift in Sources */,
 				84A9DB8C1D45702C00842B50 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -25,10 +25,7 @@ class DataService {
     var REF_USERS: FIRDatabaseReference{ return _REF_USERS }
     var REF_MESSAGES: FIRDatabaseReference{ return _REF_MESSAGES }
     var REF_CHATROOMS: FIRDatabaseReference{ return _REF_CHATROOMS }
-    
-    
-    
-    
+
     var REF_USER_CURRENT: FIRDatabaseReference{
         let uid = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
         let user = URL_BASE.child("users").child(uid)
