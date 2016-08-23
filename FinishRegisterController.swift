@@ -32,7 +32,7 @@ class FinishRegisterController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 5
         button.layer.masksToBounds = true
-        //button.addTarget(self, action: #selector(handleLoginRegister), forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(handleRegisterSegue), forControlEvents: .TouchUpInside)
         return button
     }()
     
@@ -139,8 +139,10 @@ class FinishRegisterController: UIViewController {
         return .LightContent
     }
     
-    func handleLoginRegister(){
-        
+    func handleRegisterSegue(){
+        let locationController = GetLocation1()
+        locationController.registerViewController = self
+        presentViewController(locationController, animated: true, completion: nil)
     }
     
 }//end view controller

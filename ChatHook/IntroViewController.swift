@@ -141,18 +141,19 @@ class IntroViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupView()
+        NSUserDefaults.standardUserDefaults().setValue("q3KcxAnXh9SXAe9UshCKvPteXgq1", forKey: KEY_UID)
+        //q3KcxAnXh9SXAe9UshCKvPteXgq1
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        if NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) != nil{
-            self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
-        }
+//        if NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) != nil{
+//            self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
+//        }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
     }
     
     func setupView(){
