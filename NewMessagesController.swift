@@ -53,14 +53,14 @@ class NewMessagesController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! PostCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! UserCell
         let user = usersArray[indexPath.row]
         cell.textLabel?.text = user.userName
         cell.detailTextLabel?.text = user.email
         
-//        if let profileImageUrl = user.profilePic{
-//           // cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
-//        }
+        if let profileImageUrl = user.profileImageUrl{
+            cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+        }
         
         return cell
     }

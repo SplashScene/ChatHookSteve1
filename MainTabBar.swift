@@ -9,11 +9,25 @@
 import UIKit
 
 class MainTabBar: UITabBarController {
+    
+    var registerViewController = FinishRegisterController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        //set up our custom view controllers
+        
+        
+        let mapViewController = GetLocation1()
+        let messagesViewController = MessagesController()
+        let chatNavController = UINavigationController(rootViewController: messagesViewController)
+        
+        mapViewController.title = "Home"
+        mapViewController.tabBarItem.image = UIImage(named: "GlobeIcon25")
+        messagesViewController.title = "Chat"
+        messagesViewController.tabBarItem.image = UIImage(named: "ChatIcon25")
+        
+        viewControllers = [mapViewController, chatNavController]
+        
     }
 
     override func didReceiveMemoryWarning() {

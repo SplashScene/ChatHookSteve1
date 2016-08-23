@@ -77,10 +77,6 @@ class GetLocation1: UIViewController {
         self.locationManager?.delegate = self
         self.locationManager?.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         checkAuthorizationStatus()
-        
-        
-        //self.mapView.showsUserLocation = true
-        
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -89,11 +85,11 @@ class GetLocation1: UIViewController {
     
     func fetchCurrentUser(){
         currentUser.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let dictionary = snapshot.value as? [String: AnyObject]{
-                self.currentUserName = dictionary["UserName"] as? String
-                self.currentProfilePicURL = dictionary["ProfileImage"] as? String
-                self.fetchProfilePic(self.currentProfilePicURL!)
-            }
+                if let dictionary = snapshot.value as? [String: AnyObject]{
+                    self.currentUserName = dictionary["UserName"] as? String
+                    self.currentProfilePicURL = dictionary["ProfileImage"] as? String
+                    self.fetchProfilePic(self.currentProfilePicURL!)
+                }
             }, withCancelBlock: nil)
         
         
@@ -162,8 +158,8 @@ class GetLocation1: UIViewController {
             currentUser.child("Online").setValue(true)
             currentUser.child("UserLatitude").setValue(userLocation!.coordinate.latitude)
             currentUser.child("UserLongitude").setValue(userLocation!.coordinate.longitude)
-            self.mapView.showsUserLocation = true
             centerMapOnLocation(userLocation!)
+            self.mapView.showsUserLocation = true
             addRadiusCircle(userLocation!)
         }else{
             userOnline = false
@@ -172,8 +168,8 @@ class GetLocation1: UIViewController {
             currentUser.child("Online").setValue(false)
             currentUser.child("UserLatitude").removeValue()
             currentUser.child("UserLongitude").removeValue()
-            self.mapView.showsUserLocation = false
             centerMapOnLocation(userLocation!)
+            self.mapView.showsUserLocation = false
             //addRadiusCircle(userLocation!)
         }
     }
@@ -184,7 +180,8 @@ class GetLocation1: UIViewController {
         alert.addAction(okAction)
         presentViewController(alert, animated: true, completion: nil)
     }
-       func startTimerForLocationUpdate(){
+    
+    func startTimerForLocationUpdate(){
         if timer != nil{
             timer.invalidate()
         }
@@ -205,6 +202,11 @@ extension GetLocation1: CLLocationManagerDelegate{
             
             //userLocation = locations.first
             userLocation = CLLocation(latitude: 41.92413, longitude: -88.161242)
+            if userLocation != nil{
+                print("I have your location")
+            }else{
+                print("I got NO location")
+            }
             centerMapOnLocation(userLocation!)
            
         }
@@ -233,7 +235,7 @@ extension GetLocation1: MKMapViewDelegate{
             addRadiusCircle(loc)
         }
     }
-    */
+ 
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation.isEqual(mapView.userLocation) {
             let annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "userLocation")
@@ -245,7 +247,7 @@ extension GetLocation1: MKMapViewDelegate{
             return annotationView
         }
     }
-    
+    */
     //MARK: - Overlay Functions
     func addRadiusCircle(location: CLLocation){
         self.mapView.delegate = self

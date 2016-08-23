@@ -140,9 +140,13 @@ class FinishRegisterController: UIViewController {
     }
     
     func handleRegisterSegue(){
-        let locationController = GetLocation1()
-        locationController.registerViewController = self
-        presentViewController(locationController, animated: true, completion: nil)
+//        let locationController = GetLocation1()
+//        locationController.registerViewController = self
+//        presentViewController(locationController, animated: true, completion: nil)
+        let tabController = MainTabBar()
+        tabController.registerViewController = self
+        presentViewController(tabController, animated: true, completion: nil)
+
     }
     
 }//end view controller

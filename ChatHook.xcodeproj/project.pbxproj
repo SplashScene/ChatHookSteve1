@@ -19,6 +19,7 @@
 		8458F5F71D6B3E6A0083BA0B /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5F61D6B3E6A0083BA0B /* UserCell.swift */; };
 		8458F5F91D6B3EAE0083BA0B /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5F81D6B3EAE0083BA0B /* ChatLogController.swift */; };
 		8458F5FB1D6B3F5B0083BA0B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5FA1D6B3F5B0083BA0B /* Message.swift */; };
+		8458F5FD1D6CB5B40083BA0B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5FC1D6CB5B40083BA0B /* Extensions.swift */; };
 		847289621D3D48F7007E82DB /* RoomsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289611D3D48F7007E82DB /* RoomsViewController.swift */; };
 		847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289651D3E62A0007E82DB /* PublicRoom.swift */; };
 		847289681D3E6481007E82DB /* PublicRoomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289671D3E6481007E82DB /* PublicRoomCell.swift */; };
@@ -67,6 +68,7 @@
 		8458F5F61D6B3E6A0083BA0B /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		8458F5F81D6B3EAE0083BA0B /* ChatLogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
 		8458F5FA1D6B3F5B0083BA0B /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		8458F5FC1D6CB5B40083BA0B /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		847289611D3D48F7007E82DB /* RoomsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomsViewController.swift; sourceTree = "<group>"; };
 		847289651D3E62A0007E82DB /* PublicRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoom.swift; sourceTree = "<group>"; };
 		847289671D3E6481007E82DB /* PublicRoomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoomCell.swift; sourceTree = "<group>"; };
@@ -248,6 +250,7 @@
 			isa = PBXGroup;
 			children = (
 				84B9AB3A1CE233100002B132 /* Constants.swift */,
+				8458F5FC1D6CB5B40083BA0B /* Extensions.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -417,6 +420,7 @@
 				84D687871CF3717F00944D1E /* Post.swift in Sources */,
 				847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */,
 				8458F5ED1D69F2420083BA0B /* FinishRegisterController.swift in Sources */,
+				8458F5FD1D6CB5B40083BA0B /* Extensions.swift in Sources */,
 				84A9DB8C1D45702C00842B50 /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
