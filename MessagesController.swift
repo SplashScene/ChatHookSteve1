@@ -15,6 +15,9 @@ class MessagesController: UITableViewController {
     var messagesArray = [Message]()
     var messagesDictionary = [String: Message]()
     let cellID = "cellID"
+    let currentUser = DataService.ds.REF_USER_CURRENT
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,9 +97,9 @@ class MessagesController: UITableViewController {
         profileImageView.contentMode = .ScaleAspectFill
         profileImageView.layer.cornerRadius = 20
         profileImageView.clipsToBounds = true
-//        if let profileImageUrl = user.profileImageUrl{
-//            profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
-//        }
+        if let profileImageUrl = user.profileImageUrl{
+            profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+        }
         
         containerView.addSubview(profileImageView)
         
@@ -124,9 +127,13 @@ class MessagesController: UITableViewController {
     }
     
     func showChatControllerForUser(user: User){
-        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
-        chatLogController.user = user
-        navigationController?.pushViewController(chatLogController, animated: true)
+        let chatLogController = ChatViewController()
+            chatLogController.senderId = user.postKey
+            chatLogController.senderDisplayName = user.userName
+            navigationController?.pushViewController(chatLogController, animated: true)
+//        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+//        chatLogController.user = user
+//        navigationController?.pushViewController(chatLogController, animated: true)
     }
     /*
     func handleLogout(){

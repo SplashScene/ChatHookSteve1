@@ -10,10 +10,12 @@ import UIKit
 import Firebase
 
 class RoomsViewController: UITableViewController {
+    let currentUser = DataService.ds.REF_USER_CURRENT
     var currentUserName: String!
     var currentProfilePicURL: String!
     var roomsArray = [PublicRoom]()
     var chosenRoom: PublicRoom?
+    let cellID = "cellID"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,19 +27,23 @@ class RoomsViewController: UITableViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        let currentUser = DataService.ds.REF_USER_CURRENT
+        tableView.registerClass(PublicRoomCell.self, forCellReuseIdentifier: "cellID")
         
-        currentUser.observeEventType(.Value, withBlock: {
-            snapshot in
-            if let myUserName = snapshot.value!.objectForKey("UserName"){
-                self.currentUserName = myUserName as! String
+        fetchCurrentUser()
+        observeRooms()
+    }
+    
+    func fetchCurrentUser(){
+        currentUser.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject]{
+                self.currentUserName = dictionary["UserName"] as! String
+                self.currentProfilePicURL = dictionary["ProfileImage"] as! String
             }
-            if let myProfilePic = snapshot.value!.objectForKey("ProfileImage"){
-                self.currentProfilePicURL = myProfilePic  as! String
-            }
-            
-        })
-        
+            }, withCancelBlock: nil)
+
+    }
+    
+    func observeRooms(){
         DataService.ds.REF_CHATROOMS.observeEventType(.Value, withBlock: {
             snapshot in
             
@@ -45,14 +51,16 @@ class RoomsViewController: UITableViewController {
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
                 for snap in snapshots{
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
-                        let key = snap.key
-                        let post = PublicRoom(postKey: key, dictionary: postDict)
+                        let post = PublicRoom()
+                        post.setValuesForKeysWithDictionary(postDict)
                         self.roomsArray.insert(post, atIndex: 0)
+                        print("Rooms Array count is: \(self.roomsArray.count)")
                     }
                 }
             }
             self.tableView.reloadData()
         })
+
     }
 
     func promptForAddRoom(){
@@ -92,15 +100,19 @@ class RoomsViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let post = roomsArray[indexPath.row]
         
-        if let cell = tableView.dequeueReusableCellWithIdentifier("RoomCell") as? PublicRoomCell{
-            cell.request?.cancel()
-            cell.configureCell(post)
+        if let cell = tableView.dequeueReusableCellWithIdentifier(cellID) as? PublicRoomCell{
+            cell.publicRoom = post
             return cell
         }else{
             return PublicRoomCell()
         }
     }
-    
+    /*
+     let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! UserCell
+     let message = messagesArray[indexPath.row]
+     cell.message = message
+     return cell
+ */
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
@@ -118,15 +130,7 @@ class RoomsViewController: UITableViewController {
         performSegueWithIdentifier("GoToChatPost", sender: nil)
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "GoToChatPost"{
-            let publicPosts = segue.destinationViewController as! PostsVC
-            
-            publicPosts.roomID = chosenRoom?.postKey
-            publicPosts.roomName = chosenRoom?.roomName
-        }
-    }
-
+    
 }//end RoomsViewController
 
 

@@ -19,14 +19,18 @@ class MainTabBar: UITabBarController {
         
         let mapViewController = GetLocation1()
         let messagesViewController = MessagesController()
+        let postsViewController = RoomsViewController()
         let chatNavController = UINavigationController(rootViewController: messagesViewController)
+        let postsNavController = UINavigationController(rootViewController: postsViewController)
         
         mapViewController.title = "Home"
         mapViewController.tabBarItem.image = UIImage(named: "GlobeIcon25")
         messagesViewController.title = "Chat"
         messagesViewController.tabBarItem.image = UIImage(named: "ChatIcon25")
+        postsViewController.title = "Posts"
+        postsViewController.tabBarItem.image = UIImage(named: "peeps")
         
-        viewControllers = [mapViewController, chatNavController]
+        viewControllers = [mapViewController, chatNavController, postsNavController]
         
     }
 
