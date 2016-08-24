@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 
+
 class MessagesController: UITableViewController {
 
     let db = FIRDatabase.database().reference()
@@ -47,7 +48,6 @@ class MessagesController: UITableViewController {
                         return message1.timestamp?.intValue > message2.timestamp?.intValue
                     })
                 }
-
                 dispatch_async(dispatch_get_main_queue()){
                     self.tableView.reloadData()
                 }
@@ -140,18 +140,18 @@ class MessagesController: UITableViewController {
             
             navigationController?.pushViewController(chatLogController, animated: true)
     }
-    /*
-    func handleLogout(){
-        do{
-            try FIRAuth.auth()?.signOut()
-        }catch let logoutError{
-            print(logoutError)
-        }
-        let loginController = LoginController()
-        loginController.messagesController = self
-        presentViewController(loginController, animated: true, completion: nil)
-    }
-    */
+    
+//    func handleLogout(){
+//        do{
+//            try FIRAuth.auth()?.signOut()
+//        }catch let logoutError{
+//            print(logoutError)
+//        }
+//        let loginController = IntroViewController()
+//            loginController.messageController = self
+//        presentViewController(loginController, animated: true, completion: nil)
+//    }
+    
     func handleNewMessage(){
         let newMessageController = NewMessagesController()
         newMessageController.messagesController = self

@@ -39,21 +39,22 @@ class NewMessagesController: UITableViewController {
     }
     
     func fetchUser(){
-        FIRDatabase.database().reference().child("users").observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            if let dictionary = snapshot.value as? [String: AnyObject]{
-                let userPostKey = snapshot.key
-                let user = User(postKey: userPostKey, dictionary: dictionary)
-                if user.postKey != self.uid {
-                    self.usersArray.append(user)
+        FIRDatabase.database().reference().child("users").observeEventType(.ChildAdded, withBlock: {
+            (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]{
+                    let userPostKey = snapshot.key
+                    let user = User(postKey: userPostKey, dictionary: dictionary)
+                    if user.postKey != self.uid {
+                        self.usersArray.append(user)
+                    }
                 }
-                
                 dispatch_async(dispatch_get_main_queue(), {
                     self.tableView.reloadData()
                 })
-            }
-            
             },
                 withCancelBlock: nil)
+        
+        
     }
     
     func handleCancel(){

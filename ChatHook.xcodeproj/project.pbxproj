@@ -21,6 +21,7 @@
 		8458F5FD1D6CB5B40083BA0B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5FC1D6CB5B40083BA0B /* Extensions.swift */; };
 		8458F6011D6DF7870083BA0B /* FinishRegister+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F6001D6DF7870083BA0B /* FinishRegister+Image.swift */; };
 		8458F6031D6E0DB60083BA0B /* testPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F6021D6E0DB60083BA0B /* testPostCell.swift */; };
+		8458F6051D6E44200083BA0B /* UserPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F6041D6E44200083BA0B /* UserPost.swift */; };
 		847289621D3D48F7007E82DB /* RoomsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289611D3D48F7007E82DB /* RoomsViewController.swift */; };
 		847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289651D3E62A0007E82DB /* PublicRoom.swift */; };
 		847289681D3E6481007E82DB /* PublicRoomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289671D3E6481007E82DB /* PublicRoomCell.swift */; };
@@ -69,6 +70,7 @@
 		8458F5FC1D6CB5B40083BA0B /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8458F6001D6DF7870083BA0B /* FinishRegister+Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FinishRegister+Image.swift"; sourceTree = "<group>"; };
 		8458F6021D6E0DB60083BA0B /* testPostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = testPostCell.swift; sourceTree = "<group>"; };
+		8458F6041D6E44200083BA0B /* UserPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserPost.swift; sourceTree = "<group>"; };
 		847289611D3D48F7007E82DB /* RoomsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomsViewController.swift; sourceTree = "<group>"; };
 		847289651D3E62A0007E82DB /* PublicRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoom.swift; sourceTree = "<group>"; };
 		847289671D3E6481007E82DB /* PublicRoomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoomCell.swift; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				84A9DB8B1D45702C00842B50 /* User.swift */,
 				8437C2661D4FF10A00C5CF59 /* ChatPost.swift */,
 				8458F5FA1D6B3F5B0083BA0B /* Message.swift */,
+				8458F6041D6E44200083BA0B /* UserPost.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -391,6 +394,7 @@
 				8458F5F31D6B3DE00083BA0B /* MessagesController.swift in Sources */,
 				84B9AB3D1CE235D30002B132 /* ImaggaRouter.swift in Sources */,
 				8437C2691D4FF19300C5CF59 /* ChatPostCell.swift in Sources */,
+				8458F6051D6E44200083BA0B /* UserPost.swift in Sources */,
 				8458F5F51D6B3E200083BA0B /* NewMessagesController.swift in Sources */,
 				847289621D3D48F7007E82DB /* RoomsViewController.swift in Sources */,
 				8458F5F71D6B3E6A0083BA0B /* UserCell.swift in Sources */,

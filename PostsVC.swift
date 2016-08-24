@@ -20,6 +20,8 @@ class PostsVC: UIViewController{
     var roomID: String!
     var roomName: String!
     
+    var postsArray = [UserPost]()
+    
     
     let topView: MaterialView = {
         let view = MaterialView()
@@ -45,12 +47,22 @@ class PostsVC: UIViewController{
         return isv
     }()
     
-    let postButton: MaterialButton = {
+    lazy var postButton: MaterialButton = {
         let pb = MaterialButton()
             pb.translatesAutoresizingMaskIntoConstraints = false
             pb.setTitle("Post", forState: .Normal)
+        pb.addTarget(self, action: #selector(handlePostButtonTapped), forControlEvents: .TouchUpInside)
         return pb
     }()
+    
+    func handlePostButtonTapped(){
+        if let unwrappedImage = postedImage{
+            uploadFirebaseImage(unwrappedImage)
+        }
+        else if let postedText = postTextField.text where postedText != ""{
+            self.postToFirebase(nil)
+        }
+    }
     
     let postTableView: UITableView = {
         let ptv = UITableView()
@@ -70,7 +82,47 @@ class PostsVC: UIViewController{
         postTableView.registerClass(testPostCell.self, forCellReuseIdentifier: "cellID")
         setupTopView()
         setupPostTableView()
+        fetchCurrentUser()
+        fetchPosts()
     }
+    
+    func fetchCurrentUser(){
+        let currentUser = DataService.ds.REF_USER_CURRENT
+        
+        currentUser.observeEventType(.Value, withBlock: {
+            snapshot in
+            if let myUserName = snapshot.value!.objectForKey("UserName"){
+                self.currentUserName = myUserName as! String
+            }
+            if let myProfilePic = snapshot.value!.objectForKey("ProfileImage"){
+                self.currentProfilePicURL = myProfilePic  as! String
+            }
+        })
+    }
+    
+    func fetchPosts(){
+        DataService.ds.REF_POSTS.observeEventType(.Value, withBlock: {
+            snapshot in
+            
+            self.postsArray = []
+            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
+                for snap in snapshots{
+                    if let postDict = snap.value as? Dictionary<String, AnyObject>{
+                        let post = UserPost()
+                            post.setValuesForKeysWithDictionary(postDict)
+                        self.postsArray.insert(post, atIndex: 0)
+                        print("Added to post array")
+                    }
+                }
+            }
+            
+        })
+        
+        dispatch_async(dispatch_get_main_queue()){
+            self.postTableView.reloadData()
+        }
+    }
+
     
     func setupTopView(){
         //need x, y, width and height constraints
@@ -139,39 +191,7 @@ class PostsVC: UIViewController{
         fetchPosts()
     }
     
-    func fetchCurrentUser(){
-        let currentUser = DataService.ds.REF_USER_CURRENT
-        
-        currentUser.observeEventType(.Value, withBlock: {
-            snapshot in
-            if let myUserName = snapshot.value!.objectForKey("UserName"){
-                self.currentUserName = myUserName as! String
-            }
-            if let myProfilePic = snapshot.value!.objectForKey("ProfileImage"){
-                self.currentProfilePicURL = myProfilePic  as! String
-            }
-        })
-    }
-    
-    func fetchPosts(){
-        DataService.ds.REF_POSTS.observeEventType(.Value, withBlock: {
-            snapshot in
-            
-            self.postsArray = []
-            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
-                for snap in snapshots{
-                    if let postDict = snap.value as? Dictionary<String, AnyObject>{
-                        let key = snap.key
-                        let post = ChatPost(postKey: key, dictionary: postDict)
-                        self.postsArray.append(post)
-                        print("Added to post array")
-                    }
-                }
-            }
-            self.tableView.reloadData()
-        })
-    }
-    
+     
     @IBAction func cameraImageTapped(sender: UITapGestureRecognizer) {
         self.pickPhoto()
     }
@@ -264,8 +284,16 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! testPostCell
-        
+        let post = postsArray[indexPath.row]
+        cell.userPost = post
         return cell
+        
+        /*
+         let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! UserCell
+         let message = messagesArray[indexPath.row]
+         cell.message = message
+         return cell
+ */
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -273,7 +301,7 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return postsArray.count
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -290,6 +318,58 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
 //        }
 //    }
     
+}//end extension
+
+extension PostsVC{
+    func uploadFirebaseImage(image: UIImage){
+        let imageName = NSUUID().UUIDString
+        let storageRef = FIRStorage.storage().reference().child("post_images").child("\(imageName).jpg")
+        
+        if let uploadData = UIImageJPEGRepresentation(image, 0.2){
+            storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
+                if error != nil{
+                    print(error.debugDescription)
+                    return
+                }
+                if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
+                    self.postToFirebase(profileImageUrl)
+                    
+                }
+            })
+        }
+        
+    }
+    func postToFirebase(imgURL: String?){
+        
+        let timestamp: NSNumber = NSDate().timeIntervalSince1970
+        let authorID = FIRAuth.auth()!.currentUser!.uid
+        let toRoom = roomID
+        
+        var post: Dictionary<String, AnyObject> = [
+            "postText": postTextField.text!,
+            "likes": 0,
+            "fromID" : authorID,
+            "timestamp": timestamp,
+            "toRoom" : toRoom,
+            "authorPic": currentProfilePicURL,
+            "authorName": currentUserName,
+        ]
+        
+        if imgURL != nil {
+            post["showcaseImg"] = imgURL!
+        }
+        
+        let firebasePost = DataService.ds.REF_POSTS.childByAutoId()
+            firebasePost.setValue(post)
+        
+        postTextField.text = ""
+        imageSelectorView.image = UIImage(named: "cameraIcon")
+        postedImage = nil
+        
+        dispatch_async(dispatch_get_main_queue()){
+            self.postTableView.reloadData()
+        }
+    }
 }//end extension
 
 /*
@@ -335,54 +415,6 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     
 }//end extension
 */
-/*
-extension PostsVC{
-       func uploadFirebaseImage(image: UIImage){
-        let imageName = NSUUID().UUIDString
-        let storageRef = FIRStorage.storage().reference().child("post_images").child("\(imageName).jpg")
-        
-        if let uploadData = UIImageJPEGRepresentation(image, 0.2){
-            storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
-                if error != nil{
-                    print(error.debugDescription)
-                    return
-                }
-                if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
-                    self.postToFirebase(profileImageUrl)
-                    self.activityIndicatorView.hidden = true
-                }
-            })
-        }
 
-    }
-    func postToFirebase(imgURL: String?){
-        //let currentUserName: String!
-        let timestamp: NSNumber = NSDate().timeIntervalSince1970
-        let authorID = FIRAuth.auth()!.currentUser!.uid
-        let toRoom = roomID
-        
-        var post: Dictionary<String, AnyObject> = [
-            "Description": postField.text!,
-            "Likes": 0,
-            "Author": currentUserName,
-            "AuthorPic": currentProfilePicURL,
-            "AuthorID" : authorID,
-            "timestamp": timestamp,
-            "toRoom" : toRoom
-        ]
-        
-        if imgURL != nil {
-            post["PostURL"] = imgURL!
-        }
-        
-        let firebasePost = DataService.ds.REF_POSTS.childByAutoId()
-        firebasePost.setValue(post)
-        
-        postField.text = ""
-        imageSelectorImage.image = UIImage(named: "cameraIcon")
-        postedImage = nil
-        
-        tableView.reloadData()
-    }
-}//end extension
- */
+
+

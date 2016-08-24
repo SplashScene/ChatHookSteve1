@@ -19,6 +19,8 @@ class IntroViewController: UIViewController {
 //    var emailTextField: MaterialTextField!
 //    var passwordTextField: MaterialTextField!
     
+//    var messageController = MessagesController()
+    
     let chatHookLogo: UILabel = {
         let logoLabel = UILabel()
             logoLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -132,7 +134,7 @@ class IntroViewController: UIViewController {
         let button = MaterialButton(frame: CGRect(x: 0, y: 0, width: 100, height: 44))
             button.translatesAutoresizingMaskIntoConstraints = false
             button.setTitle("Sign In", forState: .Normal)
-            button.addTarget(self, action: #selector(handleRegisterSegue), forControlEvents: UIControlEvents.TouchUpInside)
+            button.addTarget(self, action: #selector(attemptLogin), forControlEvents: UIControlEvents.TouchUpInside)
         return button
     }()
 
@@ -141,7 +143,7 @@ class IntroViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupView()
-        NSUserDefaults.standardUserDefaults().setValue("q3KcxAnXh9SXAe9UshCKvPteXgq1", forKey: KEY_UID)
+        //NSUserDefaults.standardUserDefaults().setValue("q3KcxAnXh9SXAe9UshCKvPteXgq1", forKey: KEY_UID)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -308,7 +310,7 @@ class IntroViewController: UIViewController {
         }//end facebook login handler
     }
     
-    func attemptLogin(sender: UIButton!){
+    func attemptLogin(){
         print("Inside Attempt Login")
         
         guard let email = emailTextField.text, password = passwordTextField.text else {
@@ -341,7 +343,7 @@ class IntroViewController: UIViewController {
                             
                             DataService.ds.createFirebaseUser(user!.uid, user: userData as! Dictionary<String, AnyObject>)
                             
-                            //self.performSegueWithIdentifier(SEGUE_REGISTER, sender: nil)
+                            self.handleRegisterSegue()
                         }
                     })
                 } else if error!.code == STATUS_ACCOUNT_WRONGPASSWORD{
@@ -350,7 +352,8 @@ class IntroViewController: UIViewController {
             } else {
                 //set only to allow different signins
                 NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
-                //self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
+                self.handleReturningUser()
+                
             }
         })
     }
@@ -367,6 +370,13 @@ class IntroViewController: UIViewController {
         loginController.introViewController = self
         presentViewController(loginController, animated: true, completion: nil)
     }
+    
+    func handleReturningUser(){
+        let tabController = MainTabBar()
+        tabController.introViewController = self
+        presentViewController(tabController, animated: true, completion: nil)
+    }
+    
 
 }//end class
 

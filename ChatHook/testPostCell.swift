@@ -7,8 +7,39 @@
 //
 
 import UIKit
+import Firebase
 
 class testPostCell: UITableViewCell {
+    var userPost: UserPost?{
+        didSet{
+                let ref = DataService.ds.REF_POSTS
+                    ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                    if let dictionary = snapshot.value as? [String: AnyObject]{
+                        
+                        self.userNameLabel.text = dictionary["authorName"] as? String
+                        self.descriptionText.text = dictionary["postText"] as? String
+                        self.likeCount.text = String(dictionary["likes"])
+                        if let profileImageUrl = dictionary["authorPic"] as? String {
+                            self.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+                        }
+                        if let showImage = dictionary["showcaseImg"] as? String{
+                            self.showcaseImageView.loadImageUsingCacheWithUrlString(showImage)
+                        }
+                    }
+                    }, withCancelBlock: nil)
+            
+            
+            
+//            if let seconds = userPost?.timestamp?.doubleValue{
+//                let timestampDate = NSDate(timeIntervalSince1970: seconds)
+//                let dateFormatter = NSDateFormatter()
+//                    dateFormatter.dateFormat = "hh:mm:ss a"
+//                timeLabel.text = dateFormatter.stringFromDate(timestampDate)
+//            }
+            
+        }
+    }
+
     var postLiked: Bool = false
     
     required init?(coder aDecoder: NSCoder) {
