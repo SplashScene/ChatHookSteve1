@@ -51,10 +51,10 @@ class ChatViewController: JSQMessagesViewController {
     func setupNavBarWithUser(){
         
         let titleView = UIView()
-        titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+            titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
         
         let containerView = UIView()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.translatesAutoresizingMaskIntoConstraints = false
         
         titleView.addSubview(containerView)
         

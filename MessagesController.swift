@@ -92,10 +92,10 @@ class MessagesController: UITableViewController {
         titleView.addSubview(containerView)
         
         let profileImageView = UIImageView()
-        profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileImageView.contentMode = .ScaleAspectFill
-        profileImageView.layer.cornerRadius = 20
-        profileImageView.clipsToBounds = true
+            profileImageView.translatesAutoresizingMaskIntoConstraints = false
+            profileImageView.contentMode = .ScaleAspectFill
+            profileImageView.layer.cornerRadius = 20
+            profileImageView.clipsToBounds = true
         if let profileImageUrl = user.profileImageUrl{
             profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
         }

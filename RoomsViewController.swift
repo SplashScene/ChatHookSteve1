@@ -51,13 +51,15 @@ class RoomsViewController: UITableViewController {
                 for snap in snapshots{
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
                         let post = PublicRoom()
-                        post.setValuesForKeysWithDictionary(postDict)
+                            post.setValuesForKeysWithDictionary(postDict)
                         self.roomsArray.insert(post, atIndex: 0)
                         print("Rooms Array count is: \(self.roomsArray.count)")
                     }
                 }
             }
-            self.tableView.reloadData()
+            dispatch_async(dispatch_get_main_queue()){
+                self.tableView.reloadData()
+            }
         })
     }
 
@@ -93,14 +95,13 @@ class RoomsViewController: UITableViewController {
             
             tableView.reloadData()
         }
-        
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let post = roomsArray[indexPath.row]
         
         if let cell = tableView.dequeueReusableCellWithIdentifier(cellID) as? PublicRoomCell{
-            cell.publicRoom = post
+               cell.publicRoom = post
             return cell
         }else{
             return PublicRoomCell()
