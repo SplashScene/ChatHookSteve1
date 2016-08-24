@@ -134,6 +134,8 @@ class FinishRegisterController: UIViewController {
         return .LightContent
     }
     
+    
+    
     func handleRegisterSegue(){
         let tabController = MainTabBar()
             tabController.registerViewController = self
