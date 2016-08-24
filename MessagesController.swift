@@ -47,8 +47,7 @@ class MessagesController: UITableViewController {
                         return message1.timestamp?.intValue > message2.timestamp?.intValue
                     })
                 }
-                
-                
+
                 dispatch_async(dispatch_get_main_queue()){
                     self.tableView.reloadData()
                 }
@@ -130,10 +129,16 @@ class MessagesController: UITableViewController {
         let chatLogController = ChatViewController()
             chatLogController.senderId = user.postKey
             chatLogController.senderDisplayName = user.userName
+            chatLogController.user = user
+        
+            var img: UIImage?
+            if let url = user.profileImageUrl{
+                img = imageCache.objectForKey(url) as? UIImage!
+            }
+        
+            chatLogController.messageImage = img
+            
             navigationController?.pushViewController(chatLogController, animated: true)
-//        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
-//        chatLogController.user = user
-//        navigationController?.pushViewController(chatLogController, animated: true)
     }
     /*
     func handleLogout(){

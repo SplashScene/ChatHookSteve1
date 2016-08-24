@@ -16,59 +16,55 @@ class FinishRegisterController: UIViewController {
     
     let inputsContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.whiteColor()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 5
-        view.layer.masksToBounds = true
+            view.backgroundColor = UIColor.whiteColor()
+            view.translatesAutoresizingMaskIntoConstraints = false
+            view.layer.cornerRadius = 5
+            view.layer.masksToBounds = true
         return view
     }()
     
     lazy var loginRegisterButton: UIButton = {
         let button = UIButton(type: .System)
-        button.backgroundColor = UIColor(r: 80, g: 101, b: 161)
-        button.setTitle("Register", forState: .Normal)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        button.titleLabel?.font = UIFont.boldSystemFontOfSize(16)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(handleRegisterSegue), forControlEvents: .TouchUpInside)
+            button.backgroundColor = UIColor(r: 80, g: 101, b: 161)
+            button.setTitle("Register", forState: .Normal)
+            button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            button.titleLabel?.font = UIFont.boldSystemFontOfSize(16)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.layer.cornerRadius = 5
+            button.layer.masksToBounds = true
+            button.addTarget(self, action: #selector(handleRegisterSegue), forControlEvents: .TouchUpInside)
         return button
     }()
     
-    
-    
     let userNameTextField: MaterialTextField = {
         let ntf = MaterialTextField()
-        ntf.placeholder = "User Name"
-        ntf.translatesAutoresizingMaskIntoConstraints = false
+            ntf.placeholder = "User Name"
+            ntf.translatesAutoresizingMaskIntoConstraints = false
         return ntf
     }()
     
     let nameSeparatorView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
-        view.translatesAutoresizingMaskIntoConstraints = false
+            view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
+            view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
     let fullNameTextField: MaterialTextField = {
         let etf = MaterialTextField()
-        etf.placeholder = "Full Name"
-        etf.translatesAutoresizingMaskIntoConstraints = false
+            etf.placeholder = "Full Name"
+            etf.translatesAutoresizingMaskIntoConstraints = false
         return etf
     }()
     
-    
     lazy var profileImageView: MaterialImageView = {
         let imageView = MaterialImageView(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
-        imageView.image = UIImage(named: "genericProfile")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pickPhoto)))
-        imageView.userInteractionEnabled = true
+            imageView.image = UIImage(named: "genericProfile")
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pickPhoto)))
+            imageView.userInteractionEnabled = true
         return imageView
     }()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,7 +89,6 @@ class FinishRegisterController: UIViewController {
         profileImageView.widthAnchor.constraintEqualToConstant(150).active = true
         profileImageView.heightAnchor.constraintEqualToConstant(150).active = true
     }
-    
     
     func setupInputsContainerView(){
         //need x, y, width, height constraints
@@ -140,82 +135,11 @@ class FinishRegisterController: UIViewController {
     }
     
     func handleRegisterSegue(){
-//        let locationController = GetLocation1()
-//        locationController.registerViewController = self
-//        presentViewController(locationController, animated: true, completion: nil)
         let tabController = MainTabBar()
-        tabController.registerViewController = self
+            tabController.registerViewController = self
         presentViewController(tabController, animated: true, completion: nil)
-
     }
     
 }//end view controller
 
-extension FinishRegisterController:UIImagePickerControllerDelegate, UINavigationControllerDelegate{
-    func takePhotoWithCamera(){
-        let imagePicker = UIImagePickerController()
-            imagePicker.sourceType = .Camera
-            imagePicker.delegate = self
-            imagePicker.allowsEditing = true
-        presentViewController(imagePicker, animated: true, completion: nil)
-        
-    }
-    
-    func choosePhotoFromLibrary(){
-        let imagePicker = UIImagePickerController()
-            imagePicker.sourceType = .PhotoLibrary
-            imagePicker.delegate = self
-            imagePicker.allowsEditing = true
-        presentViewController(imagePicker, animated: true, completion: nil)
-    }
-    
-    
-    func pickPhoto(){
-        if UIImagePickerController.isSourceTypeAvailable(.Camera){
-            showPhotoMenu()
-        }else{
-            choosePhotoFromLibrary()
-        }
-    }
-    
-    func showPhotoMenu(){
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
-        alertController.addAction(cancelAction)
-        
-        let takePhotoAction = UIAlertAction(title: "Take Photo", style: .Default, handler: {
-            _ in
-            self.takePhotoWithCamera()
-        })
-        alertController.addAction(takePhotoAction)
-        
-        let chooseFromLibraryAction = UIAlertAction(title: "Choose From Library", style: .Default, handler: {
-            _ in
-            self.choosePhotoFromLibrary()
-        })
-        alertController.addAction(chooseFromLibraryAction)
-        
-        presentViewController(alertController, animated: true, completion: nil)
-        
-    }
-    
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        guard let image = info[UIImagePickerControllerEditedImage] as? UIImage else {
-            print("Info did not have the required UIImage for the Original Image")
-            dismissViewControllerAnimated(true, completion: nil)
-            return
-        }
-        
-        profileImageView.image = image
-
-        
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
-}
-
-}
 

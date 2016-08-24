@@ -12,12 +12,15 @@ import Firebase
 class UserCell: UITableViewCell {
     var message: Message?{
         didSet{
+            
             if let toId = message?.toId{
                 let ref = FIRDatabase.database().reference().child("users").child(toId)
+                
                 ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                     if let dictionary = snapshot.value as? [String: AnyObject]{
-                        self.textLabel?.text = dictionary["name"] as? String
-                        if let profileImageUrl = dictionary["profileImageUrl"] as? String{
+                       
+                        self.textLabel?.text = dictionary["UserName"] as? String
+                        if let profileImageUrl = dictionary["ProfileImage"] as? String{
                             self.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
                         }
                     }

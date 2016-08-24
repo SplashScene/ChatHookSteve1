@@ -23,11 +23,11 @@ class RoomsViewController: UITableViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(RoomsViewController.promptForAddRoom))
         
         title = "Public Rooms"
-        tableView.estimatedRowHeight = 65
+        tableView.estimatedRowHeight = 72
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.registerClass(PublicRoomCell.self, forCellReuseIdentifier: "cellID")
+        tableView.registerClass(PublicRoomCell.self, forCellReuseIdentifier: cellID)
         
         fetchCurrentUser()
         observeRooms()
@@ -40,7 +40,6 @@ class RoomsViewController: UITableViewController {
                 self.currentProfilePicURL = dictionary["ProfileImage"] as! String
             }
             }, withCancelBlock: nil)
-
     }
     
     func observeRooms(){
@@ -60,29 +59,29 @@ class RoomsViewController: UITableViewController {
             }
             self.tableView.reloadData()
         })
-
     }
 
     func promptForAddRoom(){
         let ac = UIAlertController(title: "Enter Room Name", message: "What is the name of your public room?", preferredStyle: .Alert)
-        ac.addTextFieldWithConfigurationHandler{ (textField: UITextField) in
-            textField.placeholder = "You Room Name"
+            ac.addTextFieldWithConfigurationHandler{ (textField: UITextField) in
+                textField.placeholder = "You Room Name"
         }
         
-        ac.addAction(UIAlertAction(title: "Submit", style: .Default){[unowned self, ac](action: UIAlertAction!) in
-                let roomName = ac.textFields![0]
-                self.postToFirebase(roomName.text!)
+            ac.addAction(UIAlertAction(title: "Submit", style: .Default){[unowned self, ac](action: UIAlertAction!) in
+                    let roomName = ac.textFields![0]
+                    self.postToFirebase(roomName.text!)
             })
         presentViewController(ac, animated: true, completion: nil)
     }
     
     func postToFirebase(roomName: String?){
         let timestamp: NSNumber = NSDate().timeIntervalSince1970
-        let authorID = FIRAuth.auth()!.currentUser!.uid
+        let authorID = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
+        //let authorID = FIRAuth.auth()!.currentUser!.uid
 
         if let unwrappedRoomName = roomName{
             let post: Dictionary<String, AnyObject> =
-                
+        
                 ["RoomName": unwrappedRoomName,
                  "Author": currentUserName,
                  "AuthorPic": currentProfilePicURL,
@@ -90,7 +89,7 @@ class RoomsViewController: UITableViewController {
                  "AuthorID" : authorID]
             
             let firebasePost = DataService.ds.REF_CHATROOMS.childByAutoId()
-            firebasePost.setValue(post)
+                firebasePost.setValue(post)
             
             tableView.reloadData()
         }
@@ -107,12 +106,7 @@ class RoomsViewController: UITableViewController {
             return PublicRoomCell()
         }
     }
-    /*
-     let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! UserCell
-     let message = messagesArray[indexPath.row]
-     cell.message = message
-     return cell
- */
+    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }

@@ -15,6 +15,7 @@ class PublicRoomCell: UITableViewCell {
     
     var publicRoom: PublicRoom?{
         didSet{
+//
             textLabel?.text = publicRoom?.RoomName
             detailTextLabel?.text = publicRoom?.Author
             if let profileImageUrl = publicRoom?.AuthorPic{

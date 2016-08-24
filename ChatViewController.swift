@@ -155,7 +155,7 @@ class ChatViewController: JSQMessagesViewController {
         let toId = user?.postKey
         let itemRef = DataService.ds.REF_MESSAGES.childByAutoId()
         let timestamp: NSNumber = Int(NSDate().timeIntervalSince1970)
-        let messageItem : [String: AnyObject] = ["text": text, "senderId": senderId, "toId": toId!, "timestamp" : timestamp]
+        let messageItem : [String: AnyObject] = ["fromId": senderId, "text": text, "timestamp" : timestamp, "toId": toId!]
         itemRef.setValue(messageItem)
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
@@ -170,7 +170,7 @@ class ChatViewController: JSQMessagesViewController {
     
         messagesQuery.observeEventType(.ChildAdded) { (snapshot: FIRDataSnapshot!) in
                         
-            if let id = snapshot.value!["senderId"], let text = snapshot.value!["text"]{
+            if let id = snapshot.value!["fromId"], let text = snapshot.value!["text"]{
                 let sender = id as! String
                 let message = text as! String
                 
