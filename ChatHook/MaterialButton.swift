@@ -11,19 +11,6 @@ import UIKit
 
 class MaterialButton: UIButton {
     
-    override func awakeFromNib() {
-        //backgroundColor = PLAYLIFE_COLOR
-        backgroundColor = UIColor.blueColor()
-        setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        titleLabel?.font = UIFont(name: FONT_AVENIR_MEDIUM, size: 18.0)
-        
-        layer.cornerRadius = 5.0
-        layer.shadowColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 0.5).CGColor
-        layer.shadowOpacity = 0.8
-        layer.shadowRadius = 5.0
-        layer.shadowOffset = CGSizeMake(2.0, 2.0)
-
-    }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -31,7 +18,7 @@ class MaterialButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         //backgroundColor = PLAYLIFE_COLOR
-        backgroundColor = UIColor.blueColor()
+        backgroundColor = UIColor(r: 80, g: 101, b: 161)
         setTitleColor(UIColor.whiteColor(), forState: .Normal)
         titleLabel?.font = UIFont(name: FONT_AVENIR_MEDIUM, size: 18.0)
 

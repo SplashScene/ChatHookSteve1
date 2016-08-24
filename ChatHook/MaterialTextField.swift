@@ -25,17 +25,6 @@ class MaterialTextField: UITextField {
         font = UIFont(name: "FONT_ANENIR_LIGHT", size: 14.0)
         autocapitalizationType = .None
     }
-
-    
-//    override func awakeFromNib() {
-//        //layer.backgroundColor = UIColor(red: 236/255, green: 236/255, blue: 236/255, alpha: 1.0).CGColor
-//        layer.backgroundColor = UIColor.lightGrayColor().CGColor
-//        layer.cornerRadius = 2.0
-//        layer.borderColor = UIColor(red: SHADOW_COLOR, green: SHADOW_COLOR, blue: SHADOW_COLOR, alpha: 1.0).CGColor
-//        layer.borderWidth = 15.0
-//        textColor = UIColor.whiteColor()
-//        font = UIFont(name: "FONT_ANENIR_LIGHT", size: 14.0)
-//    }
     
     override func textRectForBounds(bounds: CGRect) -> CGRect {
         return CGRectInset(bounds, 10, 0)

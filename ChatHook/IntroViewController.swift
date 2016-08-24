@@ -142,7 +142,6 @@ class IntroViewController: UIViewController {
         super.viewDidLoad()
         self.setupView()
         NSUserDefaults.standardUserDefaults().setValue("q3KcxAnXh9SXAe9UshCKvPteXgq1", forKey: KEY_UID)
-        //q3KcxAnXh9SXAe9UshCKvPteXgq1
     }
     
     override func viewDidAppear(animated: Bool) {

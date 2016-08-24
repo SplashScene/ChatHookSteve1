@@ -122,7 +122,11 @@ class RoomsViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         chosenRoom = roomsArray[indexPath.row]
-        performSegueWithIdentifier("GoToChatPost", sender: nil)
+        let postController = PostsVC()
+            postController.roomsController = self
+        presentViewController(postController, animated: true, completion: nil)
+
+        
     }
     
     

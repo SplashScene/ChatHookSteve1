@@ -19,8 +19,8 @@
 		8458F5F91D6B3EAE0083BA0B /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5F81D6B3EAE0083BA0B /* ChatLogController.swift */; };
 		8458F5FB1D6B3F5B0083BA0B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5FA1D6B3F5B0083BA0B /* Message.swift */; };
 		8458F5FD1D6CB5B40083BA0B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5FC1D6CB5B40083BA0B /* Extensions.swift */; };
-		8458F5FF1D6DF6F20083BA0B /* PostVC+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F5FE1D6DF6F20083BA0B /* PostVC+Image.swift */; };
 		8458F6011D6DF7870083BA0B /* FinishRegister+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F6001D6DF7870083BA0B /* FinishRegister+Image.swift */; };
+		8458F6031D6E0DB60083BA0B /* testPostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8458F6021D6E0DB60083BA0B /* testPostCell.swift */; };
 		847289621D3D48F7007E82DB /* RoomsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289611D3D48F7007E82DB /* RoomsViewController.swift */; };
 		847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289651D3E62A0007E82DB /* PublicRoom.swift */; };
 		847289681D3E6481007E82DB /* PublicRoomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289671D3E6481007E82DB /* PublicRoomCell.swift */; };
@@ -49,7 +49,6 @@
 		84D687871CF3717F00944D1E /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D687861CF3717F00944D1E /* Post.swift */; };
 		84D687891CF371BA00944D1E /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D687881CF371BA00944D1E /* PostCell.swift */; };
 		84D6878B1CF3799700944D1E /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6878A1CF3799700944D1E /* MaterialView.swift */; };
-		84F45A541D1C339B003F9367 /* RegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F45A531D1C339B003F9367 /* RegisterVC.swift */; };
 		AB40F2A6C892CB8D250BC87E /* Pods_ChatHook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,8 +67,8 @@
 		8458F5F81D6B3EAE0083BA0B /* ChatLogController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
 		8458F5FA1D6B3F5B0083BA0B /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		8458F5FC1D6CB5B40083BA0B /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		8458F5FE1D6DF6F20083BA0B /* PostVC+Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PostVC+Image.swift"; sourceTree = "<group>"; };
 		8458F6001D6DF7870083BA0B /* FinishRegister+Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FinishRegister+Image.swift"; sourceTree = "<group>"; };
+		8458F6021D6E0DB60083BA0B /* testPostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = testPostCell.swift; sourceTree = "<group>"; };
 		847289611D3D48F7007E82DB /* RoomsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomsViewController.swift; sourceTree = "<group>"; };
 		847289651D3E62A0007E82DB /* PublicRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoom.swift; sourceTree = "<group>"; };
 		847289671D3E6481007E82DB /* PublicRoomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoomCell.swift; sourceTree = "<group>"; };
@@ -100,7 +99,6 @@
 		84D687861CF3717F00944D1E /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		84D687881CF371BA00944D1E /* PostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		84D6878A1CF3799700944D1E /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
-		84F45A531D1C339B003F9367 /* RegisterVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterVC.swift; sourceTree = "<group>"; };
 		9E4A6D1C186F9E739AC106F1 /* Pods-ChatHook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatHook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatHook/Pods-ChatHook.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,7 +190,6 @@
 			children = (
 				84B9AB1F1CE225780002B132 /* IntroViewController.swift */,
 				84A28BE11CF89706004615DB /* ChatViewController.swift */,
-				84F45A531D1C339B003F9367 /* RegisterVC.swift */,
 				847289611D3D48F7007E82DB /* RoomsViewController.swift */,
 				8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */,
 				84A9DB911D46B63F00842B50 /* GetLocation1.swift */,
@@ -202,7 +199,6 @@
 				8458F5F21D6B3DE00083BA0B /* MessagesController.swift */,
 				8458F5F41D6B3E200083BA0B /* NewMessagesController.swift */,
 				8458F5F81D6B3EAE0083BA0B /* ChatLogController.swift */,
-				8458F5FE1D6DF6F20083BA0B /* PostVC+Image.swift */,
 				8458F6001D6DF7870083BA0B /* FinishRegister+Image.swift */,
 			);
 			name = Controllers;
@@ -221,6 +217,7 @@
 				847289671D3E6481007E82DB /* PublicRoomCell.swift */,
 				8437C2681D4FF19300C5CF59 /* ChatPostCell.swift */,
 				8458F5F61D6B3E6A0083BA0B /* UserCell.swift */,
+				8458F6021D6E0DB60083BA0B /* testPostCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -406,17 +403,16 @@
 				84B9AB1E1CE225780002B132 /* AppDelegate.swift in Sources */,
 				84B9AB3B1CE233100002B132 /* Constants.swift in Sources */,
 				8458F6011D6DF7870083BA0B /* FinishRegister+Image.swift in Sources */,
+				8458F6031D6E0DB60083BA0B /* testPostCell.swift in Sources */,
 				84A9DB921D46B63F00842B50 /* GetLocation1.swift in Sources */,
 				84B9AB441CE264FE0002B132 /* MaterialTextField.swift in Sources */,
 				847289681D3E6481007E82DB /* PublicRoomCell.swift in Sources */,
-				84F45A541D1C339B003F9367 /* RegisterVC.swift in Sources */,
 				84A28BE21CF89706004615DB /* ChatViewController.swift in Sources */,
 				84D687891CF371BA00944D1E /* PostCell.swift in Sources */,
 				8437C2671D4FF10A00C5CF59 /* ChatPost.swift in Sources */,
 				8437C26C1D50D5E400C5CF59 /* PostsVC.swift in Sources */,
 				84B9AB461CE266B40002B132 /* MaterialImageView.swift in Sources */,
 				84C8CC891D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift in Sources */,
-				8458F5FF1D6DF6F20083BA0B /* PostVC+Image.swift in Sources */,
 				84D687871CF3717F00944D1E /* Post.swift in Sources */,
 				847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */,
 				8458F5ED1D69F2420083BA0B /* FinishRegisterController.swift in Sources */,

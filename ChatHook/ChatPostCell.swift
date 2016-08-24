@@ -66,7 +66,7 @@ class ChatPostCell: UITableViewCell {
                     if err == nil {
                         let img = UIImage(data: data!)!
                         self.showcaseImg.image = img
-                        PostsVC.imageCache.setObject(img, forKey: self.post.imageURL!)
+                        //PostsVC.imageCache.setObject(img, forKey: self.post.imageURL!)
                     }// end if err
                 })//end completion handler
             }

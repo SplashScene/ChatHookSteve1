@@ -12,6 +12,103 @@ import Alamofire
 
 class PostsVC: UIViewController{
     
+    var roomsController: RoomsViewController?
+    var cellID = "cellID"
+    var postedImage: UIImage?
+    var currentUserName: String!
+    var currentProfilePicURL: String!
+    var roomID: String!
+    var roomName: String!
+    
+    
+    let topView: MaterialView = {
+        let view = MaterialView()
+            view.translatesAutoresizingMaskIntoConstraints = false
+            view.backgroundColor = UIColor.whiteColor()
+        return view
+    }()
+    
+    let postTextField: MaterialTextField = {
+        let ptf = MaterialTextField()
+            ptf.placeholder = "What's on your mind?"
+            ptf.translatesAutoresizingMaskIntoConstraints = false
+        return ptf
+    }()
+    
+    lazy var imageSelectorView: UIImageView = {
+        let isv = UIImageView()
+            isv.translatesAutoresizingMaskIntoConstraints = false
+            isv.image = UIImage(named: "cameraIcon")
+            isv.contentMode = .ScaleAspectFill
+            isv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pickPhoto)))
+            isv.userInteractionEnabled = true
+        return isv
+    }()
+    
+    let postButton: MaterialButton = {
+        let pb = MaterialButton()
+            pb.translatesAutoresizingMaskIntoConstraints = false
+            pb.setTitle("Post", forState: .Normal)
+        return pb
+    }()
+    
+    let postTableView: UITableView = {
+        let ptv = UITableView()
+            ptv.translatesAutoresizingMaskIntoConstraints = false
+            ptv.backgroundColor = UIColor(r: 220, g: 220, b: 220)
+        return ptv
+    }()
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
+        view.addSubview(topView)
+        view.addSubview(postTableView)
+        postTableView.delegate = self
+        postTableView.dataSource = self
+        postTableView.registerClass(testPostCell.self, forCellReuseIdentifier: "cellID")
+        setupTopView()
+        setupPostTableView()
+    }
+    
+    func setupTopView(){
+        //need x, y, width and height constraints
+        topView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+        topView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 24).active = true
+        topView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -16).active = true
+        topView.heightAnchor.constraintEqualToConstant(45).active = true
+        
+        topView.addSubview(postTextField)
+        topView.addSubview(imageSelectorView)
+        topView.addSubview(postButton)
+        
+        postTextField.leftAnchor.constraintEqualToAnchor(topView.leftAnchor, constant: 8).active = true
+        postTextField.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
+        postTextField.widthAnchor.constraintEqualToConstant(225).active = true
+        postTextField.heightAnchor.constraintEqualToAnchor(topView.heightAnchor, constant: -16).active = true
+        
+        imageSelectorView.leftAnchor.constraintEqualToAnchor(postTextField.rightAnchor, constant: 8).active = true
+        imageSelectorView.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
+        imageSelectorView.widthAnchor.constraintEqualToConstant(37).active = true
+        imageSelectorView.heightAnchor.constraintEqualToAnchor(topView.heightAnchor, constant: -16).active = true
+        
+        postButton.leftAnchor.constraintEqualToAnchor(imageSelectorView.rightAnchor, constant: 8).active = true
+        postButton.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
+        postButton.rightAnchor.constraintEqualToAnchor(topView.rightAnchor, constant: -8).active = true
+        postButton.heightAnchor.constraintEqualToAnchor(topView.heightAnchor, constant: -16).active = true
+
+
+    }
+    
+    func setupPostTableView(){
+        postTableView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+        postTableView.topAnchor.constraintEqualToAnchor(topView.bottomAnchor, constant: 8).active = true
+        postTableView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -16).active = true
+        postTableView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+    }
+    
+    /*
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
     @IBOutlet weak var tableView: UITableView!
@@ -92,9 +189,110 @@ class PostsVC: UIViewController{
             self.postToFirebase(nil)
         }
     }
+ */
 }//end class
 
+extension PostsVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+    
+    func takePhotoWithCamera(){
+        let imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .Camera
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
+        presentViewController(imagePicker, animated: true, completion: nil)
+        
+    }
+    
+    func choosePhotoFromLibrary(){
+        let imagePicker = UIImagePickerController()
+            imagePicker.sourceType = .PhotoLibrary
+            imagePicker.delegate = self
+            imagePicker.allowsEditing = true
+        presentViewController(imagePicker, animated: true, completion: nil)
+    }
+    
+    
+    func pickPhoto(){
+        if UIImagePickerController.isSourceTypeAvailable(.Camera){
+            showPhotoMenu()
+        }else{
+            choosePhotoFromLibrary()
+        }
+    }
+    
+    func showPhotoMenu(){
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        let takePhotoAction = UIAlertAction(title: "Take Photo", style: .Default, handler: {
+            _ in
+            self.takePhotoWithCamera()
+        })
+        alertController.addAction(takePhotoAction)
+        
+        let chooseFromLibraryAction = UIAlertAction(title: "Choose From Library", style: .Default, handler: {
+            _ in
+            self.choosePhotoFromLibrary()
+        })
+        alertController.addAction(chooseFromLibraryAction)
+        
+        presentViewController(alertController, animated: true, completion: nil)
+        
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        guard let image = info[UIImagePickerControllerEditedImage] as? UIImage else {
+            print("Info did not have the required UIImage for the Original Image")
+            dismissViewControllerAnimated(true, completion: nil)
+            return
+        }
+        postedImage = image
+        imageSelectorView.image = postedImage
+        
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+}//end extension
 
+extension PostsVC:UITableViewDelegate, UITableViewDataSource{
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! testPostCell
+        
+        return cell
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 375
+    }
+    
+//    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+//        let post = postsArray[indexPath.row]
+//        
+//        if post.imageURL == nil{
+//            return 150
+//        }else{
+//            return tableView.estimatedRowHeight
+//        }
+//    }
+    
+}//end extension
+
+/*
 extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -136,7 +334,8 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     }
     
 }//end extension
-
+*/
+/*
 extension PostsVC{
        func uploadFirebaseImage(image: UIImage){
         let imageName = NSUUID().UUIDString
@@ -186,3 +385,4 @@ extension PostsVC{
         tableView.reloadData()
     }
 }//end extension
+ */
