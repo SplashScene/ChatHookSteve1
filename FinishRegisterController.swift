@@ -9,10 +9,12 @@
 import UIKit
 import Firebase
 
+
 class FinishRegisterController: UIViewController {
 
     var dbRef: FIRDatabaseReference!
     var introViewController: IntroViewController?
+    let currentUser = DataService.ds.REF_USER_CURRENT
     
     let inputsContainerView: UIView = {
         let view = UIView()
@@ -133,25 +135,26 @@ class FinishRegisterController: UIViewController {
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .LightContent
     }
-    
+    /*
     func registerButtonTapped() {
         
         guard let userName = userNameTextField.text where userName != "",
             let fullName = fullNameTextField.text where fullName != ""
              else { return }
         
-        btnRegister.enabled = true
-        imgCameraIcon.hidden = true
-        progressView.progress = 0.0
-        progressView.hidden = false
-        activityIndicator.hidden = false
-        activityIndicator.startAnimating()
+        
+//        progressView.progress = 0.0
+//        progressView.hidden = false
+//        activityIndicator.hidden = false
+//        activityIndicator.startAnimating()
         
         
         let imageName = NSUUID().UUIDString
+        let storeRef = FIRStorage.storage()
         let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
+        //let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
         
-        if let uploadData = UIImageJPEGRepresentation(self.imgProfilePic.image!, 0.2){
+        if let uploadData = UIImageJPEGRepresentation(self.profileImageView.image!, 0.2){
             storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
                 if error != nil{
                     print(error.debugDescription)
@@ -162,14 +165,14 @@ class FinishRegisterController: UIViewController {
                         "email":email,
                         "ProfileImage": profileImageUrl,
                         "FullName": fullName]
-                    self.postRegisteredUserToFirebase(values, progress: {[unowned self] percent in
+                        self.postRegisteredUserToFirebase(values, progress: {[unowned self] percent in
                         self.progressView.setProgress(percent, animated: true)
                         })
                 }
             })
         }
     }
-    
+    */
     @IBAction func cancelButtonTapped(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(true, completion: nil)
     }
@@ -178,10 +181,10 @@ class FinishRegisterController: UIViewController {
         currentUser.child("UserName").setValue(values["UserName"])
         currentUser.child("FullName").setValue(values["FullName"])
         currentUser.child("ProfileImage").setValue(values["ProfileImage"])
-        self.progressView.hidden = true
-        self.activityIndicator.stopAnimating()
-        self.activityIndicator.hidden = true
-        self.performSegueWithIdentifier("registered", sender: nil)
+//        self.progressView.hidden = true
+//        self.activityIndicator.stopAnimating()
+//        self.activityIndicator.hidden = true
+//        self.performSegueWithIdentifier("registered", sender: nil)
     }
     
     func showErrorAlert(title: String, msg: String){

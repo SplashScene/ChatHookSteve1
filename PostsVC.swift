@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import Alamofire
 
+
 class PostsVC: UIViewController{
     
     var roomsController: RoomsViewController?
@@ -51,19 +52,19 @@ class PostsVC: UIViewController{
         let pb = MaterialButton()
             pb.translatesAutoresizingMaskIntoConstraints = false
             pb.setTitle("Post", forState: .Normal)
-        pb.addTarget(self, action: #selector(handlePostButtonTapped), forControlEvents: .TouchUpInside)
+        //pb.addTarget(self, action: #selector(handlePostButtonTapped), forControlEvents: .TouchUpInside)
         return pb
     }()
-    
+    /*
     func handlePostButtonTapped(){
         if let unwrappedImage = postedImage{
-            uploadFirebaseImage(unwrappedImage)
+           // uploadFirebaseImage(unwrappedImage)
         }
         else if let postedText = postTextField.text where postedText != ""{
-            self.postToFirebase(nil)
+           // self.postToFirebase(nil)
         }
     }
-    
+    */
     let postTableView: UITableView = {
         let ptv = UITableView()
             ptv.translatesAutoresizingMaskIntoConstraints = false
@@ -320,10 +321,11 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     
 }//end extension
 
+/*
 extension PostsVC{
     func uploadFirebaseImage(image: UIImage){
         let imageName = NSUUID().UUIDString
-        let storageRef = FIRStorage.storage().reference().child("post_images").child("\(imageName).jpg")
+                //let storageRef = FIRStorage.storage().reference().child("post_images").child("\(imageName).jpg")
         
         if let uploadData = UIImageJPEGRepresentation(image, 0.2){
             storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
@@ -371,7 +373,7 @@ extension PostsVC{
         }
     }
 }//end extension
-
+*/
 /*
 extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     
