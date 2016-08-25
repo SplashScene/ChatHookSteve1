@@ -33,7 +33,7 @@ class NewMessagesController: UITableViewController {
         currentUser.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
             if let dictionary = snapshot.value as? [String : AnyObject]{
                 self.currentUserLocation = CLLocation(latitude: dictionary["UserLatitude"] as! Double, longitude: (dictionary["UserLongitude"] as! Double))
-            }
+                }
             },
             withCancelBlock: nil)
     }
@@ -44,7 +44,7 @@ class NewMessagesController: UITableViewController {
                 if let dictionary = snapshot.value as? [String: AnyObject]{
                     let userPostKey = snapshot.key
                     let user = User(postKey: userPostKey, dictionary: dictionary)
-                    if user.postKey != self.uid {
+                    if user.postKey != self.uid && user.online {
                         self.usersArray.append(user)
                     }
                 }
