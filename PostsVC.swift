@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import Alamofire
+import FirebaseStorage
 
 
 class PostsVC: UIViewController{
@@ -52,19 +53,19 @@ class PostsVC: UIViewController{
         let pb = MaterialButton()
             pb.translatesAutoresizingMaskIntoConstraints = false
             pb.setTitle("Post", forState: .Normal)
-        //pb.addTarget(self, action: #selector(handlePostButtonTapped), forControlEvents: .TouchUpInside)
+            pb.addTarget(self, action: #selector(handlePostButtonTapped), forControlEvents: .TouchUpInside)
         return pb
     }()
-    /*
+    
     func handlePostButtonTapped(){
         if let unwrappedImage = postedImage{
-           // uploadFirebaseImage(unwrappedImage)
+           uploadFirebaseImage(unwrappedImage)
         }
         else if let postedText = postTextField.text where postedText != ""{
-           // self.postToFirebase(nil)
+           self.postToFirebase(nil)
         }
     }
-    */
+    
     let postTableView: UITableView = {
         let ptv = UITableView()
             ptv.translatesAutoresizingMaskIntoConstraints = false
@@ -81,10 +82,12 @@ class PostsVC: UIViewController{
         postTableView.delegate = self
         postTableView.dataSource = self
         postTableView.registerClass(testPostCell.self, forCellReuseIdentifier: "cellID")
+        postTableView.estimatedRowHeight = 350
         setupTopView()
         setupPostTableView()
         fetchCurrentUser()
         fetchPosts()
+        print(roomID)
     }
     
     func fetchCurrentUser(){
@@ -109,19 +112,18 @@ class PostsVC: UIViewController{
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
                 for snap in snapshots{
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
-                        let post = UserPost()
+                        let post = UserPost(key: snap.key)
                             post.setValuesForKeysWithDictionary(postDict)
                         self.postsArray.insert(post, atIndex: 0)
                         print("Added to post array")
                     }
                 }
             }
-            
+            dispatch_async(dispatch_get_main_queue()){
+                self.postTableView.reloadData()
+            }
+ 
         })
-        
-        dispatch_async(dispatch_get_main_queue()){
-            self.postTableView.reloadData()
-        }
     }
 
     
@@ -161,56 +163,6 @@ class PostsVC: UIViewController{
         postTableView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
     }
     
-    /*
-    @IBOutlet weak var progressView: UIProgressView!
-    @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var postField: MaterialTextField!
-    @IBOutlet weak var imageSelectorImage: UIImageView!
-    
-    var postsArray = [ChatPost]()
-    static var imageCache = NSCache()
-    
-    var postedImage: UIImage?
-    var currentUserName: String!
-    var currentProfilePicURL: String!
-    var roomID: String!
-    var roomName: String!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.delegate = self
-        tableView.dataSource = self
-        progressView.hidden = true
-        activityIndicatorView.hidden = true
-        
-        title = roomName
-        
-        tableView.estimatedRowHeight = 375
-        
-        fetchCurrentUser()
-        fetchPosts()
-    }
-    
-     
-    @IBAction func cameraImageTapped(sender: UITapGestureRecognizer) {
-        self.pickPhoto()
-    }
-    
-    @IBAction func postButtonTapped(sender: UIButton) {
-        progressView.progress = 0.0
-        progressView.hidden = false
-        activityIndicatorView.hidden = false
-        activityIndicatorView.startAnimating()
-        
-        if let unwrappedImage = postedImage{
-            uploadFirebaseImage(unwrappedImage)
-        }
-         else if let postedText = postField.text where postedText != ""{
-            self.postToFirebase(nil)
-        }
-    }
- */
 }//end class
 
 extension PostsVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate{
@@ -288,13 +240,6 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
         let post = postsArray[indexPath.row]
         cell.userPost = post
         return cell
-        
-        /*
-         let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! UserCell
-         let message = messagesArray[indexPath.row]
-         cell.message = message
-         return cell
- */
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -306,26 +251,21 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 375
+        let post = postsArray[indexPath.row]
+        if post.showcaseImg == nil{
+            return 150
+        }else{
+            return tableView.estimatedRowHeight
+        }
     }
-    
-//    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-//        let post = postsArray[indexPath.row]
-//        
-//        if post.imageURL == nil{
-//            return 150
-//        }else{
-//            return tableView.estimatedRowHeight
-//        }
-//    }
     
 }//end extension
 
-/*
+
 extension PostsVC{
     func uploadFirebaseImage(image: UIImage){
         let imageName = NSUUID().UUIDString
-                //let storageRef = FIRStorage.storage().reference().child("post_images").child("\(imageName).jpg")
+        let storageRef = FIRStorage.storage().reference().child("post_images").child("\(imageName).jpg")
         
         if let uploadData = UIImageJPEGRepresentation(image, 0.2){
             storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
@@ -373,50 +313,7 @@ extension PostsVC{
         }
     }
 }//end extension
-*/
-/*
-extension PostsVC:UITableViewDelegate, UITableViewDataSource{
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let post = postsArray[indexPath.row]
-        print("ROW: \(indexPath.row) : \(post.postDescription) -> \(post.imageURL)")
-        
-        if let cell = tableView.dequeueReusableCellWithIdentifier("ChatPostCell") as? ChatPostCell{
-            cell.request?.cancel()
-            var img: UIImage?
-            
-            if let url = post.imageURL{
-                img = PostsVC.imageCache.objectForKey(url) as? UIImage
-            }
-            
-            cell.configureCell(post, img: img)
-            return cell
-        }else{
-            return ChatPostCell()
-        }
-        
-    }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return postsArray.count
-    }
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let post = postsArray[indexPath.row]
-        
-        if post.imageURL == nil{
-            return 150
-        }else{
-            return tableView.estimatedRowHeight
-        }
-    }
-    
-}//end extension
-*/
+
 
 
 

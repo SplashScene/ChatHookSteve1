@@ -12,13 +12,13 @@ import Firebase
 class testPostCell: UITableViewCell {
     var userPost: UserPost?{
         didSet{
-                let ref = DataService.ds.REF_POSTS
+                let ref = DataService.ds.REF_POSTS.child(userPost!.postKey!)
                     ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                     if let dictionary = snapshot.value as? [String: AnyObject]{
                         
                         self.userNameLabel.text = dictionary["authorName"] as? String
                         self.descriptionText.text = dictionary["postText"] as? String
-                        self.likeCount.text = String(dictionary["likes"])
+                        self.likeCount.text = String(dictionary["likes"]!)
                         if let profileImageUrl = dictionary["authorPic"] as? String {
                             self.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
                         }
