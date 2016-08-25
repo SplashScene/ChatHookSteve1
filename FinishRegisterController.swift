@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import FirebaseStorage
 
 
 class FinishRegisterController: UIViewController {
@@ -34,7 +35,7 @@ class FinishRegisterController: UIViewController {
             button.translatesAutoresizingMaskIntoConstraints = false
             button.layer.cornerRadius = 5
             button.layer.masksToBounds = true
-            button.addTarget(self, action: #selector(handleRegisterSegue), forControlEvents: .TouchUpInside)
+            button.addTarget(self, action: #selector(registerButtonTapped), forControlEvents: .TouchUpInside)
         return button
     }()
     
@@ -68,6 +69,20 @@ class FinishRegisterController: UIViewController {
         return imageView
     }()
     
+    let progressView: UIProgressView = { // the progress bar
+        let progView = UIProgressView()
+            progView.translatesAutoresizingMaskIntoConstraints = false
+            progView.hidden = true
+        return progView
+    }()
+    
+    let activityIndicator: UIActivityIndicatorView = { //the spinning gear
+        let actInd = UIActivityIndicatorView()
+            actInd.translatesAutoresizingMaskIntoConstraints = false
+            actInd.hidden = true
+        return actInd
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -76,11 +91,14 @@ class FinishRegisterController: UIViewController {
         view.addSubview(inputsContainerView)
         view.addSubview(loginRegisterButton)
         view.addSubview(profileImageView)
+        view.addSubview(progressView)
+        view.addSubview(activityIndicator)
         
         
         setupInputsContainerView()
         setupLoginRegisterButton()
         setupProfileImageView()
+        setupActivity()
         
     }
     
@@ -131,11 +149,21 @@ class FinishRegisterController: UIViewController {
         loginRegisterButton.heightAnchor.constraintEqualToConstant(50).active = true
     }
     
+    func setupActivity(){
+        //need x, y, width, height constraints
+        progressView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+        progressView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, constant: 16).active = true
+        progressView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -16).active = true
+        
+        activityIndicator.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+        activityIndicator.bottomAnchor.constraintEqualToAnchor(progressView.topAnchor, constant: 16).active = true
+    }
+    
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .LightContent
     }
-    /*
+    
     func registerButtonTapped() {
         
         guard let userName = userNameTextField.text where userName != "",
@@ -143,16 +171,15 @@ class FinishRegisterController: UIViewController {
              else { return }
         
         
-//        progressView.progress = 0.0
-//        progressView.hidden = false
-//        activityIndicator.hidden = false
-//        activityIndicator.startAnimating()
+        progressView.progress = 0.0
+        progressView.hidden = false
+        activityIndicator.hidden = false
+        activityIndicator.startAnimating()
         
         
         let imageName = NSUUID().UUIDString
-        let storeRef = FIRStorage.storage()
+        
         let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
-        //let storageRef = FIRStorage.storage().reference().child("profile_images").child("\(imageName).jpg")
         
         if let uploadData = UIImageJPEGRepresentation(self.profileImageView.image!, 0.2){
             storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
@@ -161,10 +188,11 @@ class FinishRegisterController: UIViewController {
                     return
                 }
                 if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
-                    let values = ["UserName": userName,
-                        "email":email,
-                        "ProfileImage": profileImageUrl,
-                        "FullName": fullName]
+                    let values =
+                        ["UserName": userName,
+                         "ProfileImage": profileImageUrl,
+                         "FullName": fullName]
+                    
                         self.postRegisteredUserToFirebase(values, progress: {[unowned self] percent in
                         self.progressView.setProgress(percent, animated: true)
                         })
@@ -172,7 +200,7 @@ class FinishRegisterController: UIViewController {
             })
         }
     }
-    */
+    
     @IBAction func cancelButtonTapped(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(true, completion: nil)
     }
@@ -181,10 +209,10 @@ class FinishRegisterController: UIViewController {
         currentUser.child("UserName").setValue(values["UserName"])
         currentUser.child("FullName").setValue(values["FullName"])
         currentUser.child("ProfileImage").setValue(values["ProfileImage"])
-//        self.progressView.hidden = true
-//        self.activityIndicator.stopAnimating()
-//        self.activityIndicator.hidden = true
-//        self.performSegueWithIdentifier("registered", sender: nil)
+        self.progressView.hidden = true
+        self.activityIndicator.stopAnimating()
+        self.activityIndicator.hidden = true
+        handleRegisterSegue()
     }
     
     func showErrorAlert(title: String, msg: String){
@@ -194,7 +222,6 @@ class FinishRegisterController: UIViewController {
         presentViewController(alert, animated: true, completion: nil)
     }
 
-    
     
     func handleRegisterSegue(){
         let tabController = MainTabBar()
