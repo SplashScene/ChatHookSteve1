@@ -87,7 +87,6 @@ class PostsVC: UIViewController{
         setupPostTableView()
         fetchCurrentUser()
         fetchPosts()
-        print(roomID)
     }
     
     func fetchCurrentUser(){
@@ -115,7 +114,6 @@ class PostsVC: UIViewController{
                         let post = UserPost(key: snap.key)
                             post.setValuesForKeysWithDictionary(postDict)
                         self.postsArray.insert(post, atIndex: 0)
-                        print("Added to post array")
                     }
                 }
             }

@@ -24,6 +24,8 @@ class testPostCell: UITableViewCell {
                         }
                         if let showImage = dictionary["showcaseImg"] as? String{
                             self.showcaseImageView.loadImageUsingCacheWithUrlString(showImage)
+                        }else{
+                            self.showcaseImageView.image = nil
                         }
                     }
                     }, withCancelBlock: nil)
@@ -53,7 +55,6 @@ class testPostCell: UITableViewCell {
     
     let profileImageView: MaterialImageView = {
         let imageView = MaterialImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-            imageView.image = UIImage(named: "Tutorial1")
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.layer.cornerRadius = 24
             imageView.layer.masksToBounds = true
@@ -126,7 +127,6 @@ class testPostCell: UITableViewCell {
     
     let showcaseImageView: UIImageView = {
         let imageView = UIImageView()
-            imageView.image = UIImage(named: "Tutorial3")
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.contentMode = .ScaleAspectFill
             imageView.layer.cornerRadius = 5
