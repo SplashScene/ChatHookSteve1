@@ -126,9 +126,7 @@ class RoomsViewController: UITableViewController {
         let postController = PostsVC()
             postController.roomsController = self
             postController.roomID = room.postKey
-        presentViewController(postController, animated: true, completion: nil)
-
-        
+        presentViewController(postController, animated: true, completion: nil)   
     }
     
     
