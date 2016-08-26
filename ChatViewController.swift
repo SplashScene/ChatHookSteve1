@@ -157,7 +157,18 @@ class ChatViewController: JSQMessagesViewController {
         let timestamp: NSNumber = Int(NSDate().timeIntervalSince1970)
         let messageItem : [String: AnyObject] = ["fromId": senderId, "text": text, "timestamp" : timestamp, "toId": toId!]
         
-        itemRef.setValue(messageItem)
+        //itemRef.setValue(messageItem)
+        
+        itemRef.updateChildValues(messageItem) { (error, ref) in
+            if error != nil {
+                print(error?.description)
+                return
+            }
+            
+            let userMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(senderId)
+            let messageID = itemRef.key
+            userMessagesRef.updateChildValues([messageID: 1])
+        }
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
         

@@ -17,6 +17,7 @@ class MessagesController: UITableViewController {
     var messagesDictionary = [String: Message]()
     let cellID = "cellID"
     let currentUser = DataService.ds.REF_USER_CURRENT
+    var uid: String?
     
     
     
@@ -63,6 +64,7 @@ class MessagesController: UITableViewController {
            // performSelector(#selector(handleLogout), withObject: nil, afterDelay: 0)
         } else {
             fetchUserAndSetupNavBarTitle()
+            uid = FIRAuth.auth()?.currentUser?.uid
         }
     }
     
@@ -127,7 +129,7 @@ class MessagesController: UITableViewController {
     
     func showChatControllerForUser(user: User){
         let chatLogController = ChatViewController()
-            chatLogController.senderId = user.postKey
+            chatLogController.senderId = uid
             chatLogController.senderDisplayName = user.userName
             chatLogController.user = user
         
