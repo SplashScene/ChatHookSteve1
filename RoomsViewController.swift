@@ -14,7 +14,6 @@ class RoomsViewController: UITableViewController {
     var currentUserName: String!
     var currentProfilePicURL: String!
     var roomsArray = [PublicRoom]()
-    var keysArray = [String]()
     var chosenRoom: PublicRoom?
     let cellID = "cellID"
 
@@ -48,15 +47,13 @@ class RoomsViewController: UITableViewController {
             snapshot in
             
             self.roomsArray = []
-            self.keysArray = []
+    
             if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
                 for snap in snapshots{
                     if let postDict = snap.value as? Dictionary<String, AnyObject>{
-                        let postKey = snap.key
-                        let post = PublicRoom()
+                        let post = PublicRoom(key: snap.key)
                             post.setValuesForKeysWithDictionary(postDict)
                         self.roomsArray.insert(post, atIndex: 0)
-                        self.keysArray.insert(postKey, atIndex: 0)
                         print("Rooms Array count is: \(self.roomsArray.count)")
                     }
                 }
@@ -125,10 +122,10 @@ class RoomsViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let chosenKey = keysArray[indexPath.row]
+        let room = roomsArray[indexPath.row]
         let postController = PostsVC()
             postController.roomsController = self
-            postController.roomID = chosenKey
+            postController.roomID = room.postKey
         presentViewController(postController, animated: true, completion: nil)
 
         

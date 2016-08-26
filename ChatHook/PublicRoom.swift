@@ -10,10 +10,15 @@ import Foundation
 import Firebase
 
 class PublicRoom: NSObject{
+    var postKey: String?
     var Author: String?
     var AuthorID: String?
     var AuthorPic: String?
     var RoomName: String?
     var timestamp: NSNumber?
+    
+    init(key: String){
+        postKey = key
+    }
 }
 
