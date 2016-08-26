@@ -168,6 +168,9 @@ class ChatViewController: JSQMessagesViewController {
             let userMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(senderId)
             let messageID = itemRef.key
             userMessagesRef.updateChildValues([messageID: 1])
+            
+            let recipientUserMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(toId!)
+            recipientUserMessagesRef.updateChildValues([messageID: 1])
         }
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()

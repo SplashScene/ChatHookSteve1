@@ -30,7 +30,8 @@ class MessagesController: UITableViewController {
         tableView.registerClass(UserCell.self, forCellReuseIdentifier: "cellID")
         
         checkIfUserIsLoggedIn()
-        observeMessages()
+        //observeMessages()
+        
     }
     
     func observeMessages(){
@@ -57,7 +58,38 @@ class MessagesController: UITableViewController {
             }, withCancelBlock: nil)
     }
     
-    
+    func observeUserMessages(){
+        messagesArray = []
+        let ref = db.child("user_messages").child(uid!)
+        
+        ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            let messageID = snapshot.key
+            let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
+            
+            messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]{
+                    let message = Message()
+                    message.setValuesForKeysWithDictionary(dictionary)
+                    self.messagesArray.append(message)
+                    
+                    if let toId = message.toId{
+                        self.messagesDictionary[toId] = message
+                        self.messagesArray = Array(self.messagesDictionary.values)
+                        self.messagesArray.sortInPlace({ (message1, message2) -> Bool in
+                            return message1.timestamp?.intValue > message2.timestamp?.intValue
+                        })
+                    }
+                    dispatch_async(dispatch_get_main_queue()){
+                        self.tableView.reloadData()
+                    }
+                }
+
+                }, withCancelBlock: nil)
+            
+            }, withCancelBlock: nil)
+        
+        
+    }
     
     func checkIfUserIsLoggedIn(){
         if FIRAuth.auth()?.currentUser?.uid == nil{
@@ -82,11 +114,14 @@ class MessagesController: UITableViewController {
     }
     
     func setupNavBarWithUser(user: User){
-        //self.navigationItem.title = user.name
+        messagesArray.removeAll()
+        messagesDictionary.removeAll()
+        tableView.reloadData()
+        
+        observeUserMessages()
         
         let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
-        //titleView.backgroundColor = UIColor.redColor()
         
         let containerView = UIView()
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -124,7 +159,6 @@ class MessagesController: UITableViewController {
         
         self.navigationItem.titleView = titleView
         
-        //        titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(showChatController)))
     }
     
     func showChatControllerForUser(user: User){

@@ -12,20 +12,7 @@ import Firebase
 class UserCell: UITableViewCell {
     var message: Message?{
         didSet{
-            
-            if let toId = message?.toId{
-                let ref = FIRDatabase.database().reference().child("users").child(toId)
-                
-                ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                    if let dictionary = snapshot.value as? [String: AnyObject]{
-                       
-                        self.textLabel?.text = dictionary["UserName"] as? String
-                        if let profileImageUrl = dictionary["ProfileImage"] as? String{
-                            self.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
-                        }
-                    }
-                    }, withCancelBlock: nil)
-            }
+            setupNameAndProfileImage()
             detailTextLabel?.text = message?.text
             
             if let seconds = message?.timestamp?.doubleValue{
@@ -35,6 +22,26 @@ class UserCell: UITableViewCell {
                 timeLabel.text = dateFormatter.stringFromDate(timestampDate)
             }
             
+        }
+    }
+    
+    private func setupNameAndProfileImage(){
+        let chatPartnerID: String?
+        
+        chatPartnerID = message?.fromId == FIRAuth.auth()?.currentUser?.uid ? message?.toId : message?.fromId
+        
+        if let id = chatPartnerID{
+            let ref = FIRDatabase.database().reference().child("users").child(id)
+            
+            ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]{
+                    
+                    self.textLabel?.text = dictionary["UserName"] as? String
+                    if let profileImageUrl = dictionary["ProfileImage"] as? String{
+                        self.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+                    }
+                }
+                }, withCancelBlock: nil)
         }
     }
     
@@ -56,7 +63,7 @@ class UserCell: UITableViewCell {
     
     let timeLabel: UILabel = {
         let label = UILabel()
-        label.text = "HH:MM:SS"
+        //label.text = "HH:MM:SS"
         label.font = UIFont.systemFontOfSize(12)
         label.textColor = UIColor.lightGrayColor()
         label.translatesAutoresizingMaskIntoConstraints = false

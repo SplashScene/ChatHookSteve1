@@ -300,7 +300,34 @@ extension PostsVC{
         }
         
         let firebasePost = DataService.ds.REF_POSTS.childByAutoId()
-            firebasePost.setValue(post)
+            //firebasePost.setValue(post)
+        
+        firebasePost.updateChildValues(post) { (error, ref) in
+            if error != nil{
+                print(error?.description)
+                return
+            }
+            
+            let postRoomRef = DataService.ds.REF_BASE.child("posts_per_room").child(self.roomID)
+            let postID = firebasePost.key
+            
+            postRoomRef.updateChildValues([postID: 1])
+        }
+        
+        
+        /*
+         itemRef.updateChildValues(messageItem) { (error, ref) in
+         if error != nil {
+         print(error?.description)
+         return
+         }
+         
+         let userMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(senderId)
+         let messageID = itemRef.key
+         userMessagesRef.updateChildValues([messageID: 1])
+         }
+
+ */
         
         postTextField.text = ""
         imageSelectorView.image = UIImage(named: "cameraIcon")
