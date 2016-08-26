@@ -21,16 +21,11 @@ class UserCell: UITableViewCell {
                 dateFormatter.dateFormat = "hh:mm:ss a"
                 timeLabel.text = dateFormatter.stringFromDate(timestampDate)
             }
-            
         }
     }
     
     private func setupNameAndProfileImage(){
-        let chatPartnerID: String?
-        
-        chatPartnerID = message?.fromId == FIRAuth.auth()?.currentUser?.uid ? message?.toId : message?.fromId
-        
-        if let id = chatPartnerID{
+        if let id = message?.chatPartnerID(){
             let ref = FIRDatabase.database().reference().child("users").child(id)
             
             ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in

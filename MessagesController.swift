@@ -214,5 +214,21 @@ class MessagesController: UITableViewController {
         return 72
     }
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let message = messagesArray[indexPath.row]
+        guard let chatPartnerID = message.chatPartnerID() else { return }
+        
+        let ref = DataService.ds.REF_USERS.child(chatPartnerID)
+        
+        ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                guard let dictionary = snapshot.value as? [String : AnyObject] else { return }
+                let user = User(postKey: snapshot.key, dictionary: dictionary)
+                self.showChatControllerForUser(user)
+                },
+            withCancelBlock: nil)
+        
+        //showChatControllerForUser(<#T##user: User##User#>)
+    }
+    
     
 }

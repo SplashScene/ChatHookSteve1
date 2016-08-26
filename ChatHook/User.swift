@@ -36,7 +36,6 @@ class User{
         }
         
         if let profileName = dictionary["UserName"] as? String{
-            print("The name of the profile name is: \(profileName)")
             self._userName = profileName
         }else{
             self._userName = "AnonymousPoster"
@@ -55,8 +54,24 @@ class User{
         }
         
         self._postRef = DataService.ds.REF_USERS.child(self._postKey)
+        //observeMessages()
+    }
+    
+    func observeMessages(){
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
+        let userMessagesRef = DataService.ds.REF_USERMESSAGES.child(uid)
         
-        
+        userMessagesRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            let messageID = snapshot.key
+            let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
+            messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+                
+                let message = Message()
+                message.setValuesForKeysWithDictionary(dictionary)
+                print(message.text)
+                }, withCancelBlock: nil)
+            }, withCancelBlock: nil)
     }
     
 }

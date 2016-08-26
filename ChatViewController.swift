@@ -181,8 +181,31 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     private func observeMessages() {
-        let messagesQuery = DataService.ds.REF_MESSAGES.queryLimitedToLast(25)
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
+        let userMessagesRef = DataService.ds.REF_USERMESSAGES.child(uid)
+        
+        userMessagesRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            let messageID = snapshot.key
+            let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
+            messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+                
+                let message = Message()
+                    message.setValuesForKeysWithDictionary(dictionary)
+                let sender = message.fromId
+                let msg = message.text
+                
+                self.addMessage(sender!, text: msg!)
+                
+                self.finishReceivingMessage()
+                },
+                withCancelBlock: nil)
+
+            }, withCancelBlock: nil)
     
+        
+        /*
+        let messagesQuery = DataService.ds.REF_MESSAGES.queryLimitedToLast(25)
         messagesQuery.observeEventType(.ChildAdded) { (snapshot: FIRDataSnapshot!) in
                         
             if let id = snapshot.value!["fromId"], let text = snapshot.value!["text"]{
@@ -193,6 +216,7 @@ class ChatViewController: JSQMessagesViewController {
             }
             self.finishReceivingMessage()
         }
+    */
     }
     
     private func observeTyping() {
