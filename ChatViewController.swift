@@ -38,6 +38,7 @@ class ChatViewController: JSQMessagesViewController {
         setupBubbles()
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
+        collectionView!.alwaysBounceVertical = true
         setupNavBarWithUser()
     }
     
@@ -195,7 +196,9 @@ class ChatViewController: JSQMessagesViewController {
                 let sender = message.fromId
                 let msg = message.text
                 
-                self.addMessage(sender!, text: msg!)
+                if message.chatPartnerID() == self.user?.postKey{
+                    self.addMessage(sender!, text: msg!)
+                }
                 
                 self.finishReceivingMessage()
                 },
@@ -203,21 +206,7 @@ class ChatViewController: JSQMessagesViewController {
 
             }, withCancelBlock: nil)
     
-        
-        /*
-        let messagesQuery = DataService.ds.REF_MESSAGES.queryLimitedToLast(25)
-        messagesQuery.observeEventType(.ChildAdded) { (snapshot: FIRDataSnapshot!) in
-                        
-            if let id = snapshot.value!["fromId"], let text = snapshot.value!["text"]{
-                let sender = id as! String
-                let message = text as! String
-                
-                self.addMessage(sender, text: message)
-            }
-            self.finishReceivingMessage()
         }
-    */
-    }
     
     private func observeTyping() {
         let typingIndicatorRef = DataService.ds.REF_BASE.child("typingIndicator")
