@@ -168,65 +168,12 @@ class PostsVC: UIViewController{
                     post.setValuesForKeysWithDictionary(dictionary)
                     self.postsArray.insert(post, atIndex: 0)
                 
-                dispatch_async(dispatch_get_main_queue()){
-                    self.postTableView.reloadData()
-                }
-
-                },
-                
-                withCancelBlock: nil)
-            
-            
-            }, withCancelBlock: nil)
-
-        
-        
-        /*
-        DataService.ds.REF_POSTS.observeEventType(.Value, withBlock: {
-            snapshot in
-            
-            self.postsArray = []
-            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
-                for snap in snapshots{
-                    if let postDict = snap.value as? Dictionary<String, AnyObject>{
-                        let post = UserPost(key: snap.key)
-                            post.setValuesForKeysWithDictionary(postDict)
-                        self.postsArray.insert(post, atIndex: 0)
+                    dispatch_async(dispatch_get_main_queue()){
+                        self.postTableView.reloadData()
                     }
-                }
-            }
-            dispatch_async(dispatch_get_main_queue()){
-                self.postTableView.reloadData()
-            }
- 
-        })
-         
-         guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
-         let userMessagesRef = DataService.ds.REF_USERMESSAGES.child(uid)
-         
-         userMessagesRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
-         let messageID = snapshot.key
-         let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
-         messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-         guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
-         
-         let message = Message()
-         message.setValuesForKeysWithDictionary(dictionary)
-         let sender = message.fromId
-         let msg = message.text
-         
-         if message.chatPartnerID() == self.user?.postKey{
-         self.addMessage(sender!, text: msg!)
-         }
-         self.finishReceivingMessageAnimated(true)
-         //self.finishReceivingMessage()
-         },
-         withCancelBlock: nil)
-         
-         }, withCancelBlock: nil)
-         
-
- */
+                },
+                withCancelBlock: nil)
+            }, withCancelBlock: nil)
     }
 
     
@@ -255,8 +202,6 @@ class PostsVC: UIViewController{
         postButton.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
         postButton.rightAnchor.constraintEqualToAnchor(topView.rightAnchor, constant: -8).active = true
         postButton.heightAnchor.constraintEqualToAnchor(topView.heightAnchor, constant: -16).active = true
-
-
     }
     
     func setupPostTableView(){
@@ -356,7 +301,7 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let post = postsArray[indexPath.row]
         if post.showcaseImg == nil{
-            return 150
+            return 100
         }else{
             return tableView.estimatedRowHeight
         }
@@ -418,21 +363,6 @@ extension PostsVC{
             
             postRoomRef.updateChildValues([postID: 1])
         }
-        
-        
-        /*
-         itemRef.updateChildValues(messageItem) { (error, ref) in
-         if error != nil {
-         print(error?.description)
-         return
-         }
-         
-         let userMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(senderId)
-         let messageID = itemRef.key
-         userMessagesRef.updateChildValues([messageID: 1])
-         }
-
- */
         
         postTextField.text = ""
         imageSelectorView.image = UIImage(named: "cameraIcon")
