@@ -19,8 +19,8 @@ class PostsVC: UIViewController{
     var postedImage: UIImage?
     var currentUserName: String!
     var currentProfilePicURL: String!
-    var roomID: String!
-    var roomName: String!
+    var messageImage: UIImage?
+    var parentRoom: PublicRoom?
     
     var postsArray = [UserPost]()
     
@@ -77,6 +77,7 @@ class PostsVC: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
+        //navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: self, action: #selector(handleBack))
         view.addSubview(topView)
         view.addSubview(postTableView)
         postTableView.delegate = self
@@ -85,8 +86,13 @@ class PostsVC: UIViewController{
         postTableView.estimatedRowHeight = 350
         setupTopView()
         setupPostTableView()
+        setupNavBarWithRoom()
         fetchCurrentUser()
         fetchPosts()
+    }
+    
+    func handleBack(){
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     func fetchCurrentUser(){
@@ -103,7 +109,79 @@ class PostsVC: UIViewController{
         })
     }
     
+    
+     func setupNavBarWithRoom(){
+     
+     let titleView = UIView()
+     titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+     
+     let containerView = UIView()
+     containerView.translatesAutoresizingMaskIntoConstraints = false
+     
+     titleView.addSubview(containerView)
+     
+     let profileImageView = UIImageView()
+         profileImageView.translatesAutoresizingMaskIntoConstraints = false
+         profileImageView.contentMode = .ScaleAspectFill
+         profileImageView.layer.cornerRadius = 20
+         profileImageView.clipsToBounds = true
+         profileImageView.image = messageImage
+     
+     containerView.addSubview(profileImageView)
+     
+     profileImageView.leftAnchor.constraintEqualToAnchor(containerView.leftAnchor).active = true
+     profileImageView.centerYAnchor.constraintEqualToAnchor(containerView.centerYAnchor).active = true
+     profileImageView.widthAnchor.constraintEqualToConstant(40).active = true
+     profileImageView.heightAnchor.constraintEqualToConstant(40).active = true
+     
+     let nameLabel = UILabel()
+         nameLabel.text = parentRoom?.RoomName
+         nameLabel.translatesAutoresizingMaskIntoConstraints = false
+     
+     containerView.addSubview(nameLabel)
+     
+     nameLabel.leftAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 8).active = true
+     nameLabel.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
+     nameLabel.rightAnchor.constraintEqualToAnchor(containerView.rightAnchor).active = true
+     nameLabel.heightAnchor.constraintEqualToAnchor(profileImageView.heightAnchor).active = true
+     
+     containerView.centerXAnchor.constraintEqualToAnchor(titleView.centerXAnchor).active = true
+     containerView.centerYAnchor.constraintEqualToAnchor(titleView.centerYAnchor).active = true
+     
+     self.navigationItem.titleView = titleView
+     }
+
+ 
+    
     func fetchPosts(){
+        guard let roomID = parentRoom?.postKey else { return }
+        let roomPostsRef = DataService.ds.REF_POSTSPERROOM.child(roomID)
+        
+        roomPostsRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            let postID = snapshot.key
+            let postsRef = DataService.ds.REF_POSTS.child(postID)
+            
+            postsRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+                
+                let post = UserPost(key: snapshot.key)
+                    post.setValuesForKeysWithDictionary(dictionary)
+                    self.postsArray.insert(post, atIndex: 0)
+                
+                dispatch_async(dispatch_get_main_queue()){
+                    self.postTableView.reloadData()
+                }
+
+                },
+                
+                withCancelBlock: nil)
+            
+            
+            }, withCancelBlock: nil)
+
+        
+        
+        /*
         DataService.ds.REF_POSTS.observeEventType(.Value, withBlock: {
             snapshot in
             
@@ -122,13 +200,40 @@ class PostsVC: UIViewController{
             }
  
         })
+         
+         guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
+         let userMessagesRef = DataService.ds.REF_USERMESSAGES.child(uid)
+         
+         userMessagesRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+         let messageID = snapshot.key
+         let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
+         messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+         guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+         
+         let message = Message()
+         message.setValuesForKeysWithDictionary(dictionary)
+         let sender = message.fromId
+         let msg = message.text
+         
+         if message.chatPartnerID() == self.user?.postKey{
+         self.addMessage(sender!, text: msg!)
+         }
+         self.finishReceivingMessageAnimated(true)
+         //self.finishReceivingMessage()
+         },
+         withCancelBlock: nil)
+         
+         }, withCancelBlock: nil)
+         
+
+ */
     }
 
     
     func setupTopView(){
         //need x, y, width and height constraints
         topView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-        topView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 24).active = true
+        topView.topAnchor.constraintEqualToAnchor(view.topAnchor, constant: 72).active = true
         topView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -16).active = true
         topView.heightAnchor.constraintEqualToConstant(45).active = true
         
@@ -283,14 +388,14 @@ extension PostsVC{
         
         let timestamp: NSNumber = NSDate().timeIntervalSince1970
         let authorID = FIRAuth.auth()!.currentUser!.uid
-        let toRoom = roomID
+        let toRoom = parentRoom?.postKey
         
         var post: Dictionary<String, AnyObject> = [
             "postText": postTextField.text!,
             "likes": 0,
             "fromID" : authorID,
             "timestamp": timestamp,
-            "toRoom" : toRoom,
+            "toRoom" : toRoom!,
             "authorPic": currentProfilePicURL,
             "authorName": currentUserName,
         ]
@@ -308,7 +413,7 @@ extension PostsVC{
                 return
             }
             
-            let postRoomRef = DataService.ds.REF_BASE.child("posts_per_room").child(self.roomID)
+            let postRoomRef = DataService.ds.REF_BASE.child("posts_per_room").child(self.parentRoom!.postKey!)
             let postID = firebasePost.key
             
             postRoomRef.updateChildValues([postID: 1])

@@ -175,8 +175,8 @@ class ChatViewController: JSQMessagesViewController {
         }
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
-        
-        finishSendingMessage()
+        finishSendingMessageAnimated(true)
+        //finishSendingMessage()
         
         isTyping = false
     }
@@ -199,8 +199,8 @@ class ChatViewController: JSQMessagesViewController {
                 if message.chatPartnerID() == self.user?.postKey{
                     self.addMessage(sender!, text: msg!)
                 }
-                
-                self.finishReceivingMessage()
+                self.finishReceivingMessageAnimated(true)
+                //self.finishReceivingMessage()
                 },
                 withCancelBlock: nil)
 
@@ -221,7 +221,6 @@ class ChatViewController: JSQMessagesViewController {
             if data.childrenCount == 1 && self.isTyping {
                 return
             }
-            
             // 4 Are there others typing?
             self.showTypingIndicator = data.childrenCount > 0
             self.scrollToBottomAnimated(true)

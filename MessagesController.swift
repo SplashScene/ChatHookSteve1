@@ -87,8 +87,6 @@ class MessagesController: UITableViewController {
                 }, withCancelBlock: nil)
             
             }, withCancelBlock: nil)
-        
-        
     }
     
     func checkIfUserIsLoggedIn(){
@@ -190,7 +188,7 @@ class MessagesController: UITableViewController {
     
     func handleNewMessage(){
         let newMessageController = NewMessagesController()
-        newMessageController.messagesController = self
+            newMessageController.messagesController = self
         let navController = UINavigationController(rootViewController: newMessageController)
         presentViewController(navController, animated: true, completion: nil)
     }
@@ -227,7 +225,6 @@ class MessagesController: UITableViewController {
                 },
             withCancelBlock: nil)
         
-        //showChatControllerForUser(<#T##user: User##User#>)
     }
     
     

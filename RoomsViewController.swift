@@ -22,7 +22,7 @@ class RoomsViewController: UITableViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: #selector(RoomsViewController.promptForAddRoom))
         
-        title = "Public Rooms"
+        title = "Rooms"
         tableView.estimatedRowHeight = 72
         tableView.delegate = self
         tableView.dataSource = self
@@ -98,6 +98,23 @@ class RoomsViewController: UITableViewController {
         }
     }
     
+    func showPostControllerForRoom(room: PublicRoom){
+        
+        let postController = PostsVC()
+            postController.roomsController = self
+            postController.parentRoom = room
+        
+            var img: UIImage?
+            if let url = room.AuthorPic{
+                img = imageCache.objectForKey(url) as? UIImage!
+            }
+            postController.messageImage = img
+        
+       // let postNavController = UINavigationController(rootViewController: postController)
+           // presentViewController(postNavController, animated: true, completion: nil)
+        navigationController?.pushViewController(postController, animated: true)
+    }
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let post = roomsArray[indexPath.row]
         
@@ -123,11 +140,24 @@ class RoomsViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let room = roomsArray[indexPath.row]
-        let postController = PostsVC()
-            postController.roomsController = self
-            postController.roomID = room.postKey
-        presentViewController(postController, animated: true, completion: nil)   
+        showPostControllerForRoom(room)
     }
+    
+    /*
+     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+     let message = messagesArray[indexPath.row]
+     guard let chatPartnerID = message.chatPartnerID() else { return }
+     
+     let ref = DataService.ds.REF_USERS.child(chatPartnerID)
+     
+     ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+     guard let dictionary = snapshot.value as? [String : AnyObject] else { return }
+     let user = User(postKey: snapshot.key, dictionary: dictionary)
+     self.showChatControllerForUser(user)
+     },
+     withCancelBlock: nil)
+     }
+     */
     
     
 }//end RoomsViewController
