@@ -21,6 +21,7 @@ class PostsVC: UIViewController{
     var currentProfilePicURL: String!
     var messageImage: UIImage?
     var parentRoom: PublicRoom?
+    var timer: NSTimer?
     
     var postsArray = [UserPost]()
     
@@ -165,15 +166,20 @@ class PostsVC: UIViewController{
                     post.setValuesForKeysWithDictionary(dictionary)
                     self.postsArray.insert(post, atIndex: 0)
                 
-                    dispatch_async(dispatch_get_main_queue()){
-                        self.postTableView.reloadData()
-                    }
+                    self.timer?.invalidate()
+                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.handleReloadPosts), userInfo: nil, repeats: false)
+                
                 },
                 withCancelBlock: nil)
             }, withCancelBlock: nil)
     }
-
     
+    func handleReloadPosts(){
+        dispatch_async(dispatch_get_main_queue()){
+            self.postTableView.reloadData()
+        }
+    }
+
     func setupTopView(){
         //need x, y, width and height constraints
         topView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
@@ -218,7 +224,6 @@ extension PostsVC:UIImagePickerControllerDelegate, UINavigationControllerDelegat
             imagePicker.delegate = self
             imagePicker.allowsEditing = true
         presentViewController(imagePicker, animated: true, completion: nil)
-        
     }
     
     func choosePhotoFromLibrary(){
@@ -228,7 +233,6 @@ extension PostsVC:UIImagePickerControllerDelegate, UINavigationControllerDelegat
             imagePicker.allowsEditing = true
         presentViewController(imagePicker, animated: true, completion: nil)
     }
-    
     
     func pickPhoto(){
         if UIImagePickerController.isSourceTypeAvailable(.Camera){

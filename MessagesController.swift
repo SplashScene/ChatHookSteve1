@@ -25,38 +25,12 @@ class MessagesController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let newMessageImage = UIImage(named: "newMessageIcon_25")
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .Plain, target: self, action: #selector(handleLogout))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .Plain, target: self, action: #selector(handleLogout))
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: newMessageImage, style: .Plain, target: self, action: #selector(handleNewMessage))
         
         tableView.registerClass(UserCell.self, forCellReuseIdentifier: "cellID")
         
         checkIfUserIsLoggedIn()
-        //observeMessages()
-        
-    }
-    
-    func observeMessages(){
-        messagesArray = []
-        let ref = db.child("messages")
-        ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            if let dictionary = snapshot.value as? [String: AnyObject]{
-                let message = Message()
-                message.setValuesForKeysWithDictionary(dictionary)
-                self.messagesArray.append(message)
-                
-                if let toId = message.toId{
-                    self.messagesDictionary[toId] = message
-                    self.messagesArray = Array(self.messagesDictionary.values)
-                    self.messagesArray.sortInPlace({ (message1, message2) -> Bool in
-                        return message1.timestamp?.intValue > message2.timestamp?.intValue
-                    })
-                }
-                dispatch_async(dispatch_get_main_queue()){
-                    self.tableView.reloadData()
-                }
-            }
-            
-            }, withCancelBlock: nil)
     }
     
     func observeUserMessages(){
@@ -184,16 +158,14 @@ class MessagesController: UITableViewController {
             navigationController?.pushViewController(chatLogController, animated: true)
     }
     
-//    func handleLogout(){
-//        do{
-//            try FIRAuth.auth()?.signOut()
-//        }catch let logoutError{
-//            print(logoutError)
-//        }
-//        let loginController = IntroViewController()
-//            loginController.messageController = self
-//        presentViewController(loginController, animated: true, completion: nil)
-//    }
+    func handleLogout(){
+        do{
+            try FIRAuth.auth()?.signOut()
+        }catch let logoutError{
+            print(logoutError)
+        }
+        dismissViewControllerAnimated(true, completion: nil)
+    }
     
     func handleNewMessage(){
         let newMessageController = NewMessagesController()
