@@ -98,57 +98,54 @@ class PostsVC: UIViewController{
     func fetchCurrentUser(){
         let currentUser = DataService.ds.REF_USER_CURRENT
         
-        currentUser.observeEventType(.Value, withBlock: {
-            snapshot in
-            if let myUserName = snapshot.value!.objectForKey("UserName"){
-                self.currentUserName = myUserName as! String
-            }
-            if let myProfilePic = snapshot.value!.objectForKey("ProfileImage"){
-                self.currentProfilePicURL = myProfilePic  as! String
-            }
-        })
+        currentUser.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]{
+                    self.currentUserName = dictionary["UserName"] as! String
+                    self.currentProfilePicURL = dictionary["ProfileImage"] as! String
+                }
+            }, withCancelBlock: nil)
     }
     
     
-     func setupNavBarWithRoom(){
+    func setupNavBarWithRoom(){
      
-     let titleView = UIView()
-     titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
-     
-     let containerView = UIView()
-     containerView.translatesAutoresizingMaskIntoConstraints = false
-     
-     titleView.addSubview(containerView)
-     
-     let profileImageView = UIImageView()
-         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-         profileImageView.contentMode = .ScaleAspectFill
-         profileImageView.layer.cornerRadius = 20
-         profileImageView.clipsToBounds = true
-         profileImageView.image = messageImage
-     
-     containerView.addSubview(profileImageView)
-     
-     profileImageView.leftAnchor.constraintEqualToAnchor(containerView.leftAnchor).active = true
-     profileImageView.centerYAnchor.constraintEqualToAnchor(containerView.centerYAnchor).active = true
-     profileImageView.widthAnchor.constraintEqualToConstant(40).active = true
-     profileImageView.heightAnchor.constraintEqualToConstant(40).active = true
-     
-     let nameLabel = UILabel()
-         nameLabel.text = parentRoom?.RoomName
-         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-     
-     containerView.addSubview(nameLabel)
-     
-     nameLabel.leftAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 8).active = true
-     nameLabel.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
-     nameLabel.rightAnchor.constraintEqualToAnchor(containerView.rightAnchor).active = true
-     nameLabel.heightAnchor.constraintEqualToAnchor(profileImageView.heightAnchor).active = true
-     
-     containerView.centerXAnchor.constraintEqualToAnchor(titleView.centerXAnchor).active = true
-     containerView.centerYAnchor.constraintEqualToAnchor(titleView.centerYAnchor).active = true
-     
-     self.navigationItem.titleView = titleView
+         let titleView = UIView()
+         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+         
+         let containerView = UIView()
+         containerView.translatesAutoresizingMaskIntoConstraints = false
+         
+         titleView.addSubview(containerView)
+         
+         let profileImageView = UIImageView()
+             profileImageView.translatesAutoresizingMaskIntoConstraints = false
+             profileImageView.contentMode = .ScaleAspectFill
+             profileImageView.layer.cornerRadius = 20
+             profileImageView.clipsToBounds = true
+             profileImageView.image = messageImage
+         
+         containerView.addSubview(profileImageView)
+         
+         profileImageView.leftAnchor.constraintEqualToAnchor(containerView.leftAnchor).active = true
+         profileImageView.centerYAnchor.constraintEqualToAnchor(containerView.centerYAnchor).active = true
+         profileImageView.widthAnchor.constraintEqualToConstant(40).active = true
+         profileImageView.heightAnchor.constraintEqualToConstant(40).active = true
+         
+         let nameLabel = UILabel()
+             nameLabel.text = parentRoom?.RoomName
+             nameLabel.translatesAutoresizingMaskIntoConstraints = false
+         
+         containerView.addSubview(nameLabel)
+         
+         nameLabel.leftAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 8).active = true
+         nameLabel.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
+         nameLabel.rightAnchor.constraintEqualToAnchor(containerView.rightAnchor).active = true
+         nameLabel.heightAnchor.constraintEqualToAnchor(profileImageView.heightAnchor).active = true
+         
+         containerView.centerXAnchor.constraintEqualToAnchor(titleView.centerXAnchor).active = true
+         containerView.centerYAnchor.constraintEqualToAnchor(titleView.centerYAnchor).active = true
+         
+         self.navigationItem.titleView = titleView
      }
 
  
