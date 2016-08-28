@@ -135,7 +135,7 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     func addMessage(id: String, text: String) {
-        let message = JSQMessage(senderId: id, displayName: "", text: text)
+        let message = JSQMessage(senderId: id, displayName: senderDisplayName, text: text)
         messages.append(message)
     }
     

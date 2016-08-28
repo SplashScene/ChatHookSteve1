@@ -18,6 +18,7 @@ class MessagesController: UITableViewController {
     let cellID = "cellID"
     let currentUser = DataService.ds.REF_USER_CURRENT
     var uid: String?
+    var timer: NSTimer?
     
     
     
@@ -72,21 +73,29 @@ class MessagesController: UITableViewController {
                     message.setValuesForKeysWithDictionary(dictionary)
                     self.messagesArray.append(message)
                     
-                    if let toId = message.toId{
-                        self.messagesDictionary[toId] = message
+                    if let chatPartnerID = message.chatPartnerID(){
+                        self.messagesDictionary[chatPartnerID] = message
                         self.messagesArray = Array(self.messagesDictionary.values)
                         self.messagesArray.sortInPlace({ (message1, message2) -> Bool in
                             return message1.timestamp?.intValue > message2.timestamp?.intValue
                         })
                     }
-                    dispatch_async(dispatch_get_main_queue()){
-                        self.tableView.reloadData()
+                    
+                    self.timer?.invalidate()
+                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
                     }
-                }
 
                 }, withCancelBlock: nil)
             
             }, withCancelBlock: nil)
+    }
+    
+    
+    
+    func handleReloadTable(){
+        dispatch_async(dispatch_get_main_queue()){
+            self.tableView.reloadData()
+        }
     }
     
     func checkIfUserIsLoggedIn(){
