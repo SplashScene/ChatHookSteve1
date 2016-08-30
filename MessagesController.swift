@@ -16,7 +16,8 @@ class MessagesController: UITableViewController {
     var messagesArray = [Message]()
     var messagesDictionary = [String: Message]()
     let cellID = "cellID"
-    let currentUser = DataService.ds.REF_USER_CURRENT
+    let currentUserRef = DataService.ds.REF_USER_CURRENT
+    var currentUser: User?
     var uid: String?
     var timer: NSTimer?
     
@@ -38,10 +39,18 @@ class MessagesController: UITableViewController {
         let ref = db.child("user_messages").child(uid!)
         
         ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            let messageID = snapshot.key
-            let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
-            
-            messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            let userID = snapshot.key
+            DataService.ds.REF_USERMESSAGES.child(self.uid!).child(userID).observeEventType(.ChildAdded, withBlock: { (snapshot) in
+                    let messageID = snapshot.key
+                    self.fetchMessageWithMessageId(messageID)
+                }, withCancelBlock: nil)
+            }, withCancelBlock: nil)
+    }
+    
+    private func fetchMessageWithMessageId(messageID: String){
+        let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
+        
+        messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 if let dictionary = snapshot.value as? [String: AnyObject]{
                     let message = Message()
                     message.setValuesForKeysWithDictionary(dictionary)
@@ -49,24 +58,23 @@ class MessagesController: UITableViewController {
                     
                     if let chatPartnerID = message.chatPartnerID(){
                         self.messagesDictionary[chatPartnerID] = message
-                        self.messagesArray = Array(self.messagesDictionary.values)
-                        self.messagesArray.sortInPlace({ (message1, message2) -> Bool in
-                            return message1.timestamp?.intValue > message2.timestamp?.intValue
-                        })
                     }
                     
-                    self.timer?.invalidate()
-                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
-                    }
-
-                }, withCancelBlock: nil)
-            
+                    self.attemptReloadOfTable()
+                }
             }, withCancelBlock: nil)
     }
     
-    
+    private func attemptReloadOfTable(){
+        self.timer?.invalidate()
+        self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.handleReloadTable), userInfo: nil, repeats: false)
+    }
     
     func handleReloadTable(){
+        self.messagesArray = Array(self.messagesDictionary.values)
+        self.messagesArray.sortInPlace({ (message1, message2) -> Bool in
+            return message1.timestamp?.intValue > message2.timestamp?.intValue
+        })
         dispatch_async(dispatch_get_main_queue()){
             self.tableView.reloadData()
         }
@@ -83,18 +91,19 @@ class MessagesController: UITableViewController {
     
     func fetchUserAndSetupNavBarTitle(){
         guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
-        db.child("users").child(uid).observeSingleEventOfType(.Value, withBlock: {(snapshot) in
-            if let dictionary = snapshot.value as? [String: AnyObject]{
-                self.navigationItem.title = dictionary["name"] as? String
-                let userPostKey = snapshot.key
-                let user = User(postKey: userPostKey, dictionary: dictionary)
-                self.setupNavBarWithUser(user)
-            }
+        DataService.ds.REF_USERS.child(uid).observeSingleEventOfType(.Value, withBlock: {(snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]{
+                    self.navigationItem.title = dictionary["name"] as? String
+                    let userPostKey = snapshot.key
+                    self.currentUser = User(postKey: userPostKey, dictionary: dictionary)
+                    self.setupNavBarWithUser(self.currentUser!)
+                }
             },
             withCancelBlock: nil)
     }
     
     func setupNavBarWithUser(user: User){
+        
         messagesArray.removeAll()
         messagesDictionary.removeAll()
         tableView.reloadData()
@@ -170,6 +179,7 @@ class MessagesController: UITableViewController {
     func handleNewMessage(){
         let newMessageController = NewMessagesController()
             newMessageController.messagesController = self
+            newMessageController.currentUser = self.currentUser
         let navController = UINavigationController(rootViewController: newMessageController)
         presentViewController(navController, animated: true, completion: nil)
     }

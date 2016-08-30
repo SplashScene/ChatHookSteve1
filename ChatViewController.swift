@@ -166,11 +166,11 @@ class ChatViewController: JSQMessagesViewController {
                 return
             }
             
-            let userMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(senderId)
+            let userMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(senderId).child(toId!)
             let messageID = itemRef.key
             userMessagesRef.updateChildValues([messageID: 1])
             
-            let recipientUserMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(toId!)
+            let recipientUserMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(toId!).child(senderId)
             recipientUserMessagesRef.updateChildValues([messageID: 1])
         }
         
@@ -182,8 +182,8 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     private func observeMessages() {
-        guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
-        let userMessagesRef = DataService.ds.REF_USERMESSAGES.child(uid)
+        guard let uid = FIRAuth.auth()?.currentUser?.uid, toId = user?.postKey else { return }
+        let userMessagesRef = DataService.ds.REF_USERMESSAGES.child(uid).child(toId)
         
         userMessagesRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
             let messageID = snapshot.key
@@ -196,9 +196,10 @@ class ChatViewController: JSQMessagesViewController {
                 let sender = message.fromId
                 let msg = message.text
                 
-                if message.chatPartnerID() == self.user?.postKey{
-                    self.addMessage(sender!, text: msg!)
-                }
+                self.addMessage(sender!, text: msg!)
+//                if message.chatPartnerID() == self.user?.postKey{
+//                    self.addMessage(sender!, text: msg!)
+//                }
                 self.finishReceivingMessageAnimated(true)
                 //self.finishReceivingMessage()
                 },

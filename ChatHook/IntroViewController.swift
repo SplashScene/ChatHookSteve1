@@ -16,10 +16,6 @@ import Firebase
 
 class IntroViewController: UIViewController {
     @IBOutlet weak var videoView: UIView!
-//    var emailTextField: MaterialTextField!
-//    var passwordTextField: MaterialTextField!
-    
-//    var messageController = MessagesController()
     
     let chatHookLogo: UILabel = {
         let logoLabel = UILabel()
@@ -143,7 +139,7 @@ class IntroViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupView()
-        NSUserDefaults.standardUserDefaults().setValue("q3KcxAnXh9SXAe9UshCKvPteXgq1", forKey: KEY_UID)
+        //NSUserDefaults.standardUserDefaults().setValue("q3KcxAnXh9SXAe9UshCKvPteXgq1", forKey: KEY_UID)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -297,13 +293,12 @@ class IntroViewController: UIViewController {
                         print("Logged In! \(user)")
                         
                         let userData = ["provider": credential.provider,
-                            "UserName": "AnonymousPoster",
-                            "Online": false,
-                            "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
-                        DataService.ds.createFirebaseUser(user!.uid, user: userData as! Dictionary<String, AnyObject>)
+                                        "UserName": "AnonymousPoster",
+                                        "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
+                        DataService.ds.createFirebaseUser(user!.uid, user: userData )
                         
                         NSUserDefaults.standardUserDefaults().setValue(user!.uid, forKey: KEY_UID)
-                        self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
+                        //self.performSegueWithIdentifier(SEGUE_LOGGED_IN, sender: nil)
                     }//end else
                 })//end withCompletionBlock
             }//end else
@@ -337,11 +332,10 @@ class IntroViewController: UIViewController {
                             
                             let userData = ["provider": "email",
                                             "UserName": "AnonymousPoster",
-                                            "Online": false,
                                             "email": email,
                                             "ProfileImage":"http://imageshack.com/a/img922/8259/MrQ96I.png"]
                             
-                            DataService.ds.createFirebaseUser(user!.uid, user: userData as! Dictionary<String, AnyObject>)
+                            DataService.ds.createFirebaseUser(user!.uid, user: userData)
                             
                             self.handleRegisterSegue()
                         }
