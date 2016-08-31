@@ -39,14 +39,14 @@ class ChatViewController: JSQMessagesViewController {
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         collectionView!.alwaysBounceVertical = true
+        automaticallyScrollsToMostRecentMessage = true
         setupNavBarWithUser()
+        observeMessages()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        observeMessages()
         observeTyping()
-       
     }
     
     func setupNavBarWithUser(){
@@ -106,11 +106,11 @@ class ChatViewController: JSQMessagesViewController {
     
     override func collectionView(collectionView: JSQMessagesCollectionView!,messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         let message = messages[indexPath.item]
-        if message.senderId == senderId {
-            return outgoingBubbleImageView
-        } else {
-            return incomingBubbleImageView
-        }
+            if message.senderId == senderId {
+                return outgoingBubbleImageView
+            } else {
+                return incomingBubbleImageView
+            }
     }
     
     override func collectionView(collectionView: UICollectionView,cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -119,11 +119,11 @@ class ChatViewController: JSQMessagesViewController {
         
         let message = messages[indexPath.item]
         
-        if message.senderId == senderId {
-            cell.textView!.textColor = UIColor.whiteColor()
-        } else {
-            cell.textView!.textColor = UIColor.blackColor()
-        }
+            if message.senderId == senderId {
+                cell.textView!.textColor = UIColor.whiteColor()
+            } else {
+                cell.textView!.textColor = UIColor.blackColor()
+            }
         
         return cell
     }
@@ -197,9 +197,6 @@ class ChatViewController: JSQMessagesViewController {
                 let msg = message.text
                 
                 self.addMessage(sender!, text: msg!)
-//                if message.chatPartnerID() == self.user?.postKey{
-//                    self.addMessage(sender!, text: msg!)
-//                }
                 self.finishReceivingMessageAnimated(true)
                 //self.finishReceivingMessage()
                 },
