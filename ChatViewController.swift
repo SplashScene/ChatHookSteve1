@@ -9,6 +9,8 @@
 import UIKit
 import Firebase
 import JSQMessagesViewController
+import MobileCoreServices
+import AVKit
 
 class ChatViewController: JSQMessagesViewController {
  
@@ -120,9 +122,9 @@ class ChatViewController: JSQMessagesViewController {
         let message = messages[indexPath.item]
         
             if message.senderId == senderId {
-                cell.textView!.textColor = UIColor.whiteColor()
+                cell.textView?.textColor = UIColor.whiteColor()
             } else {
-                cell.textView!.textColor = UIColor.blackColor()
+                cell.textView?.textColor = UIColor.blackColor()
             }
         
         return cell
@@ -181,6 +183,44 @@ class ChatViewController: JSQMessagesViewController {
         isTyping = false
     }
     
+    override func didPressAccessoryButton(sender: UIButton!) {
+        let sheet = UIAlertController(title: "Media Messages", message: "Please select a media", preferredStyle: .ActionSheet)
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { (alert:UIAlertAction) in
+            
+        }
+        let photoLibary = UIAlertAction(title: "Photo Library", style: .Default) { (alert: UIAlertAction) in
+            self.getMediaFrom(kUTTypeImage)
+        }
+        
+        let videoLibrary = UIAlertAction(title: "Video Library", style: .Default) { (alert: UIAlertAction) in
+            self.getMediaFrom(kUTTypeMovie)
+        }
+        sheet.addAction(photoLibary)
+        sheet.addAction(videoLibrary)
+        sheet.addAction(cancel)
+        self.presentViewController(sheet, animated: true, completion: nil)
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
+        let message = messages[indexPath.item]
+        if message.isMediaMessage{
+            if let mediaItem = message.media as? JSQVideoMediaItem{
+                let player = AVPlayer(URL: mediaItem.fileURL)
+                let playerViewController = AVPlayerViewController()
+                playerViewController.player = player
+                self.presentViewController(playerViewController, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    private func getMediaFrom(type: CFString){
+        let mediaPicker = UIImagePickerController()
+            mediaPicker.delegate = self
+            mediaPicker.mediaTypes = [type as String]
+        
+        presentViewController(mediaPicker, animated: true, completion: nil)
+    }
+    
     private func observeMessages() {
         guard let uid = FIRAuth.auth()?.currentUser?.uid, toId = user?.postKey else { return }
         let userMessagesRef = DataService.ds.REF_USERMESSAGES.child(uid).child(toId)
@@ -225,5 +265,34 @@ class ChatViewController: JSQMessagesViewController {
         }
         
     }
-   
+}
+
+extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        var selectedImageFromPicker: UIImage?
+        
+        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage{
+            selectedImageFromPicker = editedImage
+        } else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage{
+            selectedImageFromPicker = originalImage
+        }
+        
+        if let video = info["UIImagePickerControllerMediaURL"] as? NSURL{
+            let videoItem = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
+            messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: videoItem))
+            
+        }
+        
+        if let selectedImage = selectedImageFromPicker{
+            let jsqMedia = JSQPhotoMediaItem(image: selectedImage)
+            messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: jsqMedia))
+        }
+        
+        self.finishSendingMessage()
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
 }
