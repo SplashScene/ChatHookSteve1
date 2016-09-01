@@ -159,7 +159,7 @@ class ChatViewController: JSQMessagesViewController {
         let toId = user?.postKey
         let itemRef = DataService.ds.REF_MESSAGES.childByAutoId()
         let timestamp: NSNumber = Int(NSDate().timeIntervalSince1970)
-        let messageItem : [String: AnyObject] = ["fromId": senderId, "text": text, "timestamp" : timestamp, "toId": toId!]
+        let messageItem : [String: AnyObject] = ["fromId": senderId, "text": text, "timestamp" : timestamp, "toId": toId!, "mediaType": "TEXT"]
         
         //itemRef.setValue(messageItem)
         
