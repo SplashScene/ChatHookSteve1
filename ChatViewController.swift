@@ -297,29 +297,57 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
     
     private func uploadToFirebaseStorageUsingSelectedMedia(image: UIImage?, video: NSURL?){
         let imageName = NSUUID().UUIDString
-        let ref = FIRStorage.storage().reference().child("message_images").child(senderId).child(imageName)
         
-        let metadata = FIRStorageMetadata()
-            metadata.contentType = "image/jpg"
-        if let uploadData = UIImageJPEGRepresentation(image!, 0.2){
-            ref.putData(uploadData, metadata: metadata, completion: { (metadata, error) in
-                if error != nil{
-                    print(error.debugDescription)
-                    return
-                }
-                
-                if let imageUrl = metadata?.downloadURL()?.absoluteString{
-                    self.sendMessageWithImageUrl(imageUrl)
-                }
-            })
+        
+        if let picture = image{
+            let ref = FIRStorage.storage().reference().child("message_images").child(senderId).child("photos").child(imageName)
+            if let uploadData = UIImageJPEGRepresentation(picture, 0.2){
+                let metadata = FIRStorageMetadata()
+                metadata.contentType = "image/jpg"
+                ref.putData(uploadData, metadata: metadata, completion: { (metadata, error) in
+                    if error != nil{
+                        print(error.debugDescription)
+                        return
+                    }
+                    
+                    if let imageUrl = metadata?.downloadURL()?.absoluteString{
+                        self.sendMessageWithImageUrl(metadata!.contentType!, fileURL:imageUrl)
+                    }
+                })
+            }
+
+        } else if let movie = video {
+            let ref = FIRStorage.storage().reference().child("message_images").child(senderId).child("videos").child(imageName)
+            if let uploadData = NSData(contentsOfURL: movie){
+                let metadata = FIRStorageMetadata()
+                    metadata.contentType = "video/mp4"
+                ref.putData(uploadData, metadata: metadata, completion: { (metadata, error) in
+                    if error != nil{
+                        print(error.debugDescription)
+                        return
+                    }
+                    
+                    if let imageUrl = metadata?.downloadURL()?.absoluteString{
+                        self.sendMessageWithImageUrl(metadata!.contentType!, fileURL:imageUrl)
+                    }
+                })
+            }
+            
         }
     }
     
-    private func sendMessageWithImageUrl(imageURL: String){
+    private func sendMessageWithImageUrl(metadata: String, fileURL: String){
         let toId = user?.postKey
         let itemRef = DataService.ds.REF_MESSAGES.childByAutoId()
         let timestamp: NSNumber = Int(NSDate().timeIntervalSince1970)
-        let messageItem : [String: AnyObject] = ["fromId": senderId, "imageUrl": imageURL, "timestamp" : timestamp, "toId": toId!, "mediaType": "PHOTO"]
+        let messageItem: Dictionary<String,AnyObject>
+        
+        if metadata == "video/mp4"{
+            messageItem = ["fromId": senderId, "imageUrl": fileURL, "timestamp" : timestamp, "toId": toId!, "mediaType": "VIDEO"]
+        }else{
+            messageItem = ["fromId": senderId, "imageUrl": fileURL, "timestamp" : timestamp, "toId": toId!, "mediaType": "PHOTO"]
+        }
+        
         
         itemRef.updateChildValues(messageItem) { (error, ref) in
             if error != nil {
