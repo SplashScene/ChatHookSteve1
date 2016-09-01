@@ -137,7 +137,7 @@ class ChatViewController: JSQMessagesViewController {
         isTyping = textView.text != ""
     }
     
-    func addMessage(id: String, text: String) {
+    func addTextMessage(id: String, text: String) {
         let message = JSQMessage(senderId: id, displayName: senderDisplayName, text: text)
         messages.append(message)
     }
@@ -234,9 +234,10 @@ class ChatViewController: JSQMessagesViewController {
                 
                 let message = Message()
                     message.setValuesForKeysWithDictionary(dictionary)
+                print(message.mediaType)
                 let sender = message.fromId
                 if let msg = message.text{
-                    self.addMessage(sender!, text: msg)
+                    self.addTextMessage(sender!, text: msg)
                 }
                 
                 self.finishReceivingMessageAnimated(true)
@@ -265,7 +266,6 @@ class ChatViewController: JSQMessagesViewController {
             self.showTypingIndicator = data.childrenCount > 0
             self.scrollToBottomAnimated(true)
         }
-        
     }
 }
 
@@ -282,27 +282,27 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
         if let selectedImage = selectedImageFromPicker{
             let jsqMedia = JSQPhotoMediaItem(image: selectedImage)
             messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: jsqMedia))
-            uploadToFirebaseStorageUsingSelectedImage(selectedImage)
+            uploadToFirebaseStorageUsingSelectedMedia(selectedImage, video: nil)
         }
         
         if let video = info["UIImagePickerControllerMediaURL"] as? NSURL{
             let videoItem = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
             messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: videoItem))
-            
+            uploadToFirebaseStorageUsingSelectedMedia(nil, video: video)
         }
-        
-       
-        
+
         self.finishSendingMessage()
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    private func uploadToFirebaseStorageUsingSelectedImage(image: UIImage){
+    private func uploadToFirebaseStorageUsingSelectedMedia(image: UIImage?, video: NSURL?){
         let imageName = NSUUID().UUIDString
-        let ref = FIRStorage.storage().reference().child("message_images").child(imageName)
+        let ref = FIRStorage.storage().reference().child("message_images").child(senderId).child(imageName)
         
-        if let uploadData = UIImageJPEGRepresentation(image, 0.2){
-            ref.putData(uploadData, metadata: nil, completion: { (metadata, error) in
+        let metadata = FIRStorageMetadata()
+            metadata.contentType = "image/jpg"
+        if let uploadData = UIImageJPEGRepresentation(image!, 0.2){
+            ref.putData(uploadData, metadata: metadata, completion: { (metadata, error) in
                 if error != nil{
                     print(error.debugDescription)
                     return
@@ -319,7 +319,7 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
         let toId = user?.postKey
         let itemRef = DataService.ds.REF_MESSAGES.childByAutoId()
         let timestamp: NSNumber = Int(NSDate().timeIntervalSince1970)
-        let messageItem : [String: AnyObject] = ["fromId": senderId, "imageUrl": imageURL, "timestamp" : timestamp, "toId": toId!]
+        let messageItem : [String: AnyObject] = ["fromId": senderId, "imageUrl": imageURL, "timestamp" : timestamp, "toId": toId!, "mediaType": "PHOTO"]
         
         itemRef.updateChildValues(messageItem) { (error, ref) in
             if error != nil {
