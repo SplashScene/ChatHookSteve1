@@ -20,6 +20,7 @@ class ChatViewController: JSQMessagesViewController {
     var incomingBubbleImageView: JSQMessagesBubbleImage!
     var messageImage: UIImage!
     var user: User?
+    var currentUserUID = FIRAuth.auth()?.currentUser?.uid
     
     var userIsTypingRef: FIRDatabaseReference!
     private var localTyping = false
@@ -99,6 +100,7 @@ class ChatViewController: JSQMessagesViewController {
        
     }
     
+//MARK: Collection Views
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
         return messages[indexPath.item]
     }
@@ -109,7 +111,7 @@ class ChatViewController: JSQMessagesViewController {
     
     override func collectionView(collectionView: JSQMessagesCollectionView!,messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         let message = messages[indexPath.item]
-            if message.senderId == senderId {
+            if message.senderId == self.senderId {
                 return outgoingBubbleImageView
             } else {
                 return incomingBubbleImageView
@@ -122,7 +124,7 @@ class ChatViewController: JSQMessagesViewController {
         
         let message = messages[indexPath.item]
         
-            if message.senderId == senderId {
+            if message.senderId == currentUserUID {
                 cell.textView?.textColor = UIColor.whiteColor()
             } else {
                 cell.textView?.textColor = UIColor.blackColor()
@@ -131,15 +133,26 @@ class ChatViewController: JSQMessagesViewController {
         return cell
     }
     
+    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
+        return nil
+    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
+        let message = messages[indexPath.item]
+        if message.isMediaMessage{
+            if let mediaItem = message.media as? JSQVideoMediaItem{
+                let player = AVPlayer(URL: mediaItem.fileURL)
+                let playerViewController = AVPlayerViewController()
+                playerViewController.player = player
+                self.presentViewController(playerViewController, animated: true, completion: nil)
+            }
+        }
+    }
+    
     override func textViewDidChange(textView: UITextView) {
         super.textViewDidChange(textView)
         // If the text is not empty, the user is typing
         isTyping = textView.text != ""
-    }
-    
-    func addTextMessage(id: String, text: String) {
-        let message = JSQMessage(senderId: id, displayName: senderDisplayName, text: text)
-        messages.append(message)
     }
     
     private func setupBubbles() {
@@ -150,9 +163,6 @@ class ChatViewController: JSQMessagesViewController {
             UIColor.jsq_messageBubbleLightGrayColor())
     }
     
-    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
-        return nil
-    }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!,
                                      senderDisplayName: String!, date: NSDate!) {
@@ -187,7 +197,7 @@ class ChatViewController: JSQMessagesViewController {
     override func didPressAccessoryButton(sender: UIButton!) {
         let sheet = UIAlertController(title: "Media Messages", message: "Please select a media", preferredStyle: .ActionSheet)
         let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { (alert:UIAlertAction) in
-            
+            self.dismissViewControllerAnimated(true, completion: nil)
         }
         let photoLibary = UIAlertAction(title: "Photo Library", style: .Default) { (alert: UIAlertAction) in
             self.getMediaFrom(kUTTypeImage)
@@ -196,22 +206,11 @@ class ChatViewController: JSQMessagesViewController {
         let videoLibrary = UIAlertAction(title: "Video Library", style: .Default) { (alert: UIAlertAction) in
             self.getMediaFrom(kUTTypeMovie)
         }
+        
         sheet.addAction(photoLibary)
         sheet.addAction(videoLibrary)
         sheet.addAction(cancel)
         self.presentViewController(sheet, animated: true, completion: nil)
-    }
-    
-    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
-        let message = messages[indexPath.item]
-        if message.isMediaMessage{
-            if let mediaItem = message.media as? JSQVideoMediaItem{
-                let player = AVPlayer(URL: mediaItem.fileURL)
-                let playerViewController = AVPlayerViewController()
-                playerViewController.player = player
-                self.presentViewController(playerViewController, animated: true, completion: nil)
-            }
-        }
     }
     
     private func getMediaFrom(type: CFString){
@@ -241,13 +240,18 @@ class ChatViewController: JSQMessagesViewController {
                         let picData = NSData(contentsOfURL: url!)
                         let picture = UIImage(data: picData!)
                         let photo = JSQPhotoMediaItem(image: picture)
-                        self.messages.append(JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName, media: photo))
+                        self.messages.append(JSQMessage(senderId: message.fromId, displayName: self.senderDisplayName, media: photo))
+                        photo.appliesMediaViewMaskAsOutgoing = message.fromId == self.currentUserUID ? true : false
+                    
                     case "VIDEO":
                         let video = NSURL(string: message.imageUrl!)
                         let videoItem = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
-                        self.messages.append(JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName, media: videoItem))
+                        self.messages.append(JSQMessage(senderId: message.fromId, displayName: self.senderDisplayName, media: videoItem))
+                        videoItem.appliesMediaViewMaskAsOutgoing = message.fromId == self.currentUserUID ? true : false
+                    
                     case "TEXT":
-                        self.messages.append(JSQMessage(senderId: self.senderId, displayName: self.senderDisplayName, text: message.text!))
+                        self.messages.append(JSQMessage(senderId: message.fromId, displayName: self.senderDisplayName, text: message.text!))
+                    
                     default:
                         print("unknown data type")
                 }
@@ -292,14 +296,12 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
         }
         
         if let selectedImage = selectedImageFromPicker{
-            //let jsqMedia = JSQPhotoMediaItem(image: selectedImage)
-            //messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: jsqMedia))
+           
             uploadToFirebaseStorageUsingSelectedMedia(selectedImage, video: nil)
         }
         
         if let video = info["UIImagePickerControllerMediaURL"] as? NSURL{
-            //let videoItem = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
-            //messages.append(JSQMessage(senderId: senderId, displayName: senderDisplayName, media: videoItem))
+           
             uploadToFirebaseStorageUsingSelectedMedia(nil, video: video)
         }
 
