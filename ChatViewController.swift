@@ -233,6 +233,7 @@ class ChatViewController: JSQMessagesViewController {
                 
                 let message = Message()
                     message.setValuesForKeysWithDictionary(dictionary)
+                //let senderName = self.observeUser(message.fromId!)
                 
                 switch (message.mediaType!){
                     case "PHOTO":
@@ -264,6 +265,22 @@ class ChatViewController: JSQMessagesViewController {
             }, withCancelBlock: nil)
     
         }
+    /*
+    private func observeUser(id: String) -> String{
+        var userDisplayName: String?
+        let userRef = DataService.ds.REF_USERS.child(id)
+        userRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject]{
+                if let displayName = dictionary["UserName"] as? String{
+                    userDisplayName = displayName
+                    print("Inside userDisplayName is: \(userDisplayName)")
+                }
+            }
+            }, withCancelBlock: nil)
+        print("Outside userDisplayName is: \(userDisplayName)")
+        return "Kevin Farm"
+    }
+    */
     
     private func observeTyping() {
         let typingIndicatorRef = DataService.ds.REF_BASE.child("typingIndicator")
