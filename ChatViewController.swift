@@ -143,9 +143,67 @@ class ChatViewController: JSQMessagesViewController {
             if let mediaItem = message.media as? JSQVideoMediaItem{
                 let player = AVPlayer(URL: mediaItem.fileURL)
                 let playerViewController = AVPlayerViewController()
-                playerViewController.player = player
+                    playerViewController.player = player
                 self.presentViewController(playerViewController, animated: true, completion: nil)
+            }else if let photoImage = message.media as? JSQPhotoMediaItem{
+                let cell = collectionView!.cellForItemAtIndexPath(indexPath) as! JSQMessagesCollectionViewCell
+                performZoomInForStartingImageView(cell.mediaView, photoImage: photoImage)
+                
             }
+        }
+    }
+    
+    var startingFrame: CGRect?
+    var blackBackgroundView: UIView?
+    var startingView: UIView?
+    
+    func performZoomInForStartingImageView(startingView: UIView, photoImage: JSQPhotoMediaItem){
+        self.startingView = startingView
+        
+        startingFrame = startingView.superview?.convertRect(startingView.frame, toView: nil)
+        
+        let zoomingView = UIImageView(frame: startingFrame!)
+            zoomingView.backgroundColor = UIColor.redColor()
+            zoomingView.userInteractionEnabled = true
+            zoomingView.contentMode = .ScaleAspectFill
+            zoomingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
+            zoomingView.image = photoImage.image
+        if let keyWindow = UIApplication.sharedApplication().keyWindow{
+                blackBackgroundView = UIView(frame: keyWindow.frame)
+                blackBackgroundView?.backgroundColor = UIColor.blackColor()
+                blackBackgroundView?.alpha = 0
+                keyWindow.addSubview(blackBackgroundView!)
+            
+            keyWindow.addSubview(zoomingView)
+            
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
+                    self.blackBackgroundView!.alpha = 1
+                    self.inputToolbar.alpha = 0
+                    self.startingView?.hidden = true
+                    
+                    let height = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
+                    
+                    zoomingView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: height)
+                    
+                    zoomingView.center = keyWindow.center
+                }, completion: nil)
+            }
+        
+    }
+    
+    func handleZoomOut(tapGesture: UITapGestureRecognizer){
+        if let zoomOutImageView = tapGesture.view{
+            zoomOutImageView.layer.cornerRadius = 16
+            zoomOutImageView.clipsToBounds = true
+            
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: { 
+                    zoomOutImageView.frame = self.startingFrame!
+                    self.blackBackgroundView?.alpha = 0
+                    self.inputToolbar.alpha = 1
+                }, completion: { (completed) in
+                    zoomOutImageView.removeFromSuperview()
+                    self.startingView?.hidden = false
+            })
         }
     }
     
