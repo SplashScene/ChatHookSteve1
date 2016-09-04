@@ -27,6 +27,8 @@
 		847289681D3E6481007E82DB /* PublicRoomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847289671D3E6481007E82DB /* PublicRoomCell.swift */; };
 		8472896C1D3E989E007E82DB /* TutorialPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */; };
 		84A28BE21CF89706004615DB /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A28BE11CF89706004615DB /* ChatViewController.swift */; };
+		84A7AF361D7C683C0095EF26 /* ChatViewController+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A7AF351D7C683C0095EF26 /* ChatViewController+Image.swift */; };
+		84A7AF381D7C6A080095EF26 /* FirebaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A7AF371D7C6A080095EF26 /* FirebaseHelper.swift */; };
 		84A9DB8C1D45702C00842B50 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9DB8B1D45702C00842B50 /* User.swift */; };
 		84A9DB901D46725200842B50 /* MyHouse.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 84A9DB8F1D46725200842B50 /* MyHouse.gpx */; };
 		84A9DB921D46B63F00842B50 /* GetLocation1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9DB911D46B63F00842B50 /* GetLocation1.swift */; };
@@ -76,6 +78,8 @@
 		847289671D3E6481007E82DB /* PublicRoomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicRoomCell.swift; sourceTree = "<group>"; };
 		8472896B1D3E989E007E82DB /* TutorialPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialPageViewController.swift; sourceTree = "<group>"; };
 		84A28BE11CF89706004615DB /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		84A7AF351D7C683C0095EF26 /* ChatViewController+Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ChatViewController+Image.swift"; sourceTree = "<group>"; };
+		84A7AF371D7C6A080095EF26 /* FirebaseHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseHelper.swift; sourceTree = "<group>"; };
 		84A9DB8B1D45702C00842B50 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		84A9DB8F1D46725200842B50 /* MyHouse.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MyHouse.gpx; sourceTree = "<group>"; };
 		84A9DB911D46B63F00842B50 /* GetLocation1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetLocation1.swift; sourceTree = "<group>"; };
@@ -202,6 +206,7 @@
 				8458F5F41D6B3E200083BA0B /* NewMessagesController.swift */,
 				8458F5F81D6B3EAE0083BA0B /* ChatLogController.swift */,
 				8458F6001D6DF7870083BA0B /* FinishRegister+Image.swift */,
+				84A7AF351D7C683C0095EF26 /* ChatViewController+Image.swift */,
 			);
 			name = Controllers;
 			path = ..;
@@ -251,6 +256,7 @@
 			children = (
 				84B9AB3A1CE233100002B132 /* Constants.swift */,
 				8458F5FC1D6CB5B40083BA0B /* Extensions.swift */,
+				84A7AF371D7C6A080095EF26 /* FirebaseHelper.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -389,6 +395,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A7AF361D7C683C0095EF26 /* ChatViewController+Image.swift in Sources */,
 				8458F5EF1D6B38AB0083BA0B /* MainTabBar.swift in Sources */,
 				84B9AB381CE2326F0002B132 /* DataService.swift in Sources */,
 				8458F5F31D6B3DE00083BA0B /* MessagesController.swift in Sources */,
@@ -402,6 +409,7 @@
 				8472896C1D3E989E007E82DB /* TutorialPageViewController.swift in Sources */,
 				84B9AB421CE256610002B132 /* MaterialButton.swift in Sources */,
 				84B9AB201CE225780002B132 /* IntroViewController.swift in Sources */,
+				84A7AF381D7C6A080095EF26 /* FirebaseHelper.swift in Sources */,
 				8458F5FB1D6B3F5B0083BA0B /* Message.swift in Sources */,
 				8458F5F91D6B3EAE0083BA0B /* ChatLogController.swift in Sources */,
 				84B9AB1E1CE225780002B132 /* AppDelegate.swift in Sources */,
