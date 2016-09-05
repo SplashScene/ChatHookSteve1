@@ -8,6 +8,7 @@
 
 import UIKit
 import FirebaseStorage
+import AVFoundation
 
 extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
@@ -25,8 +26,7 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
         }
         
         if let video = info["UIImagePickerControllerMediaURL"] as? NSURL{
-            
-            
+
             uploadToFirebaseStorageUsingSelectedMedia(nil, video: video)
         }
         
@@ -58,19 +58,33 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
             let ref = FIRStorage.storage().reference().child("message_images").child(senderId).child("videos").child(imageName)
             if let uploadData = NSData(contentsOfURL: movie){
                 let metadata = FIRStorageMetadata()
-                metadata.contentType = "video/mp4"
-                ref.putData(uploadData, metadata: metadata, completion: { (metadata, error) in
+                    metadata.contentType = "video/mp4"
+                let uploadTask = ref.putData(uploadData, metadata: metadata, completion: { (metadata, error) in
                     if error != nil{
                         print(error.debugDescription)
                         return
                     }
                     
                     if let imageUrl = metadata?.downloadURL()?.absoluteString{
+                        
+                        if let thumbnailImage = self.thumbnailImageForVideoUrl(movie){
+                            
+                        }
+                        
                         self.sendMessageWithImageUrl(metadata!.contentType!, fileURL:imageUrl)
                     }
                 })
+                
+                uploadTask.observeStatus(.Progress) { (snapshot) in
+                    if let completedUnitCount = snapshot.progress?.completedUnitCount{
+                        self.setupNavBarWithUserOrProgress(String(completedUnitCount))
+                    }
+                }
+                
+                uploadTask.observeStatus(.Success) { (snapshot) in
+                    self.setupNavBarWithUserOrProgress(nil)
+                }
             }
-            
         }
     }
     
@@ -81,9 +95,17 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
         let messageItem: Dictionary<String,AnyObject>
         
         if metadata == "video/mp4"{
-            messageItem = ["fromId": senderId, "imageUrl": fileURL, "timestamp" : timestamp, "toId": toId!, "mediaType": "VIDEO"]
+            messageItem = ["fromId": senderId,
+                           "imageUrl": fileURL,
+                           "timestamp" : timestamp,
+                           "toId": toId!,
+                           "mediaType": "VIDEO"]
         }else{
-            messageItem = ["fromId": senderId, "imageUrl": fileURL, "timestamp" : timestamp, "toId": toId!, "mediaType": "PHOTO"]
+            messageItem = ["fromId": senderId,
+                           "imageUrl": fileURL,
+                           "timestamp" : timestamp,
+                           "toId": toId!,
+                           "mediaType": "PHOTO"]
         }
         
         
@@ -100,6 +122,21 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
             let recipientUserMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(toId!).child(self.senderId)
             recipientUserMessagesRef.updateChildValues([messageID: 1])
         }
+    }
+    
+    private func thumbnailImageForVideoUrl(videoUrl: NSURL) -> UIImage?{
+        let asset = AVAsset(URL: videoUrl)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        
+        do{
+           let thumbnailCGImage = try imageGenerator.copyCGImageAtTime(CMTimeMake(1, 60), actualTime: nil)
+            return UIImage(CGImage: thumbnailCGImage)
+        }catch let err{
+            print(err)
+        }
+        
+        return nil
+        
         
     }
     

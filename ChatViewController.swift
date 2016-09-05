@@ -44,7 +44,7 @@ class ChatViewController: JSQMessagesViewController {
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         collectionView!.alwaysBounceVertical = true
         automaticallyScrollsToMostRecentMessage = true
-        setupNavBarWithUser()
+        setupNavBarWithUserOrProgress(nil)
         observeMessages()
     }
     
@@ -53,7 +53,7 @@ class ChatViewController: JSQMessagesViewController {
         observeTyping()
     }
     
-    func setupNavBarWithUser(){
+    func setupNavBarWithUserOrProgress(progress:String?){
         
         let titleView = UIView()
             titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
@@ -78,8 +78,15 @@ class ChatViewController: JSQMessagesViewController {
         profileImageView.heightAnchor.constraintEqualToConstant(40).active = true
         
         let nameLabel = UILabel()
-            nameLabel.text = user?.userName
             nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+            if let progressText = progress{
+                nameLabel.text = progressText
+                nameLabel.textColor = UIColor.redColor()
+            }else{
+                nameLabel.text = user?.userName
+                nameLabel.textColor = UIColor.darkGrayColor()
+            }
         
         containerView.addSubview(nameLabel)
         
@@ -147,6 +154,7 @@ class ChatViewController: JSQMessagesViewController {
         }
     }
     
+    //MARK: Image Zoom Methods
     var startingFrame: CGRect?
     var blackBackgroundView: UIView?
     var startingView: UIView?
@@ -272,6 +280,8 @@ class ChatViewController: JSQMessagesViewController {
         
         presentViewController(mediaPicker, animated: true, completion: nil)
     }
+    
+    //MARK: Observe Methods
     
     private func observeMessages() {
         guard let uid = FIRAuth.auth()?.currentUser?.uid, toId = user?.postKey else { return }
