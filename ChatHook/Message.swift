@@ -16,6 +16,7 @@ class Message: NSObject {
     var toId: String?
     var imageUrl: String?
     var mediaType: String?
+    var thumbnailUrl: String?
     
     func chatPartnerID() -> String?{
         return fromId == FIRAuth.auth()?.currentUser?.uid ? toId! : fromId!

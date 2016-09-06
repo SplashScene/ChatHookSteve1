@@ -16,6 +16,7 @@ import FirebaseStorage
 class ChatViewController: JSQMessagesViewController {
  
     var messages = [JSQMessage]()
+    var rawMessages = [Message]()
     var outgoingBubbleImageView: JSQMessagesBubbleImage!
     var incomingBubbleImageView: JSQMessagesBubbleImage!
     var messageImage: UIImage!
@@ -35,6 +36,24 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     var usersTypingQuery: FIRDatabaseQuery!
+    
+//    let playButton: UIButton = {
+//        let button = UIButton()
+//            //button.setTitle("Play Video", forState: .Normal)
+//            button.translatesAutoresizingMaskIntoConstraints = false
+//        let image = UIImage(named: "playButton")
+//            button.setImage(image, forState: .Normal)
+//        return button
+//    }()
+    
+//    let thumbnailImageView: UIImageView = {
+//        let thumbImgView = UIImageView()
+//        thumbImgView.image = UIImage(named: "profile")
+//        thumbImgView.translatesAutoresizingMaskIntoConstraints = false
+//        thumbImgView.contentMode = .ScaleAspectFill
+////        thumbImgView.loadImageUsingCacheWithUrlString("https://firebasestorage.googleapis.com/v0/b/firebase-chathook.appspot.com/o/message_images%2FBhAUjuU0tVVaj3wxTQcjRBrjJAh2%2Fphotos%2F30C85896-0336-42F4-8637-E6C9FE0F7E8A?alt=media&token=dab821e5-3eec-4a0c-81fd-ac1ec95cdb07")
+//        return thumbImgView
+//    }()
     
     
     override func viewDidLoad() {
@@ -127,7 +146,41 @@ class ChatViewController: JSQMessagesViewController {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath)
             as! JSQMessagesCollectionViewCell
         
+        
+        
         let message = messages[indexPath.item]
+        let rawMessage = rawMessages[indexPath.item]
+        
+        
+        
+        if message.isMediaMessage{
+            
+           if let _ = message.media as? JSQVideoMediaItem{
+            let thumbImageView = UIImageView()
+                thumbImageView.loadImageUsingCacheWithUrlString(rawMessage.thumbnailUrl!)
+                thumbImageView.translatesAutoresizingMaskIntoConstraints = false
+                thumbImageView.contentMode = .ScaleAspectFill
+            let image = UIImage(named: "playButton")
+            let playButton = UIButton()
+                playButton.translatesAutoresizingMaskIntoConstraints = false
+                playButton.setImage(image, forState: .Normal)
+            
+                cell.mediaView.addSubview(thumbImageView)
+                cell.mediaView.addSubview(playButton)
+            
+            thumbImageView.widthAnchor.constraintEqualToAnchor(cell.widthAnchor).active = true
+            thumbImageView.heightAnchor.constraintEqualToAnchor(cell.heightAnchor).active = true
+            
+            
+
+
+                playButton.centerXAnchor.constraintEqualToAnchor(cell.mediaView.centerXAnchor).active = true
+                playButton.centerYAnchor.constraintEqualToAnchor(cell.mediaView.centerYAnchor).active = true
+                playButton.widthAnchor.constraintEqualToConstant(50).active = true
+                playButton.heightAnchor.constraintEqualToConstant(50).active = true
+            }
+        }
+        
         
         cell.textView?.textColor = message.senderId == currentUserUID ? UIColor.whiteColor() : UIColor.blackColor()
         
@@ -154,60 +207,6 @@ class ChatViewController: JSQMessagesViewController {
         }
     }
     
-    //MARK: Image Zoom Methods
-    var startingFrame: CGRect?
-    var blackBackgroundView: UIView?
-    var startingView: UIView?
-    
-    func performZoomInForStartingImageView(startingView: UIView, photoImage: JSQPhotoMediaItem){
-        self.startingView = startingView
-        
-        startingFrame = startingView.superview?.convertRect(startingView.frame, toView: nil)
-        
-        let zoomingView = UIImageView(frame: startingFrame!)
-            zoomingView.backgroundColor = UIColor.redColor()
-            zoomingView.userInteractionEnabled = true
-            zoomingView.contentMode = .ScaleAspectFill
-            zoomingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
-            zoomingView.image = photoImage.image
-        if let keyWindow = UIApplication.sharedApplication().keyWindow{
-                blackBackgroundView = UIView(frame: keyWindow.frame)
-                blackBackgroundView?.backgroundColor = UIColor.blackColor()
-                blackBackgroundView?.alpha = 0
-                keyWindow.addSubview(blackBackgroundView!)
-            
-            keyWindow.addSubview(zoomingView)
-            
-            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
-                    self.blackBackgroundView!.alpha = 1
-                    self.inputToolbar.alpha = 0
-                    self.startingView?.hidden = true
-                    
-                    let height = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
-                    
-                    zoomingView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: height)
-                    
-                    zoomingView.center = keyWindow.center
-                }, completion: nil)
-            }
-        
-    }
-    
-    func handleZoomOut(tapGesture: UITapGestureRecognizer){
-        if let zoomOutImageView = tapGesture.view{
-            zoomOutImageView.layer.cornerRadius = 16
-            zoomOutImageView.clipsToBounds = true
-            
-            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: { 
-                    zoomOutImageView.frame = self.startingFrame!
-                    self.blackBackgroundView?.alpha = 0
-                    self.inputToolbar.alpha = 1
-                }, completion: { (completed) in
-                    zoomOutImageView.removeFromSuperview()
-                    self.startingView?.hidden = false
-            })
-        }
-    }
     
     override func textViewDidChange(textView: UITextView) {
         super.textViewDidChange(textView)
@@ -257,7 +256,7 @@ class ChatViewController: JSQMessagesViewController {
     override func didPressAccessoryButton(sender: UIButton!) {
         let sheet = UIAlertController(title: "Media Messages", message: "Please select a media", preferredStyle: .ActionSheet)
         let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { (alert:UIAlertAction) in
-            self.dismissViewControllerAnimated(true, completion: nil)
+            sheet.dismissViewControllerAnimated(true, completion: nil)
         }
         let photoLibary = UIAlertAction(title: "Photo Library", style: .Default) { (alert: UIAlertAction) in
             self.getMediaFrom(kUTTypeImage)
@@ -295,7 +294,9 @@ class ChatViewController: JSQMessagesViewController {
                 
                 let message = Message()
                     message.setValuesForKeysWithDictionary(dictionary)
-                //let senderName = self.observeUser(message.fromId!)
+                    self.rawMessages.append(message)
+                
+                    //let senderName = self.observeUser(message.fromId!)
                 
                 switch (message.mediaType!){
                     case "PHOTO":
@@ -362,6 +363,62 @@ class ChatViewController: JSQMessagesViewController {
             self.scrollToBottomAnimated(true)
         }
     }
+    
+    //MARK: Image Zoom Methods
+    var startingFrame: CGRect?
+    var blackBackgroundView: UIView?
+    var startingView: UIView?
+    
+    func performZoomInForStartingImageView(startingView: UIView, photoImage: JSQPhotoMediaItem){
+        self.startingView = startingView
+        
+        startingFrame = startingView.superview?.convertRect(startingView.frame, toView: nil)
+        
+        let zoomingView = UIImageView(frame: startingFrame!)
+        zoomingView.backgroundColor = UIColor.redColor()
+        zoomingView.userInteractionEnabled = true
+        zoomingView.contentMode = .ScaleAspectFill
+        zoomingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
+        zoomingView.image = photoImage.image
+        if let keyWindow = UIApplication.sharedApplication().keyWindow{
+            blackBackgroundView = UIView(frame: keyWindow.frame)
+            blackBackgroundView?.backgroundColor = UIColor.blackColor()
+            blackBackgroundView?.alpha = 0
+            keyWindow.addSubview(blackBackgroundView!)
+            
+            keyWindow.addSubview(zoomingView)
+            
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
+                self.blackBackgroundView!.alpha = 1
+                self.inputToolbar.alpha = 0
+                self.startingView?.hidden = true
+                
+                let height = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
+                
+                zoomingView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: height)
+                
+                zoomingView.center = keyWindow.center
+                }, completion: nil)
+        }
+        
+    }
+    
+    func handleZoomOut(tapGesture: UITapGestureRecognizer){
+        if let zoomOutImageView = tapGesture.view{
+            zoomOutImageView.layer.cornerRadius = 16
+            zoomOutImageView.clipsToBounds = true
+            
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
+                zoomOutImageView.frame = self.startingFrame!
+                self.blackBackgroundView?.alpha = 0
+                self.inputToolbar.alpha = 1
+                }, completion: { (completed) in
+                    zoomOutImageView.removeFromSuperview()
+                    self.startingView?.hidden = false
+            })
+        }
+    }
+
 }
 
 
