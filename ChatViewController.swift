@@ -35,6 +35,13 @@ class ChatViewController: JSQMessagesViewController {
         }
     }
     
+    let activityIndicatorView: UIActivityIndicatorView = {
+        let aiv = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+            aiv.translatesAutoresizingMaskIntoConstraints = false
+            aiv.hidesWhenStopped = true
+        return aiv
+    }()
+    
     var usersTypingQuery: FIRDatabaseQuery!
     
 //    let playButton: UIButton = {
@@ -59,6 +66,7 @@ class ChatViewController: JSQMessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBubbles()
+       
         collectionView!.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         collectionView!.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
         collectionView!.alwaysBounceVertical = true
@@ -126,6 +134,15 @@ class ChatViewController: JSQMessagesViewController {
        
     }
     
+    private func setupBubbles() {
+        let factory = JSQMessagesBubbleImageFactory()
+        outgoingBubbleImageView = factory.outgoingMessagesBubbleImageWithColor(
+            UIColor.jsq_messageBubbleBlueColor())
+        incomingBubbleImageView = factory.incomingMessagesBubbleImageWithColor(
+            UIColor.jsq_messageBubbleLightGrayColor())
+    }
+
+    
 //MARK: Collection Views
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
         return messages[indexPath.item]
@@ -142,63 +159,91 @@ class ChatViewController: JSQMessagesViewController {
 
     }
     
+    var cell:JSQMessagesCollectionViewCell?
+    var message:JSQMessage?
+    var playButton: UIButton?
+    
     override func collectionView(collectionView: UICollectionView,cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath)
-            as! JSQMessagesCollectionViewCell
-        
-        
-        
-        let message = messages[indexPath.item]
+        cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath)
+            as? JSQMessagesCollectionViewCell
+        cell?.delegate = self
+        message = messages[indexPath.item]
         let rawMessage = rawMessages[indexPath.item]
-        
-        
-        
-        if message.isMediaMessage{
+
+        if message!.isMediaMessage{
             
-           if let _ = message.media as? JSQVideoMediaItem{
+           if let _ = message!.media as? JSQVideoMediaItem{
+ 
             let thumbImageView = UIImageView()
                 thumbImageView.loadImageUsingCacheWithUrlString(rawMessage.thumbnailUrl!)
                 thumbImageView.translatesAutoresizingMaskIntoConstraints = false
                 thumbImageView.contentMode = .ScaleAspectFill
+            
             let image = UIImage(named: "playButton")
-            let playButton = UIButton()
-                playButton.translatesAutoresizingMaskIntoConstraints = false
-                playButton.setImage(image, forState: .Normal)
             
-                cell.mediaView.addSubview(thumbImageView)
-                cell.mediaView.addSubview(playButton)
+                playButton = UIButton()
+                playButton!.translatesAutoresizingMaskIntoConstraints = false
+                playButton!.setImage(image, forState: .Normal)
             
-            thumbImageView.widthAnchor.constraintEqualToAnchor(cell.widthAnchor).active = true
-            thumbImageView.heightAnchor.constraintEqualToAnchor(cell.heightAnchor).active = true
+                cell!.mediaView.addSubview(thumbImageView)
+        
+                thumbImageView.widthAnchor.constraintEqualToAnchor(cell!.widthAnchor).active = true
+                thumbImageView.heightAnchor.constraintEqualToAnchor(cell!.heightAnchor).active = true
+ 
+                 cell!.mediaView.addSubview(playButton!)
+                playButton!.centerXAnchor.constraintEqualToAnchor(cell!.mediaView.centerXAnchor).active = true
+                playButton!.centerYAnchor.constraintEqualToAnchor(cell!.mediaView.centerYAnchor).active = true
+                playButton!.widthAnchor.constraintEqualToConstant(50).active = true
+                playButton!.heightAnchor.constraintEqualToConstant(50).active = true
             
+                cell!.mediaView.addSubview(activityIndicatorView)
+                activityIndicatorView.centerXAnchor.constraintEqualToAnchor(cell!.mediaView.centerXAnchor).active = true
+                activityIndicatorView.centerYAnchor.constraintEqualToAnchor(cell!.mediaView.centerYAnchor).active = true
+                activityIndicatorView.widthAnchor.constraintEqualToConstant(50).active = true
+                activityIndicatorView.heightAnchor.constraintEqualToConstant(50).active = true
             
-
-
-                playButton.centerXAnchor.constraintEqualToAnchor(cell.mediaView.centerXAnchor).active = true
-                playButton.centerYAnchor.constraintEqualToAnchor(cell.mediaView.centerYAnchor).active = true
-                playButton.widthAnchor.constraintEqualToConstant(50).active = true
-                playButton.heightAnchor.constraintEqualToConstant(50).active = true
             }
         }
+
+        cell!.textView?.textColor = message!.senderId == currentUserUID ? UIColor.whiteColor() : UIColor.blackColor()
         
-        
-        cell.textView?.textColor = message.senderId == currentUserUID ? UIColor.whiteColor() : UIColor.blackColor()
-        
-        return cell
+        return cell!
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
         return nil
     }
     
+    func handleVideoPlay(){
+        print("Inside Handle Play")
+        if let mediaItem = message!.media as? JSQVideoMediaItem{
+            print("Inside Media Item")
+            let player = AVPlayer(URL: mediaItem.fileURL)
+            let playerLayer = AVPlayerLayer(player: player)
+                playerLayer.videoGravity = AVLayerVideoGravityResize
+                playerLayer.masksToBounds = true
+                cell!.mediaView.layer.addSublayer(playerLayer)
+                playerLayer.frame = cell!.mediaView.bounds
+            player.play()
+        }
+    }
+   
+   
     override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
+        
         let message = messages[indexPath.item]
         if message.isMediaMessage{
             if let mediaItem = message.media as? JSQVideoMediaItem{
                 let player = AVPlayer(URL: mediaItem.fileURL)
-                let playerViewController = AVPlayerViewController()
-                    playerViewController.player = player
-                self.presentViewController(playerViewController, animated: true, completion: nil)
+                let playerLayer = AVPlayerLayer(player: player)
+                    playerLayer.videoGravity = AVLayerVideoGravityResize
+                    playerLayer.masksToBounds = true
+                    cell!.mediaView.layer.addSublayer(playerLayer)
+                    playerLayer.frame = cell!.mediaView.bounds
+                    player.play()
+//                let playerViewController = AVPlayerViewController()
+//                    playerViewController.player = player
+                //self.presentViewController(playerViewController, animated: true, completion: nil)
             }else if let photoImage = message.media as? JSQPhotoMediaItem{
                 let cell = collectionView!.cellForItemAtIndexPath(indexPath) as! JSQMessagesCollectionViewCell
                 performZoomInForStartingImageView(cell.mediaView, photoImage: photoImage)
@@ -206,22 +251,6 @@ class ChatViewController: JSQMessagesViewController {
             }
         }
     }
-    
-    
-    override func textViewDidChange(textView: UITextView) {
-        super.textViewDidChange(textView)
-        // If the text is not empty, the user is typing
-        isTyping = textView.text != ""
-    }
-    
-    private func setupBubbles() {
-        let factory = JSQMessagesBubbleImageFactory()
-        outgoingBubbleImageView = factory.outgoingMessagesBubbleImageWithColor(
-            UIColor.jsq_messageBubbleBlueColor())
-        incomingBubbleImageView = factory.incomingMessagesBubbleImageWithColor(
-            UIColor.jsq_messageBubbleLightGrayColor())
-    }
-    
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!,
                                      senderDisplayName: String!, date: NSDate!) {
@@ -345,6 +374,13 @@ class ChatViewController: JSQMessagesViewController {
     }
     */
     
+    //MARK: Typing Indicator Methods
+    override func textViewDidChange(textView: UITextView) {
+        super.textViewDidChange(textView)
+        // If the text is not empty, the user is typing
+        isTyping = textView.text != ""
+    }
+    
     private func observeTyping() {
         let typingIndicatorRef = DataService.ds.REF_BASE.child("typingIndicator")
         userIsTypingRef = typingIndicatorRef.child(senderId)
@@ -419,6 +455,45 @@ class ChatViewController: JSQMessagesViewController {
         }
     }
 
+}
+
+extension ChatViewController: JSQMessagesCollectionViewCellDelegate{
+    
+    func messagesCollectionViewCellDidTapMessageBubble(cell: JSQMessagesCollectionViewCell!) {
+        print("Did tap message bubble")
+        let cellIndexPath = super.collectionView.indexPathForCell(cell)
+        let message = messages[(cellIndexPath?.item)!]
+        activityIndicatorView.startAnimating()
+        playButton?.hidden = true
+        //self.cell = cell
+        
+        if message.isMediaMessage{
+            if let mediaItem = message.media as? JSQVideoMediaItem{
+                let player = AVPlayer(URL: mediaItem.fileURL)
+                let playerLayer = AVPlayerLayer(player: player)
+                    playerLayer.videoGravity = AVLayerVideoGravityResize
+                    playerLayer.masksToBounds = true
+                cell!.mediaView.layer.addSublayer(playerLayer)
+                playerLayer.frame = cell!.mediaView.bounds
+                player.play()
+            }else if let photoImage = message.media as? JSQPhotoMediaItem{
+                performZoomInForStartingImageView(cell.mediaView, photoImage: photoImage)
+            }
+        }
+    }
+    
+    func messagesCollectionViewCellDidTapAvatar(cell: JSQMessagesCollectionViewCell!) {
+        print("Did tap Avatar")
+    }
+    
+    func messagesCollectionViewCellDidTapCell(cell: JSQMessagesCollectionViewCell!, atPosition position: CGPoint) {
+        print("Did tap Collection Cell")
+    }
+    
+    func messagesCollectionViewCell(cell: JSQMessagesCollectionViewCell!, didPerformAction action: Selector, withSender sender: AnyObject!) {
+        print("Inside didPerformAction")
+    }
+ 
 }
 
 
