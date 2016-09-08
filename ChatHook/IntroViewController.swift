@@ -318,6 +318,11 @@ class IntroViewController: UIViewController {
             if error != nil{
                 print(error)
                 
+                if error!.code == STATUS_NO_INTERNET{
+                    print("There is no internet connection")
+                    self.showErrorAlert("No Internet Connection", msg: "You currently have no internet connection. Please try again later.")
+                }
+                
                 if error!.code == STATUS_ACCOUNT_NONEXIST{
                     print("Inside ACCOUNT DOESN'T EXIST - \(email) and password: \(password)")
                     FIRAuth.auth()?.createUserWithEmail(email, password: password, completion: { (user, error) in

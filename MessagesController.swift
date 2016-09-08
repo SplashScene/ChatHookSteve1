@@ -21,8 +21,6 @@ class MessagesController: UITableViewController {
     var uid: String?
     var timer: NSTimer?
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         let newMessageImage = UIImage(named: "newMessageIcon_25")
@@ -32,6 +30,31 @@ class MessagesController: UITableViewController {
         tableView.registerClass(UserCell.self, forCellReuseIdentifier: "cellID")
         
         checkIfUserIsLoggedIn()
+        
+        tableView.allowsMultipleSelectionDuringEditing = true
+    }
+    
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
+        
+        let message = messagesArray[indexPath.row]
+        
+        if let chatPartnerID = message.chatPartnerID(){
+           DataService.ds.REF_USERMESSAGES.child(uid).child(chatPartnerID).removeValueWithCompletionBlock({ (error, ref) in
+            if error != nil{
+                print("Failed to remove message", error)
+                return
+            }
+            
+            self.messagesDictionary.removeValueForKey(chatPartnerID)
+            self.attemptReloadOfTable()
+
+           })
+        }   
     }
     
     func observeUserMessages(){
@@ -44,6 +67,11 @@ class MessagesController: UITableViewController {
                     let messageID = snapshot.key
                     self.fetchMessageWithMessageId(messageID)
                 }, withCancelBlock: nil)
+            }, withCancelBlock: nil)
+        
+        ref.observeEventType(.ChildRemoved, withBlock: { (snapshot) in
+               self.messagesDictionary.removeValueForKey(snapshot.key)
+                self.attemptReloadOfTable()
             }, withCancelBlock: nil)
     }
     
