@@ -22,12 +22,19 @@ class testPostCell: UITableViewCell {
                         if let profileImageUrl = dictionary["authorPic"] as? String {
                             self.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
                         }
-                        if let showImage = dictionary["showcaseImg"] as? String{
-                            self.showcaseImageView.loadImageUsingCacheWithUrlString(showImage)
-                        }else{
-                            self.showcaseImageView.image = nil
+                        if let postType = dictionary["mediaType"] as? String{
+                            switch postType{
+                                case "VIDEO":
+                                    guard let videoThumbnail = dictionary["thumbnailUrl"] as? String else { return }
+                                    self.showcaseImageView.loadImageUsingCacheWithUrlString(videoThumbnail)
+                                case "PHOTO":
+                                    guard let picImage = dictionary["showcaseUrl"] as? String else { return }
+                                    self.showcaseImageView.loadImageUsingCacheWithUrlString(picImage)
+                                default:
+                                        self.showcaseImageView.image = nil
+                            }
                         }
-                    }
+                      }
                     }, withCancelBlock: nil)
             
             
@@ -47,11 +54,11 @@ class testPostCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        textLabel?.frame = CGRect(x: 64, y: textLabel!.frame.origin.y - 2, width: textLabel!.frame.width, height: textLabel!.frame.height)
-        detailTextLabel?.frame = CGRect(x: 64, y: detailTextLabel!.frame.origin.y + 2, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height)
-    }
+//    override func layoutSubviews() {
+//        super.layoutSubviews()
+//        textLabel?.frame = CGRect(x: 64, y: textLabel!.frame.origin.y - 2, width: textLabel!.frame.width, height: textLabel!.frame.height)
+//        detailTextLabel?.frame = CGRect(x: 64, y: detailTextLabel!.frame.origin.y + 2, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height)
+//    }
     
     let profileImageView: MaterialImageView = {
         let imageView = MaterialImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))

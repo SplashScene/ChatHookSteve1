@@ -54,6 +54,11 @@ class ChatViewController: JSQMessagesViewController {
         observeTyping()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.inputToolbar.barTintColor = UIColor.whiteColor()
+    }
+    
     func setupNavBarWithUserOrProgress(progress:String?){
         
         let titleView = UIView()
@@ -201,30 +206,6 @@ class ChatViewController: JSQMessagesViewController {
     private func setupVideoCell(){
         
     }
-    
-   
-//    override func collectionView(collectionView: JSQMessagesCollectionView!, didTapMessageBubbleAtIndexPath indexPath: NSIndexPath!) {
-//        
-//        let message = messages[indexPath.item]
-//        if message.isMediaMessage{
-//            if let mediaItem = message.media as? JSQVideoMediaItem{
-//                let player = AVPlayer(URL: mediaItem.fileURL)
-//                let playerLayer = AVPlayerLayer(player: player)
-//                    playerLayer.videoGravity = AVLayerVideoGravityResize
-//                    playerLayer.masksToBounds = true
-//                    cell!.mediaView.layer.addSublayer(playerLayer)
-//                    playerLayer.frame = cell!.mediaView.bounds
-//                    player.play()
-////                let playerViewController = AVPlayerViewController()
-////                    playerViewController.player = player
-//                //self.presentViewController(playerViewController, animated: true, completion: nil)
-//            }else if let photoImage = message.media as? JSQPhotoMediaItem{
-//                let cell = collectionView!.cellForItemAtIndexPath(indexPath) as! JSQMessagesCollectionViewCell
-//                performZoomInForStartingImageView(cell.mediaView, photoImage: photoImage)
-//                
-//            }
-//        }
-//    }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!,
                                      senderDisplayName: String!, date: NSDate!) {
@@ -434,18 +415,13 @@ class ChatViewController: JSQMessagesViewController {
 extension ChatViewController: JSQMessagesCollectionViewCellDelegate{
     
     func messagesCollectionViewCellDidTapMessageBubble(cell: JSQMessagesCollectionViewCell!) {
-        print("Did tap message bubble")
         let cellIndexPath = super.collectionView.indexPathForCell(cell)
-        print ("THE INDEX PATH ITEM IS: \(cellIndexPath?.item)")
         let message = messages[(cellIndexPath?.item)!]
         
         if message.isMediaMessage{
             if let mediaItem = message.media as? JSQVideoMediaItem{
-                for view in cell!.mediaView.subviews{
-                    print("The cell index path is \(cellIndexPath?.item) and the view is: \(view)")
-                }
+                
                 let pButton = cell!.mediaView.subviews[1] as? UIButton
-                    print("PButton is: \(pButton)")
                     pButton?.hidden = true
                 let cellAIV = cell!.mediaView.subviews[2] as? UIActivityIndicatorView
                     cellAIV?.startAnimating()
@@ -453,6 +429,7 @@ extension ChatViewController: JSQMessagesCollectionViewCellDelegate{
                 let playerLayer = AVPlayerLayer(player: player)
                     playerLayer.videoGravity = AVLayerVideoGravityResize
                     playerLayer.masksToBounds = true
+                
                 cell!.mediaView.layer.addSublayer(playerLayer)
                 playerLayer.frame = cell!.mediaView.bounds
                 player.play()

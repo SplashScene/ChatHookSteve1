@@ -10,12 +10,14 @@ import UIKit
 
 class UserPost: NSObject {
     var postKey: String?
-    var fromID: String?
+    var fromId: String?
     var postText: String?
     var timestamp: NSNumber?
     var toRoom: String?
     var likes: NSNumber?
-    var showcaseImg: String?
+    var thumbnailUrl: String?
+    var showcaseUrl: String?
+    var mediaType: String?
     var authorPic: String?
     var authorName: String?
     

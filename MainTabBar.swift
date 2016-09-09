@@ -26,13 +26,23 @@ class MainTabBar: UITabBarController {
         
         mapViewController.title = "Home"
         mapViewController.tabBarItem.image = UIImage(named: "GlobeIcon25")
+        
+        
         messagesViewController.title = "Chat"
         messagesViewController.tabBarItem.image = UIImage(named: "ChatIcon25")
+        
+        
         postsViewController.title = "Posts"
         postsViewController.tabBarItem.image = UIImage(named: "peeps")
         
+        
         viewControllers = [mapViewController, chatNavController, postsNavController]
         
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBar.barTintColor = UIColor.whiteColor()
     }
 
     override func didReceiveMemoryWarning() {

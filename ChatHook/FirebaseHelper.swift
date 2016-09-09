@@ -61,5 +61,20 @@ class FirebaseHelper {
         }
         return [contentType!, "www.cubs.com"]
     }
+    
+    func observeUser(id: String) -> [String]{
+        
+        var observedUserArray: [String]?
+        let userRef = DataService.ds.REF_USERS.child(id)
+        userRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]{
+                    if let displayName = dictionary["UserName"] as? String, let displayPicUrl = dictionary["ProfileImage"] as? String{
+                        observedUserArray = [displayName, displayPicUrl]
+                    }
+                }
+            }, withCancelBlock: nil)
+        return observedUserArray!
+    }
+
 
 }
