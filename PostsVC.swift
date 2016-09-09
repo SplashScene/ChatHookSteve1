@@ -118,6 +118,7 @@ class PostsVC: UIViewController{
         let ptv = UITableView()
             ptv.translatesAutoresizingMaskIntoConstraints = false
             ptv.backgroundColor = UIColor(r: 220, g: 220, b: 220)
+            ptv.allowsSelection = false
         return ptv
     }()
     
@@ -267,6 +268,63 @@ class PostsVC: UIViewController{
         postTableView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
     }
     
+    var startingFrame: CGRect?
+    var blackBackgroundView: UIView?
+    var startingView: UIView?
+    
+    func performZoomInForStartingImageView(startingImageView: UIImageView){
+        print("Performing zoom in logic in controller")
+        startingFrame = startingImageView.superview?.convertRect(startingImageView.frame, toView: nil)
+        print(startingFrame)
+        let zoomingView = UIImageView(frame: startingFrame!)
+            zoomingView.backgroundColor = UIColor.redColor()
+            zoomingView.image = startingImageView.image
+            zoomingView.userInteractionEnabled = true
+            zoomingView.contentMode = .ScaleAspectFill
+            zoomingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
+        
+        if let keyWindow = UIApplication.sharedApplication().keyWindow{
+            keyWindow.addSubview(zoomingView)
+            
+                blackBackgroundView = UIView(frame: keyWindow.frame)
+                blackBackgroundView?.backgroundColor = UIColor.blackColor()
+                blackBackgroundView?.alpha = 0
+                keyWindow.addSubview(blackBackgroundView!)
+                
+                keyWindow.addSubview(zoomingView)
+                
+                UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
+                        self.blackBackgroundView!.alpha = 1
+                        self.startingView?.hidden = true
+
+                      let height = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
+                    
+                        zoomingView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: height)
+                        
+                        zoomingView.center = keyWindow.center
+                    }, completion: nil)
+            
+        }
+  
+    }
+
+    func handleZoomOut(tapGesture: UITapGestureRecognizer){
+        if let zoomOutImageView = tapGesture.view{
+            zoomOutImageView.layer.cornerRadius = 16
+            zoomOutImageView.clipsToBounds = true
+            
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
+                zoomOutImageView.frame = self.startingFrame!
+                self.blackBackgroundView?.alpha = 0
+                //self.topView.alpha = 1
+                }, completion: { (completed) in
+                    zoomOutImageView.removeFromSuperview()
+                    self.startingView?.hidden = false
+            })
+        }
+    }
+
+     
 }//end class
 
 extension PostsVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate{
@@ -304,9 +362,48 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! testPostCell
         let post = postsArray[indexPath.row]
-        cell.userPost = post
+            cell.userPost = post
+            cell.postViewController = self
+        
+        if post.mediaType == "VIDEO"{
+            setupVideoPostCell(cell)
+        }
+        
         return cell
     }
+    
+    private func setupVideoPostCell(cell: testPostCell){
+//        
+//        if cell.subviews.count > 0{
+//            for view in (cell.subviews){
+//                view.removeFromSuperview()
+//            }
+//        }
+//        
+        
+        let playButton = PlayButton()
+ 
+        cell.showcaseImageView.addSubview(playButton)
+        
+        playButton.centerXAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerXAnchor).active = true
+        playButton.centerYAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerYAnchor).active = true
+        playButton.widthAnchor.constraintEqualToConstant(50).active = true
+        playButton.heightAnchor.constraintEqualToConstant(50).active = true
+        
+        let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+            activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+            activityIndicatorView.hidesWhenStopped = true
+        
+        
+        cell.showcaseImageView.addSubview(activityIndicatorView)
+        
+        activityIndicatorView.centerXAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerXAnchor).active = true
+        activityIndicatorView.centerYAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerYAnchor).active = true
+        activityIndicatorView.widthAnchor.constraintEqualToConstant(50).active = true
+        activityIndicatorView.heightAnchor.constraintEqualToConstant(50).active = true
+    }
+
+    
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -469,76 +566,10 @@ extension PostsVC{
         }catch let err{
             print(err)
         }
-        
         return nil
-        
-        
     }
-
-    /*
-    func uploadFirebaseImage(image: UIImage){
-        let imageName = NSUUID().UUIDString
-        let storageRef = FIRStorage.storage().reference().child("post_images").child("\(imageName).jpg")
-        
-        if let uploadData = UIImageJPEGRepresentation(image, 0.2){
-            storageRef.putData(uploadData, metadata: nil, completion: { (metadata, error) in
-                if error != nil{
-                    print(error.debugDescription)
-                    return
-                }
-                if let profileImageUrl = metadata?.downloadURL()?.absoluteString{
-                    self.postToFirebase(profileImageUrl)
-                    
-                }
-            })
-        }
-        
-    }
-    func postToFirebase(imgURL: String?){
-        
-        let timestamp: NSNumber = NSDate().timeIntervalSince1970
-        let authorID = FIRAuth.auth()!.currentUser!.uid
-        let toRoom = parentRoom?.postKey
-        
-        var post: Dictionary<String, AnyObject> = [
-            "postText": postTextField.text!,
-            "likes": 0,
-            "fromID" : authorID,
-            "timestamp": timestamp,
-            "toRoom" : toRoom!,
-            "authorPic": currentProfilePicURL,
-            "authorName": currentUserName,
-        ]
-        
-        if imgURL != nil {
-            post["showcaseImg"] = imgURL!
-        }
-        
-        let firebasePost = DataService.ds.REF_POSTS.childByAutoId()
-            //firebasePost.setValue(post)
-        
-        firebasePost.updateChildValues(post) { (error, ref) in
-            if error != nil{
-                print(error?.description)
-                return
-            }
-            
-            let postRoomRef = DataService.ds.REF_BASE.child("posts_per_room").child(self.parentRoom!.postKey!)
-            let postID = firebasePost.key
-            
-            postRoomRef.updateChildValues([postID: 1])
-        }
-        
-        postTextField.text = ""
-        imageSelectorView.image = UIImage(named: "cameraIcon")
-        postedImage = nil
-        
-        dispatch_async(dispatch_get_main_queue()){
-            self.postTableView.reloadData()
-        }
-    }
- */
-}//end extension
+    
+ }//end extension
 
 
 

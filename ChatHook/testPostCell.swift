@@ -10,6 +10,8 @@ import UIKit
 import Firebase
 
 class testPostCell: UITableViewCell {
+    var postViewController:PostsVC?
+    
     var userPost: UserPost?{
         didSet{
                 let ref = DataService.ds.REF_POSTS.child(userPost!.postKey!)
@@ -128,11 +130,11 @@ class testPostCell: UITableViewCell {
             descripText.text = "This is sample description text for the post"
             descripText.font = UIFont(name: "Avenir Medium", size:  14.0)
             descripText.textColor = UIColor.darkGrayColor()
-
+            descripText.userInteractionEnabled = false
         return descripText
     }()
     
-    let showcaseImageView: UIImageView = {
+    lazy var showcaseImageView: UIImageView = {
         let imageView = UIImageView()
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.contentMode = .ScaleAspectFill
@@ -142,7 +144,8 @@ class testPostCell: UITableViewCell {
             imageView.layer.shadowRadius = 5.0
             imageView.layer.shadowOffset = CGSizeMake(2.0, 2.0)
             imageView.layer.shadowColor = UIColor.blackColor().CGColor
-        
+            imageView.userInteractionEnabled = true
+            imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoom)))
         return imageView
     }()
 
@@ -196,7 +199,7 @@ class testPostCell: UITableViewCell {
 
 
     }
-    
+
     func toggleLike(){
         if postLiked {
             likeImageView.image = UIImage(named: "iLike")
@@ -206,6 +209,16 @@ class testPostCell: UITableViewCell {
         
         postLiked = !postLiked
     }
+    
+    func handleZoom(tapGesture: UITapGestureRecognizer){
+        
+        if let imageView = tapGesture.view as? UIImageView{
+            postViewController?.performZoomInForStartingImageView(imageView)
+        }
+        
+    }
+    
+   
 
 
 }

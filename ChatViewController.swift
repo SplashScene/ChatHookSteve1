@@ -149,62 +149,58 @@ class ChatViewController: JSQMessagesViewController {
         let rawMessage = rawMessages[indexPath.item]
  
            if rawMessage.mediaType == "VIDEO"{
-            
-            if cell?.mediaView.subviews.count > 0{
-                for view in (cell?.mediaView.subviews)!{
-                    view.removeFromSuperview()
-                }
-            }
- 
-            let thumbImageView = UIImageView()
-                thumbImageView.loadImageUsingCacheWithUrlString(rawMessage.thumbnailUrl!)
-                thumbImageView.translatesAutoresizingMaskIntoConstraints = false
-                thumbImageView.contentMode = .ScaleAspectFill
-            
-            let image = UIImage(named: "playButton")
-            
-                playButton = UIButton()
-                playButton!.translatesAutoresizingMaskIntoConstraints = false
-                playButton!.setImage(image, forState: .Normal)
-            
-                cell!.mediaView.addSubview(thumbImageView)
-            
-                thumbImageView.widthAnchor.constraintEqualToAnchor(cell!.widthAnchor).active = true
-                thumbImageView.heightAnchor.constraintEqualToAnchor(cell!.heightAnchor).active = true
- 
-                 cell!.mediaView.addSubview(playButton!)
-            
-                playButton!.centerXAnchor.constraintEqualToAnchor(cell!.mediaView.centerXAnchor).active = true
-                playButton!.centerYAnchor.constraintEqualToAnchor(cell!.mediaView.centerYAnchor).active = true
-                playButton!.widthAnchor.constraintEqualToConstant(50).active = true
-                playButton!.heightAnchor.constraintEqualToConstant(50).active = true
-            
-                let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-                    activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-                    activityIndicatorView.hidesWhenStopped = true
-                    //activityIndicatorView.startAnimating()
-            
-                cell!.mediaView.addSubview(activityIndicatorView)
-                
-                activityIndicatorView.centerXAnchor.constraintEqualToAnchor(cell!.mediaView.centerXAnchor).active = true
-                activityIndicatorView.centerYAnchor.constraintEqualToAnchor(cell!.mediaView.centerYAnchor).active = true
-                activityIndicatorView.widthAnchor.constraintEqualToConstant(50).active = true
-                activityIndicatorView.heightAnchor.constraintEqualToConstant(50).active = true
-            
+                self.setupVideoCell(cell!, rawMessage: rawMessage)
             }
         
-
         cell!.textView?.textColor = message!.senderId == currentUserUID ? UIColor.whiteColor() : UIColor.blackColor()
         
         return cell!
     }
     
+    
+    
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
         return nil
     }
     
-    private func setupVideoCell(){
+    private func setupVideoCell(cell: JSQMessagesCollectionViewCell, rawMessage: Message){
         
+        if cell.mediaView.subviews.count > 0{
+            for view in (cell.mediaView.subviews){
+                view.removeFromSuperview()
+            }
+        }
+        
+        let thumbImageView = UIImageView()
+            thumbImageView.loadImageUsingCacheWithUrlString(rawMessage.thumbnailUrl!)
+            thumbImageView.translatesAutoresizingMaskIntoConstraints = false
+            thumbImageView.contentMode = .ScaleAspectFill
+        
+        let playButton = PlayButton()
+        
+        cell.mediaView.addSubview(thumbImageView)
+        
+        thumbImageView.widthAnchor.constraintEqualToAnchor(cell.widthAnchor).active = true
+        thumbImageView.heightAnchor.constraintEqualToAnchor(cell.heightAnchor).active = true
+        
+        cell.mediaView.addSubview(playButton)
+        
+        playButton.centerXAnchor.constraintEqualToAnchor(cell.mediaView.centerXAnchor).active = true
+        playButton.centerYAnchor.constraintEqualToAnchor(cell.mediaView.centerYAnchor).active = true
+        playButton.widthAnchor.constraintEqualToConstant(50).active = true
+        playButton.heightAnchor.constraintEqualToConstant(50).active = true
+        
+        let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+            activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+            activityIndicatorView.hidesWhenStopped = true
+        
+        
+        cell.mediaView.addSubview(activityIndicatorView)
+        
+        activityIndicatorView.centerXAnchor.constraintEqualToAnchor(cell.mediaView.centerXAnchor).active = true
+        activityIndicatorView.centerYAnchor.constraintEqualToAnchor(cell.mediaView.centerYAnchor).active = true
+        activityIndicatorView.widthAnchor.constraintEqualToConstant(50).active = true
+        activityIndicatorView.heightAnchor.constraintEqualToConstant(50).active = true
     }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!,
@@ -366,11 +362,11 @@ class ChatViewController: JSQMessagesViewController {
         startingFrame = startingView.superview?.convertRect(startingView.frame, toView: nil)
         
         let zoomingView = UIImageView(frame: startingFrame!)
-        zoomingView.backgroundColor = UIColor.redColor()
-        zoomingView.userInteractionEnabled = true
-        zoomingView.contentMode = .ScaleAspectFill
-        zoomingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
-        zoomingView.image = photoImage.image
+            zoomingView.backgroundColor = UIColor.redColor()
+            zoomingView.userInteractionEnabled = true
+            zoomingView.contentMode = .ScaleAspectFill
+            zoomingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
+            zoomingView.image = photoImage.image
         if let keyWindow = UIApplication.sharedApplication().keyWindow{
             blackBackgroundView = UIView(frame: keyWindow.frame)
             blackBackgroundView?.backgroundColor = UIColor.blackColor()
