@@ -23,20 +23,22 @@ class MainTabBar: UITabBarController {
         let postsViewController = RoomsViewController()
         let chatNavController = UINavigationController(rootViewController: messagesViewController)
         let postsNavController = UINavigationController(rootViewController: postsViewController)
+        let profileViewController = ProfileViewController()
         
         mapViewController.title = "Home"
         mapViewController.tabBarItem.image = UIImage(named: "GlobeIcon25")
         
-        
         messagesViewController.title = "Chat"
         messagesViewController.tabBarItem.image = UIImage(named: "ChatIcon25")
-        
         
         postsViewController.title = "Posts"
         postsViewController.tabBarItem.image = UIImage(named: "peeps")
         
+        profileViewController.title = "Profile"
+        profileViewController.tabBarItem.image = UIImage(named: "ProfileIcon25")
         
-        viewControllers = [mapViewController, chatNavController, postsNavController]
+        
+        viewControllers = [mapViewController, chatNavController, postsNavController, profileViewController]
         
     }
     

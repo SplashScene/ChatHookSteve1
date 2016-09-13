@@ -426,14 +426,30 @@ extension ChatViewController: JSQMessagesCollectionViewCellDelegate{
                     playerLayer.videoGravity = AVLayerVideoGravityResize
                     playerLayer.masksToBounds = true
                 
+                
                 cell!.mediaView.layer.addSublayer(playerLayer)
                 playerLayer.frame = cell!.mediaView.bounds
                 player.play()
+                
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying), name: AVPlayerItemDidPlayToEndTimeNotification, object: player.currentItem)
+
                 
             }else if let photoImage = message.media as? JSQPhotoMediaItem{
                 performZoomInForStartingImageView(cell.mediaView, photoImage: photoImage)
             }
         }
+    }
+    
+    
+    func handleVideoZoom(){
+        print("Tapped to expand video")
+    }
+    func playerDidFinishPlaying(note: NSNotification){
+        print("Player Stopped Playing")
+ 
+//        let videoPlayer = note.object as! AVPlayer
+//        let videoPlayerLayer = videoPlayer.superclass as? AVPlayerLayer
+//        videoPlayerLayer?.removeFromSuperlayer()
     }
     
     func messagesCollectionViewCellDidTapAvatar(cell: JSQMessagesCollectionViewCell!) {

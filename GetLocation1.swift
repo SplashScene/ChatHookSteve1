@@ -91,7 +91,6 @@ class GetLocation1: UIViewController {
                 if let dictionary = snapshot.value as? [String: AnyObject]{
                     let currentUserPostKey = snapshot.key
                     self.currentUser = User(postKey: currentUserPostKey, dictionary: dictionary)
-                    print("The name of the current user is: \(self.currentUser?.userName)")
                     self.currentUser?.location = self.userLocation
                     //self.fetchProfilePic((self.currentUser?.profileImageUrl!)!)
                 }

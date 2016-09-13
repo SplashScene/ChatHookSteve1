@@ -218,6 +218,36 @@ class testPostCell: UITableViewCell {
         
     }
     
+    func handlePostVideoPlay(sender: UIButton) {
+        postViewController?.handlePlayPostVideo(sender)
+    }
+    
+    func setupVideoPostCell(cell: testPostCell){
+        
+        let playButton = PlayButton()
+        
+        playButton.addTarget(self, action: #selector(handlePostVideoPlay), forControlEvents: .TouchUpInside)
+        
+        cell.showcaseImageView.addSubview(playButton)
+        
+        playButton.centerXAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerXAnchor).active = true
+        playButton.centerYAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerYAnchor).active = true
+        playButton.widthAnchor.constraintEqualToConstant(50).active = true
+        playButton.heightAnchor.constraintEqualToConstant(50).active = true
+        
+        let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicatorView.hidesWhenStopped = true
+        
+        
+        cell.showcaseImageView.addSubview(activityIndicatorView)
+        
+        activityIndicatorView.centerXAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerXAnchor).active = true
+        activityIndicatorView.centerYAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerYAnchor).active = true
+        activityIndicatorView.widthAnchor.constraintEqualToConstant(50).active = true
+        activityIndicatorView.heightAnchor.constraintEqualToConstant(50).active = true
+    }
+    
    
 
 

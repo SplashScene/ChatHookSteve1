@@ -273,9 +273,9 @@ class PostsVC: UIViewController{
     var startingView: UIView?
     
     func performZoomInForStartingImageView(startingImageView: UIImageView){
-        print("Performing zoom in logic in controller")
+        
         startingFrame = startingImageView.superview?.convertRect(startingImageView.frame, toView: nil)
-        print(startingFrame)
+        
         let zoomingView = UIImageView(frame: startingFrame!)
             zoomingView.backgroundColor = UIColor.redColor()
             zoomingView.image = startingImageView.image
@@ -286,12 +286,12 @@ class PostsVC: UIViewController{
         if let keyWindow = UIApplication.sharedApplication().keyWindow{
             keyWindow.addSubview(zoomingView)
             
-                blackBackgroundView = UIView(frame: keyWindow.frame)
-                blackBackgroundView?.backgroundColor = UIColor.blackColor()
-                blackBackgroundView?.alpha = 0
-                keyWindow.addSubview(blackBackgroundView!)
-                
-                keyWindow.addSubview(zoomingView)
+            blackBackgroundView = UIView(frame: keyWindow.frame)
+            blackBackgroundView?.backgroundColor = UIColor.blackColor()
+            blackBackgroundView?.alpha = 0
+            keyWindow.addSubview(blackBackgroundView!)
+            
+            keyWindow.addSubview(zoomingView)
                 
                 UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
                         self.blackBackgroundView!.alpha = 1
@@ -314,48 +314,17 @@ class PostsVC: UIViewController{
             zoomOutImageView.clipsToBounds = true
             
             UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
-                zoomOutImageView.frame = self.startingFrame!
-                self.blackBackgroundView?.alpha = 0
-                //self.topView.alpha = 1
+                    zoomOutImageView.frame = self.startingFrame!
+                    self.blackBackgroundView?.alpha = 0
                 }, completion: { (completed) in
                     zoomOutImageView.removeFromSuperview()
                     self.startingView?.hidden = false
             })
         }
-    }
-
-     
+    }   
 }//end class
 
-extension PostsVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate{
- 
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        var selectedImageFromPicker: UIImage?
-        
-        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage{
-            selectedImageFromPicker = editedImage
-        } else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage{
-            selectedImageFromPicker = originalImage
-        }
-        
-        if let selectedImage = selectedImageFromPicker{
-            postedImage = selectedImage
-            imageSelectorView.image = postedImage
-        }
-        
-        if let video = info["UIImagePickerControllerMediaURL"] as? NSURL{
-            postedVideo = video
-           imageSelectorView.image = UIImage(named: "movieIcon")
-        }
-        
-        dismissViewControllerAnimated(true, completion: nil)
-    }
 
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-}//end extension
 
 extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     
@@ -366,44 +335,42 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
             cell.postViewController = self
         
         if post.mediaType == "VIDEO"{
-            setupVideoPostCell(cell)
+            print("I am setting up a VIDEO cell for row \(indexPath.row)")
+            cell.setupVideoPostCell(cell)
         }
         
         return cell
     }
     
-    private func setupVideoPostCell(cell: testPostCell){
-//        
-//        if cell.subviews.count > 0{
-//            for view in (cell.subviews){
-//                view.removeFromSuperview()
-//            }
-//        }
-//        
+    
+    
+    func handlePlayPostVideo(sender: UIButton){
+        print("Inside play video from controller")
+        let buttonPosition = sender.convertPoint(CGPointZero, toView: self.postTableView)
+        let indexPath = self.postTableView.indexPathForRowAtPoint(buttonPosition)
+        print(indexPath?.row)
+        let cell = self.postTableView.cellForRowAtIndexPath(indexPath!) as? testPostCell
+        let post = postsArray[indexPath!.row]
+        sender.hidden = true
+        let cellAIV = cell?.showcaseImageView.subviews[1] as? UIActivityIndicatorView
+            cellAIV?.startAnimating()
+        let url = NSURL(string: post.showcaseUrl!)
+        let player = AVPlayer(URL: url!)
+        let playerLayer = AVPlayerLayer(player: player)
+            playerLayer.videoGravity = AVLayerVideoGravityResize
+            playerLayer.masksToBounds = true
         
-        let playButton = PlayButton()
- 
-        cell.showcaseImageView.addSubview(playButton)
+        cell!.showcaseImageView.layer.addSublayer(playerLayer)
+        playerLayer.frame = cell!.showcaseImageView.bounds
+        player.play()
         
-        playButton.centerXAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerXAnchor).active = true
-        playButton.centerYAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerYAnchor).active = true
-        playButton.widthAnchor.constraintEqualToConstant(50).active = true
-        playButton.heightAnchor.constraintEqualToConstant(50).active = true
-        
-        let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-            activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-            activityIndicatorView.hidesWhenStopped = true
-        
-        
-        cell.showcaseImageView.addSubview(activityIndicatorView)
-        
-        activityIndicatorView.centerXAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerXAnchor).active = true
-        activityIndicatorView.centerYAnchor.constraintEqualToAnchor(cell.showcaseImageView.centerYAnchor).active = true
-        activityIndicatorView.widthAnchor.constraintEqualToConstant(50).active = true
-        activityIndicatorView.heightAnchor.constraintEqualToConstant(50).active = true
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying), name: AVPlayerItemDidPlayToEndTimeNotification, object: player.currentItem)
     }
 
-    
+    func playerDidFinishPlaying(note: NSNotification){
+        print("Video stopped playing")
+        self.postTableView.reloadData()
+    }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -457,7 +424,7 @@ extension PostsVC{
             }
             
         } else if let movie = video {
-            print("INSIDE MOVIE SECTION OF THE UPLOAD")
+            
             let ref = FIRStorage.storage().reference().child("post_images").child(uid).child("videos").child(imageName)
             if let uploadData = NSData(contentsOfURL: movie){
                 let metadata = FIRStorageMetadata()
@@ -469,9 +436,7 @@ extension PostsVC{
                     }
                     
                     if let videoUrl = metadata?.downloadURL()?.absoluteString{
-                        print("Inside videoUrl")
                         if let thumbnailImage = self.thumbnailImageForVideoUrl(movie){
-                            print("Inside Thumbnail Image")
                             self.uploadToFirebaseStorageUsingSelectedMedia(thumbnailImage, video: nil, completion: { (imageUrl) in
                                 imageCache.setObject(thumbnailImage, forKey: videoUrl)
                                 self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl(metadata!.contentType!, postText: self.postedText, thumbnailURL: imageUrl, fileURL: videoUrl)

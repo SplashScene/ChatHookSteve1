@@ -46,6 +46,7 @@
 		84B9AB561CE27B500002B132 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB531CE27B500002B132 /* Bolts.framework */; };
 		84B9AB571CE27B500002B132 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB541CE27B500002B132 /* FBSDKCoreKit.framework */; };
 		84B9AB581CE27B500002B132 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB551CE27B500002B132 /* FBSDKLoginKit.framework */; };
+		84BE9AC31D870B5E001F91B3 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BE9AC21D870B5E001F91B3 /* ProfileViewController.swift */; };
 		84C8CC891D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C8CC881D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift */; };
 		84D6878B1CF3799700944D1E /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6878A1CF3799700944D1E /* MaterialView.swift */; };
 		AB40F2A6C892CB8D250BC87E /* Pods_ChatHook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */; };
@@ -95,6 +96,7 @@
 		84B9AB531CE27B500002B132 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		84B9AB541CE27B500002B132 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		84B9AB551CE27B500002B132 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		84BE9AC21D870B5E001F91B3 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		84C8CC881D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CurrentLocationViewcontrollerViewController.swift; path = ../CurrentLocationViewcontrollerViewController.swift; sourceTree = "<group>"; };
 		84D6878A1CF3799700944D1E /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
 		9E4A6D1C186F9E739AC106F1 /* Pods-ChatHook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatHook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatHook/Pods-ChatHook.debug.xcconfig"; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 				8458F5F41D6B3E200083BA0B /* NewMessagesController.swift */,
 				8458F6001D6DF7870083BA0B /* FinishRegister+Image.swift */,
 				84A7AF351D7C683C0095EF26 /* ChatViewController+Image.swift */,
+				84BE9AC21D870B5E001F91B3 /* ProfileViewController.swift */,
 			);
 			name = Controllers;
 			path = ..;
@@ -389,6 +392,7 @@
 				8450BFBE1D8359D0006CAB8E /* PlayButton.swift in Sources */,
 				8458F5F31D6B3DE00083BA0B /* MessagesController.swift in Sources */,
 				84B9AB3D1CE235D30002B132 /* ImaggaRouter.swift in Sources */,
+				84BE9AC31D870B5E001F91B3 /* ProfileViewController.swift in Sources */,
 				8458F6051D6E44200083BA0B /* UserPost.swift in Sources */,
 				8458F5F51D6B3E200083BA0B /* NewMessagesController.swift in Sources */,
 				847289621D3D48F7007E82DB /* RoomsViewController.swift in Sources */,
