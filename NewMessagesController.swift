@@ -96,6 +96,7 @@ class NewMessagesController: UITableViewController {
         let user = usersArray[indexPath.row]
             cell.textLabel?.text = user.userName
             cell.detailTextLabel?.text = calculateDistance(user.location!)
+            cell.accessoryType = UITableViewCellAccessoryType.DetailButton
             
             if let profileImageUrl = user.profileImageUrl{
                 cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
@@ -111,6 +112,26 @@ class NewMessagesController: UITableViewController {
             let user = self.usersArray[indexPath.row]
             self.messagesController?.showChatControllerForUser(user)
         }
+    }
+    
+    override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
+        let user = usersArray[indexPath.row]
+        
+        let ref = DataService.ds.REF_USERS.child(user.postKey)
+        
+        ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            guard let dictionary = snapshot.value as? [String : AnyObject] else { return }
+            let user = User(postKey: snapshot.key, dictionary: dictionary)
+            self.showProfileControllerForUser(user)
+            }, withCancelBlock: nil)
+        
+    }
+    
+    func showProfileControllerForUser(user: User){
+        let profileController = ProfileViewController()
+        profileController.selectedUser = user
+        
+        navigationController?.pushViewController(profileController, animated: true)
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
