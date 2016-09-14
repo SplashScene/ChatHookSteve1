@@ -46,13 +46,14 @@ class UserCell: UITableViewCell {
         detailTextLabel?.frame = CGRect(x: 64, y: detailTextLabel!.frame.origin.y + 2, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height)
     }
     
-    let profileImageView: UIImageView = {
+    lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "profileToon.jpg")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 24
-        imageView.layer.masksToBounds = true
-        imageView.contentMode = .ScaleAspectFill
+            imageView.image = UIImage(named: "profileToon.jpg")
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.layer.cornerRadius = 24
+            imageView.layer.masksToBounds = true
+            imageView.contentMode = .ScaleAspectFill
+        
         return imageView
     }()
     
@@ -76,7 +77,7 @@ class UserCell: UITableViewCell {
         profileImageView.heightAnchor.constraintEqualToConstant(48).active = true
         
         timeLabel.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
-        timeLabel.topAnchor.constraintEqualToAnchor(self.topAnchor, constant: 17).active = true
+        timeLabel.topAnchor.constraintEqualToAnchor(self.topAnchor, constant: 8).active = true
         timeLabel.widthAnchor.constraintEqualToConstant(100).active = true
         timeLabel.heightAnchor.constraintEqualToAnchor(textLabel?.heightAnchor).active = true
     }
@@ -84,5 +85,6 @@ class UserCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     
 }

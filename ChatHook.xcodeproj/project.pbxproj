@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8409FF541D88B22600939BC9 /* GalleryImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8409FF531D88B22600939BC9 /* GalleryImage.swift */; };
+		8409FF561D88B63D00939BC9 /* GalleryCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8409FF551D88B63D00939BC9 /* GalleryCollectionCell.swift */; };
+		8409FF581D89A0EF00939BC9 /* ProfileViewController+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8409FF571D89A0EF00939BC9 /* ProfileViewController+Image.swift */; };
 		842F00A81D18625600398793 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 842F00A71D18625600398793 /* GoogleService-Info.plist */; };
 		8437C26C1D50D5E400C5CF59 /* PostsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8437C26B1D50D5E400C5CF59 /* PostsVC.swift */; };
 		8450BFBE1D8359D0006CAB8E /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450BFBD1D8359D0006CAB8E /* PlayButton.swift */; };
@@ -55,6 +58,9 @@
 /* Begin PBXFileReference section */
 		02C07202A720503C672BCA57 /* Pods-ChatHook.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatHook.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatHook/Pods-ChatHook.release.xcconfig"; sourceTree = "<group>"; };
 		1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatHook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8409FF531D88B22600939BC9 /* GalleryImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryImage.swift; sourceTree = "<group>"; };
+		8409FF551D88B63D00939BC9 /* GalleryCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GalleryCollectionCell.swift; sourceTree = "<group>"; };
+		8409FF571D89A0EF00939BC9 /* ProfileViewController+Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProfileViewController+Image.swift"; sourceTree = "<group>"; };
 		842F00A71D18625600398793 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8437C26B1D50D5E400C5CF59 /* PostsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsVC.swift; sourceTree = "<group>"; };
 		8450BFBD1D8359D0006CAB8E /* PlayButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
@@ -201,6 +207,7 @@
 				8458F6001D6DF7870083BA0B /* FinishRegister+Image.swift */,
 				84A7AF351D7C683C0095EF26 /* ChatViewController+Image.swift */,
 				84BE9AC21D870B5E001F91B3 /* ProfileViewController.swift */,
+				8409FF571D89A0EF00939BC9 /* ProfileViewController+Image.swift */,
 			);
 			name = Controllers;
 			path = ..;
@@ -218,6 +225,7 @@
 				8458F5F61D6B3E6A0083BA0B /* UserCell.swift */,
 				8458F6021D6E0DB60083BA0B /* testPostCell.swift */,
 				8450BFBD1D8359D0006CAB8E /* PlayButton.swift */,
+				8409FF551D88B63D00939BC9 /* GalleryCollectionCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -229,6 +237,7 @@
 				84A9DB8B1D45702C00842B50 /* User.swift */,
 				8458F5FA1D6B3F5B0083BA0B /* Message.swift */,
 				8458F6041D6E44200083BA0B /* UserPost.swift */,
+				8409FF531D88B22600939BC9 /* GalleryImage.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -388,9 +397,12 @@
 			files = (
 				84A7AF361D7C683C0095EF26 /* ChatViewController+Image.swift in Sources */,
 				8458F5EF1D6B38AB0083BA0B /* MainTabBar.swift in Sources */,
+				8409FF541D88B22600939BC9 /* GalleryImage.swift in Sources */,
 				84B9AB381CE2326F0002B132 /* DataService.swift in Sources */,
 				8450BFBE1D8359D0006CAB8E /* PlayButton.swift in Sources */,
+				8409FF581D89A0EF00939BC9 /* ProfileViewController+Image.swift in Sources */,
 				8458F5F31D6B3DE00083BA0B /* MessagesController.swift in Sources */,
+				8409FF561D88B63D00939BC9 /* GalleryCollectionCell.swift in Sources */,
 				84B9AB3D1CE235D30002B132 /* ImaggaRouter.swift in Sources */,
 				84BE9AC31D870B5E001F91B3 /* ProfileViewController.swift in Sources */,
 				8458F6051D6E44200083BA0B /* UserPost.swift in Sources */,

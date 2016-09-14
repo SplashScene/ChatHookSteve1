@@ -22,6 +22,8 @@ class DataService {
     private var _REF_USERMESSAGES = URL_BASE.child("user_messages")
     private var _REF_POSTSPERROOM = URL_BASE.child("posts_per_room")
     private var _REF_USERSONLINE = URL_BASE.child("users_online")
+    private var _REF_GALLERYIMAGES = URL_BASE.child("gallery_images")
+    private var _REF_USERS_GALLERY = URL_BASE.child("users_gallery")
     
     var REF_BASE: FIRDatabaseReference{ return _REF_BASE }
     var REF_POSTS: FIRDatabaseReference{ return _REF_POSTS }
@@ -31,6 +33,8 @@ class DataService {
     var REF_USERMESSAGES: FIRDatabaseReference { return _REF_USERMESSAGES }
     var REF_POSTSPERROOM: FIRDatabaseReference { return _REF_POSTSPERROOM }
     var REF_USERSONLINE: FIRDatabaseReference { return _REF_USERSONLINE }
+    var REF_GALLERYIMAGES: FIRDatabaseReference { return _REF_GALLERYIMAGES }
+    var REF_USERS_GALLERY: FIRDatabaseReference { return _REF_USERS_GALLERY }
 
     var REF_USER_CURRENT: FIRDatabaseReference{
         let uid = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String

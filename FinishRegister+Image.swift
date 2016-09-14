@@ -52,7 +52,6 @@ extension FinishRegisterController:UIImagePickerControllerDelegate, UINavigation
         alertController.addAction(chooseFromLibraryAction)
         
         presentViewController(alertController, animated: true, completion: nil)
-        
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {

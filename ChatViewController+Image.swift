@@ -48,7 +48,7 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
             let ref = FIRStorage.storage().reference().child("message_images").child(senderId).child("photos").child(imageName)
             if let uploadData = UIImageJPEGRepresentation(picture, 0.2){
                 let metadata = FIRStorageMetadata()
-                metadata.contentType = "image/jpg"
+                    metadata.contentType = "image/jpg"
                 let uploadTask = ref.putData(uploadData, metadata: metadata, completion: { (metadata, error) in
                     if error != nil{
                         print(error.debugDescription)

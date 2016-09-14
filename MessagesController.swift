@@ -11,6 +11,8 @@ import Firebase
 
 
 class MessagesController: UITableViewController {
+    
+    var profileView = ProfileViewController()
 
     let db = FIRDatabase.database().reference()
     var messagesArray = [Message]()
@@ -195,6 +197,13 @@ class MessagesController: UITableViewController {
             navigationController?.pushViewController(chatLogController, animated: true)
     }
     
+    func showProfileControllerForUser(user: User){
+        let profileController = ProfileViewController()
+            profileController.selectedUser = user
+        
+        navigationController?.pushViewController(profileController, animated: true)
+    }
+    
     func handleLogout(){
         do{
             try FIRAuth.auth()?.signOut()
@@ -224,11 +233,26 @@ class MessagesController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! UserCell
         let message = messagesArray[indexPath.row]
         cell.message = message
+        cell.accessoryType = UITableViewCellAccessoryType.DetailButton
         return cell
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 72
+    }
+    
+    override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
+        let message = messagesArray[indexPath.row]
+        guard let chatPartnerID = message.chatPartnerID() else { return }
+        
+        let ref = DataService.ds.REF_USERS.child(chatPartnerID)
+        
+        ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+            guard let dictionary = snapshot.value as? [String : AnyObject] else { return }
+            let user = User(postKey: snapshot.key, dictionary: dictionary)
+            self.showProfileControllerForUser(user)
+            }, withCancelBlock: nil)
+
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

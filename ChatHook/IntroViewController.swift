@@ -306,7 +306,6 @@ class IntroViewController: UIViewController {
     }
     
     func attemptLogin(){
-        print("Inside Attempt Login")
         
         guard let email = emailTextField.text, password = passwordTextField.text else {
             showErrorAlert("Email and Password Required", msg: "You must enter an email and password to login")
@@ -319,12 +318,11 @@ class IntroViewController: UIViewController {
                 print(error)
                 
                 if error!.code == STATUS_NO_INTERNET{
-                    print("There is no internet connection")
                     self.showErrorAlert("No Internet Connection", msg: "You currently have no internet connection. Please try again later.")
                 }
                 
                 if error!.code == STATUS_ACCOUNT_NONEXIST{
-                    print("Inside ACCOUNT DOESN'T EXIST - \(email) and password: \(password)")
+                    
                     FIRAuth.auth()?.createUserWithEmail(email, password: password, completion: { (user, error) in
                         
                         if error != nil{
@@ -360,7 +358,7 @@ class IntroViewController: UIViewController {
     func showErrorAlert(title: String, msg: String){
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert)
         let action = UIAlertAction(title: "OK", style: .Default, handler: nil)
-        alert.addAction(action)
+            alert.addAction(action)
         presentViewController(alert, animated: true, completion: nil)
     }
     
@@ -376,7 +374,6 @@ class IntroViewController: UIViewController {
         presentViewController(tabController, animated: true, completion: nil)
     }
     
-
 }//end class
 
 

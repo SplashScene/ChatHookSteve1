@@ -21,9 +21,11 @@ class MainTabBar: UITabBarController {
         let mapViewController = GetLocation1()
         let messagesViewController = MessagesController()
         let postsViewController = RoomsViewController()
+        let profileViewController = ProfileViewController()
         let chatNavController = UINavigationController(rootViewController: messagesViewController)
         let postsNavController = UINavigationController(rootViewController: postsViewController)
-        let profileViewController = ProfileViewController()
+        let profileNavController = UINavigationController(rootViewController: profileViewController)
+        
         
         mapViewController.title = "Home"
         mapViewController.tabBarItem.image = UIImage(named: "GlobeIcon25")
@@ -38,7 +40,7 @@ class MainTabBar: UITabBarController {
         profileViewController.tabBarItem.image = UIImage(named: "ProfileIcon25")
         
         
-        viewControllers = [mapViewController, chatNavController, postsNavController, profileViewController]
+        viewControllers = [mapViewController, chatNavController, postsNavController, profileNavController]
         
     }
     
