@@ -84,6 +84,9 @@ class ProfileViewController: UIViewController {
         view.addSubview(backgroundImageView)
         view.addSubview(addPhotoButton)
         
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(handleCancel))
+
+        
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
             layout.sectionInset = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
             //layout.itemSize = CGSize(width: 90, height: 120)
@@ -125,9 +128,11 @@ class ProfileViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        
-        
+    
+    }
+    
+    func handleCancel(){
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     func handleAddPhotoButtonTapped(){

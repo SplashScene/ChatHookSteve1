@@ -26,7 +26,6 @@ class MessagesController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let newMessageImage = UIImage(named: "newMessageIcon_25")
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .Plain, target: self, action: #selector(handleLogout))
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: newMessageImage, style: .Plain, target: self, action: #selector(handleNewMessage))
         
         tableView.registerClass(UserCell.self, forCellReuseIdentifier: "cellID")
@@ -201,22 +200,17 @@ class MessagesController: UITableViewController {
         let profileController = ProfileViewController()
             profileController.selectedUser = user
         
-        navigationController?.pushViewController(profileController, animated: true)
+        let navController = UINavigationController(rootViewController: profileController)
+        presentViewController(navController, animated: true, completion: nil)
+
     }
     
-    func handleLogout(){
-        do{
-            try FIRAuth.auth()?.signOut()
-        }catch let logoutError{
-            print(logoutError)
-        }
-        dismissViewControllerAnimated(true, completion: nil)
-    }
+    
     
     func handleNewMessage(){
         let newMessageController = NewMessagesController()
             newMessageController.messagesController = self
-            newMessageController.currentUser = self.currentUser
+            
         let navController = UINavigationController(rootViewController: newMessageController)
         presentViewController(navController, animated: true, completion: nil)
     }

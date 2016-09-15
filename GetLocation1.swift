@@ -21,12 +21,16 @@ class GetLocation1: UIViewController {
     var userLocation: CLLocation?
     var userOnline: Bool = false
     
-    var currentUserName: String?
-    var currentProfilePicURL: String?
-    var currentProfileImage: UIImage?
+    var userLatInt: Int!
+    var userLngInt: Int!
+
+    
+//    var currentUserName: String?
+//    var currentProfilePicURL: String?
+//    var currentProfileImage: UIImage?
     
     let currentUserRef = DataService.ds.REF_USER_CURRENT
-    var currentUser: User? = nil
+    //var currentUser: CurrentUser? = nil
     
     var timer: NSTimer!
 
@@ -44,6 +48,16 @@ class GetLocation1: UIViewController {
         return view
     }()
     
+    lazy var logoutButton: UIButton = {
+        let logButton = UIButton()
+            logButton.translatesAutoresizingMaskIntoConstraints = false
+            logButton.setTitle("Logout", forState: .Normal)
+            logButton.titleLabel?.textColor = UIColor.whiteColor()
+            logButton.titleLabel?.font = UIFont(name: "Avenir Medium", size: 14.0)
+            logButton.addTarget(self, action: #selector(handleLogout), forControlEvents: .TouchUpInside)
+        return logButton
+    }()
+    
     let onlineLabel: UILabel = {
         let msgLabel = UILabel()
             msgLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -56,19 +70,17 @@ class GetLocation1: UIViewController {
         return msgLabel
     }()
     
-    lazy var onlineSwitch: UISwitch = {
-        let onOffSwitch = UISwitch()
-            onOffSwitch.translatesAutoresizingMaskIntoConstraints = false
-            onOffSwitch.addTarget(self, action: #selector(switchChanged), forControlEvents: .ValueChanged)
-        return onOffSwitch
-    }()
+//    lazy var onlineSwitch: UISwitch = {
+//        let onOffSwitch = UISwitch()
+//            onOffSwitch.translatesAutoresizingMaskIntoConstraints = false
+//            onOffSwitch.addTarget(self, action: #selector(switchChanged), forControlEvents: .ValueChanged)
+//        return onOffSwitch
+//    }()
  
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(topView)
         view.addSubview(mapView)
-        
-        //fetchCurrentUser()
         
         locationManager = CLLocationManager()
         self.mapView.delegate = self
@@ -78,55 +90,40 @@ class GetLocation1: UIViewController {
         setupUI()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        fetchCurrentUser()
-    }
+    
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .LightContent
     }
     
-    func fetchCurrentUser(){
+    func fetchCurrentUser(userLocation: CLLocation){
+        
         currentUserRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 if let dictionary = snapshot.value as? [String: AnyObject]{
-                    let currentUserPostKey = snapshot.key
-                    self.currentUser = User(postKey: currentUserPostKey, dictionary: dictionary)
-                    self.currentUser?.location = self.userLocation
-                    //self.fetchProfilePic((self.currentUser?.profileImageUrl!)!)
+                    CurrentUser._postKey = snapshot.key
+                    CurrentUser._userName = dictionary["UserName"] as! String
+                    CurrentUser._location = userLocation
+                    CurrentUser._email = dictionary["email"] as! String
+                    CurrentUser._profileImageUrl = dictionary["ProfileImage"] as? String
+                    self.userIsOnline()
                 }
             }, withCancelBlock: nil)
     }
     
-//    func fetchProfilePic(profilePic: String){
-//        request = Alamofire.request(.GET, profilePic).validate(contentType:["image/*"]).response(completionHandler: { request, response, data, err in
-//            if err == nil {
-//                let img = UIImage(data: data!)!
-//                self.currentProfileImage = img
-//                if self.currentProfileImage != nil{
-//                    print("The image is set")
-//                }else{
-//                    print("The image is NOT set")
-//                }
-//                
-//            }// end if err
-//        })//end completion handler
-//
-//    }
     
     func checkAuthorizationStatus(){
         let authStatus = CLLocationManager.authorizationStatus()
         
         switch(authStatus){
-        case .NotDetermined: locationManager?.requestWhenInUseAuthorization(); return
-        case .Denied: showLocationServicesDeniedAlert(); return
-        case .Restricted: showLocationServicesDeniedAlert(); return
-        default:
-            if authStatus != .AuthorizedWhenInUse{
-                locationManager?.requestWhenInUseAuthorization()
-            }else{
-                locationManager?.requestLocation()
-            }
-        }//end switch
+            case .NotDetermined: locationManager?.requestWhenInUseAuthorization(); return
+            case .Denied: showLocationServicesDeniedAlert(); return
+            case .Restricted: showLocationServicesDeniedAlert(); return
+            default:
+                if authStatus != .AuthorizedWhenInUse{
+                    locationManager?.requestWhenInUseAuthorization()
+                }else{
+                    locationManager?.requestLocation()
+                }
+            }//end switch
     }//end checkAuthorizationStatus
     
     func setupUI(){
@@ -137,13 +134,19 @@ class GetLocation1: UIViewController {
         topView.heightAnchor.constraintEqualToConstant(70).active = true
         
         topView.addSubview(onlineLabel)
-        topView.addSubview(onlineSwitch)
+        topView.addSubview(logoutButton)
+        //topView.addSubview(onlineSwitch)
         
-        onlineLabel.leftAnchor.constraintEqualToAnchor(topView.leftAnchor, constant: 16).active = true
+        onlineLabel.rightAnchor.constraintEqualToAnchor(topView.rightAnchor, constant: -8).active = true
         onlineLabel.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
         
-        onlineSwitch.rightAnchor.constraintEqualToAnchor(topView.rightAnchor, constant: -16).active = true
-        onlineSwitch.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
+        logoutButton.leftAnchor.constraintEqualToAnchor(topView.leftAnchor, constant: 8).active = true
+        logoutButton.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
+        logoutButton.widthAnchor.constraintEqualToConstant(60).active = true
+        logoutButton.heightAnchor.constraintEqualToConstant(30).active = true
+        
+//        onlineSwitch.rightAnchor.constraintEqualToAnchor(topView.rightAnchor, constant: -16).active = true
+//        onlineSwitch.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
   
         mapView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
         mapView.topAnchor.constraintEqualToAnchor(topView.bottomAnchor).active = true
@@ -151,6 +154,39 @@ class GetLocation1: UIViewController {
         mapView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
     }
     
+    func userIsOnline(){
+        userOnline = true
+        onlineLabel.text = "Online"
+        topView.backgroundColor = UIColor(r: 80, g: 101, b: 161)
+        
+        if let currentUserLocation = CurrentUser._location{
+            userLatInt = Int(currentUserLocation.coordinate.latitude)
+            userLngInt = Int(currentUserLocation.coordinate.longitude)
+            let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child("\(userLatInt)").child("\(userLngInt)").child(CurrentUser._postKey)
+            let userLocal = ["userLatitude":currentUserLocation.coordinate.latitude, "userLongitude": currentUserLocation.coordinate.longitude]
+            usersOnlineRef.setValue(userLocal)
+        }
+        
+        centerMapOnLocation(CurrentUser._location!)
+        self.mapView.showsUserLocation = true
+        addRadiusCircle(CurrentUser._location!)
+
+    }
+    
+    func handleLogout(){
+        do{
+            
+            let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child("\(userLatInt)").child("\(userLngInt)").child(CurrentUser._postKey)
+            usersOnlineRef.removeValue()
+
+            try FIRAuth.auth()?.signOut()
+            
+        }catch let logoutError{
+            print(logoutError)
+        }
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    /*
     func switchChanged(){
         guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
         if onlineSwitch.on{
@@ -158,10 +194,13 @@ class GetLocation1: UIViewController {
             userOnline = true
             onlineLabel.text = "Online"
             topView.backgroundColor = UIColor(r: 80, g: 101, b: 161)
-            
-            let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child(uid)
-                usersOnlineRef.child("UserLatitude").setValue(userLocation?.coordinate.latitude)
-                usersOnlineRef.child("UserLongitude").setValue(userLocation?.coordinate.longitude)
+            if let currentUserLocation = userLocation{
+                let userLatInt = Int(currentUserLocation.coordinate.latitude)
+                let userLngInt = Int(currentUserLocation.coordinate.longitude)
+                let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child("\(userLatInt)").child("\(userLngInt)").child(uid)
+                let userLocal = ["userLatitude":currentUserLocation.coordinate.latitude, "userLongitude": currentUserLocation.coordinate.longitude]
+                usersOnlineRef.setValue(userLocal)
+            }
             
             centerMapOnLocation(userLocation!)
             self.mapView.showsUserLocation = true
@@ -171,13 +210,13 @@ class GetLocation1: UIViewController {
             onlineLabel.text = "Offline"
             topView.backgroundColor = UIColor.darkGrayColor()
             let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child(uid)
-            usersOnlineRef.removeValue()
+                usersOnlineRef.removeValue()
             centerMapOnLocation(userLocation!)
             self.mapView.showsUserLocation = false
             //addRadiusCircle(userLocation!)
         }
     }
-    
+    */
     func showLocationServicesDeniedAlert(){
         let alert = UIAlertController(title: "Location Services Disabled", message: "Please enable location services for this app in Settings", preferredStyle: .Alert)
         let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
@@ -207,11 +246,11 @@ extension GetLocation1: CLLocationManagerDelegate{
             //userLocation = locations.first
             
             userLocation = CLLocation(latitude: 41.92413, longitude: -88.161242)
-            if currentUser == nil {
+            if CurrentUser._location == nil {
                 print("I don't even have a user")
             }
             if userLocation != nil{
-                print("I have your location")
+                fetchCurrentUser(userLocation!)
             }else{
                 print("I got NO location")
             }

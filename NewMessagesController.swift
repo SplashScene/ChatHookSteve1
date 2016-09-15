@@ -15,60 +15,66 @@ class NewMessagesController: UITableViewController {
     let cellID = "cellID"
     var usersArray = [User]()
     let uid = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
-    var currentUser: User?
     var userLat: Double?
     var userLong: Double?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(handleCancel))
-        fetchCurrentUserLocation()
+        
         observeUsersOnline()
         tableView.registerClass(UserCell.self, forCellReuseIdentifier: "cellID")
         
     }
     
-    func fetchCurrentUserLocation(){
-        let currentUserLocationRef = DataService.ds.REF_USERSONLINE.child(uid)
-        currentUserLocationRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                if let dictionary = snapshot.value as? [String : AnyObject]{
-                    self.currentUser?.location = CLLocation(latitude: dictionary["UserLatitude"] as! Double, longitude: (dictionary["UserLongitude"] as! Double))
-                    }
-                },
-            withCancelBlock: nil)
-    }
+
     
     func observeUsersOnline(){
-        usersArray = []
-        let ref = DataService.ds.REF_USERSONLINE
+        
+        
+        
+            let searchLat = Int(CurrentUser._location.coordinate.latitude)
+            let searchLong = Int(CurrentUser._location.coordinate.longitude)
+            usersArray = []
+            let ref = DataService.ds.REF_USERSONLINE.child("\(searchLat)").child("\(searchLong)")
+            
             ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
                 let userID = snapshot.key
-                let userRef = DataService.ds.REF_USERS.child(userID)
-                
+                var userLocation: CLLocation?
+
                 let latLongRef = ref.child(userID)
-                latLongRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                        if let dictionary = snapshot.value as? [String: AnyObject]{
-                            self.userLat = dictionary["UserLatitude"] as? Double
-                            self.userLong = dictionary["UserLongitude"] as? Double
-                        }
-                    }, withCancelBlock: nil)
-                
-                
-                userRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                        if let dictionary = snapshot.value as? [String: AnyObject]{
-                            let userPostKey = snapshot.key
-                            let user = User(postKey: userPostKey, dictionary: dictionary)
-                                user.location = CLLocation(latitude: self.userLat!, longitude: self.userLong!)
-                            if user.postKey != self.currentUser?.postKey{
-                                self.usersArray.append(user)
+                    print("The LATLONGREF is: \(latLongRef)")
+                    latLongRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                            if let dictionary = snapshot.value as? [String: AnyObject]{
+                                userLocation = CLLocation(latitude: dictionary["userLatitude"] as! Double, longitude: dictionary["userLongitude"] as! Double)
+//                                self.userLat = dictionary["userLatitude"] as? Double
+//                                self.userLong = dictionary["userLongitude"] as? Double
+                                print("The Latitude is: \(userLocation?.coordinate.latitude) and the Longytude is: \(userLocation?.coordinate.longitude)")
+                                let userRef = DataService.ds.REF_USERS.child(userID)
+                                userRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                                    if let dictionary = snapshot.value as? [String: AnyObject]{
+                                        let userPostKey = snapshot.key
+                                        let user = User(postKey: userPostKey, dictionary: dictionary)
+                                        print("The USER \(user.userName) latii is: \(userLocation?.coordinate.latitude) and the longii is: \(userLocation?.coordinate.longitude)")
+                                        user.location = userLocation
+                                        //                                user.location = CLLocation(latitude: self.userLat!, longitude: self.userLong!)
+                                        if user.postKey != CurrentUser._postKey{
+                                            
+                                            self.usersArray.append(user)
+                                        }
+                                        dispatch_async(dispatch_get_main_queue(), {
+                                            self.tableView.reloadData()
+                                        })
+                                    }
+                                }, withCancelBlock: nil)
                             }
-                            dispatch_async(dispatch_get_main_queue(), {
-                                self.tableView.reloadData()
-                            })
-                        }
+                        }, withCancelBlock: nil)
+                
+                
                     }, withCancelBlock: nil)
-                }, withCancelBlock: nil)
+  
     }
     
     func handleCancel(){
@@ -84,16 +90,21 @@ class NewMessagesController: UITableViewController {
     }
     
     func calculateDistance(otherLocation: CLLocation) -> String {
-        let distanceInMeters = currentUser?.location!.distanceFromLocation(otherLocation)
-        let distanceInMiles = (distanceInMeters! / 1000) * 0.62137
-        let stringDistance = String(format: "%.2f", distanceInMiles)
-        let passedString = "\(stringDistance) miles away"
-        return passedString
+        let myLocation = CurrentUser._location
+        
+            let distanceInMeters = myLocation.distanceFromLocation(otherLocation)
+            let distanceInMiles = (distanceInMeters / 1000) * 0.62137
+            print("The distance in meters is: \(distanceInMeters)")
+            let stringDistance = String(format: "%.2f", distanceInMiles)
+            let passedString = "\(stringDistance) miles away"
+            return passedString
+
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! UserCell
         let user = usersArray[indexPath.row]
+            print("The user \(user.userName) latitude is: \(user.location?.coordinate.latitude) and the longitude is: \(user.location?.coordinate.longitude)")
             cell.textLabel?.text = user.userName
             cell.detailTextLabel?.text = calculateDistance(user.location!)
             cell.accessoryType = UITableViewCellAccessoryType.DetailButton
@@ -108,22 +119,16 @@ class NewMessagesController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         dismissViewControllerAnimated(true){
-            print("Dismiss completed")
+            
             let user = self.usersArray[indexPath.row]
             self.messagesController?.showChatControllerForUser(user)
         }
     }
     
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        let user = usersArray[indexPath.row]
         
-        let ref = DataService.ds.REF_USERS.child(user.postKey)
-        
-        ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            guard let dictionary = snapshot.value as? [String : AnyObject] else { return }
-            let user = User(postKey: snapshot.key, dictionary: dictionary)
+            let user = self.usersArray[indexPath.row]
             self.showProfileControllerForUser(user)
-            }, withCancelBlock: nil)
         
     }
     

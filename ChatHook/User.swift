@@ -26,7 +26,7 @@ class User{
 //    }
     
     var email: String { return _email }
-    var location: CLLocation?
+    var location: CLLocation!
     
     init(postKey: String, dictionary: Dictionary<String, AnyObject>){
         self._postKey = postKey
@@ -43,16 +43,16 @@ class User{
             self._userName = "AnonymousPoster"
         }
         
-        if let lat = dictionary["UserLatitude"], long = dictionary["UserLongitude"]{
-            self.location = CLLocation(latitude: (lat as? Double)!, longitude: (long as? Double)!)
-        }
+//        if let lat = dictionary["UserLatitude"], long = dictionary["UserLongitude"]{
+//            self.location = CLLocation(latitude: (lat as? Double)!, longitude: (long as? Double)!)
+//        }
         
         if let userEmail = dictionary["email"] as? String{
             self._email = userEmail
         }
         
         self._postRef = DataService.ds.REF_USERS.child(self._postKey)
-        //observeMessages()
+        
     }
     
     func setLocationWithLatitude(lat: Double, long: Double){
@@ -64,21 +64,5 @@ class User{
         }
     }
     
-//    func observeMessages(){
-//        guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
-//        let userMessagesRef = DataService.ds.REF_USERMESSAGES.child(uid)
-//        
-//        userMessagesRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
-//            let messageID = snapshot.key
-//            let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
-//            messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-//                guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
-//                
-//                let message = Message()
-//                message.setValuesForKeysWithDictionary(dictionary)
-//                print(message.text)
-//                }, withCancelBlock: nil)
-//            }, withCancelBlock: nil)
-//    }
-    
+
 }

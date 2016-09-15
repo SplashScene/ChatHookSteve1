@@ -157,6 +157,11 @@ class PostsVC: UIViewController{
     
     
     func setupNavBarWithUserOrProgress(progress:String?){
+//        postsArray.removeAll()
+//        //messagesDictionary.removeAll()
+//        postTableView.reloadData()
+//        
+//        observePosts()
         
         let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
@@ -167,11 +172,11 @@ class PostsVC: UIViewController{
         titleView.addSubview(containerView)
         
         let profileImageView = UIImageView()
-        profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileImageView.contentMode = .ScaleAspectFill
-        profileImageView.layer.cornerRadius = 20
-        profileImageView.clipsToBounds = true
-        profileImageView.image = messageImage
+            profileImageView.translatesAutoresizingMaskIntoConstraints = false
+            profileImageView.contentMode = .ScaleAspectFill
+            profileImageView.layer.cornerRadius = 20
+            profileImageView.clipsToBounds = true
+            profileImageView.image = messageImage
         
         containerView.addSubview(profileImageView)
         
@@ -181,7 +186,7 @@ class PostsVC: UIViewController{
         profileImageView.heightAnchor.constraintEqualToConstant(40).active = true
         
         let nameLabel = UILabel()
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+            nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         if let progressText = progress{
             nameLabel.text = progressText
@@ -351,7 +356,8 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
         print(indexPath?.row)
         let cell = self.postTableView.cellForRowAtIndexPath(indexPath!) as? testPostCell
         let post = postsArray[indexPath!.row]
-        sender.hidden = true
+        let playButton = sender
+            playButton.hidden = true
         let cellAIV = cell?.showcaseImageView.subviews[1] as? UIActivityIndicatorView
             cellAIV?.startAnimating()
         let url = NSURL(string: post.showcaseUrl!)
@@ -369,7 +375,7 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
 
     func playerDidFinishPlaying(note: NSNotification){
         print("Video stopped playing")
-        self.postTableView.reloadData()
+       // handleReloadPosts()
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -420,6 +426,7 @@ extension PostsVC{
                 
                 uploadTask.observeStatus(.Success) { (snapshot) in
                     self.setupNavBarWithUserOrProgress(nil)
+                    self.handleReloadPosts()
                 }
             }
             
@@ -454,6 +461,7 @@ extension PostsVC{
                 
                 uploadTask.observeStatus(.Success) { (snapshot) in
                     self.setupNavBarWithUserOrProgress(nil)
+                    self.handleReloadPosts()
                 }
             }
         }
@@ -517,6 +525,12 @@ extension PostsVC{
         self.postedImage = nil
         self.postedVideo = nil
         self.postedText = nil
+        
+        //self.postsArray.removeAll()
+        //messagesDictionary.removeAll()
+        handleReloadPosts()
+        
+        //observePosts()
     }
     
     private func thumbnailImageForVideoUrl(videoUrl: NSURL) -> UIImage?{
