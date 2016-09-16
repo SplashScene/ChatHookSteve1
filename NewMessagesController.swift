@@ -30,11 +30,8 @@ class NewMessagesController: UITableViewController {
     }
     
 
-    
     func observeUsersOnline(){
-        
-        
-        
+
             let searchLat = Int(CurrentUser._location.coordinate.latitude)
             let searchLong = Int(CurrentUser._location.coordinate.longitude)
             usersArray = []
@@ -71,8 +68,6 @@ class NewMessagesController: UITableViewController {
                                 }, withCancelBlock: nil)
                             }
                         }, withCancelBlock: nil)
-                
-                
                     }, withCancelBlock: nil)
   
     }
@@ -136,7 +131,9 @@ class NewMessagesController: UITableViewController {
         let profileController = ProfileViewController()
         profileController.selectedUser = user
         
-        navigationController?.pushViewController(profileController, animated: true)
+        let navController = UINavigationController(rootViewController: profileController)
+        presentViewController(navController, animated: true, completion: nil)
+
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

@@ -204,9 +204,7 @@ class MessagesController: UITableViewController {
         presentViewController(navController, animated: true, completion: nil)
 
     }
-    
-    
-    
+
     func handleNewMessage(){
         let newMessageController = NewMessagesController()
             newMessageController.messagesController = self

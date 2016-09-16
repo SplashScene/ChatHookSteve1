@@ -84,13 +84,15 @@ class ProfileViewController: UIViewController {
         view.addSubview(backgroundImageView)
         view.addSubview(addPhotoButton)
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(handleCancel))
+        if selectedUser != nil{
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(handleCancel))
+        }
 
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
             layout.sectionInset = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
             //layout.itemSize = CGSize(width: 90, height: 120)
-            layout.itemSize = CGSize(width: screenWidth / 4, height: 120)
+            layout.itemSize = CGSize(width: screenWidth / 5, height: 120)
         
         let frame = CGRectMake(0, view.center.y, view.frame.width, view.frame.height / 2)
         
@@ -245,6 +247,59 @@ class ProfileViewController: UIViewController {
     func setupCollectionView(){
         collectionView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
     }
+    
+    var startingFrame: CGRect?
+    var blackBackgroundView: UIView?
+    var startingView: UIView?
+    
+    func performZoomInForStartingImageView(startingView: UIView, photoImage: UIImageView){
+        self.startingView = startingView
+        
+        startingFrame = startingView.superview?.convertRect(startingView.frame, toView: nil)
+        
+        let zoomingView = UIImageView(frame: startingFrame!)
+            zoomingView.backgroundColor = UIColor.redColor()
+            zoomingView.userInteractionEnabled = true
+            zoomingView.contentMode = .ScaleAspectFill
+            zoomingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
+            zoomingView.image = photoImage.image
+        if let keyWindow = UIApplication.sharedApplication().keyWindow{
+            blackBackgroundView = UIView(frame: keyWindow.frame)
+            blackBackgroundView?.backgroundColor = UIColor.blackColor()
+            blackBackgroundView?.alpha = 0
+            keyWindow.addSubview(blackBackgroundView!)
+            
+            keyWindow.addSubview(zoomingView)
+            
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
+                self.blackBackgroundView!.alpha = 1
+                self.startingView?.hidden = true
+                
+                let height = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
+                
+                zoomingView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: height)
+                
+                zoomingView.center = keyWindow.center
+                }, completion: nil)
+        }
+        
+    }
+    
+    func handleZoomOut(tapGesture: UITapGestureRecognizer){
+        if let zoomOutImageView = tapGesture.view{
+            zoomOutImageView.layer.cornerRadius = 16
+            zoomOutImageView.clipsToBounds = true
+            
+            UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
+                zoomOutImageView.frame = self.startingFrame!
+                self.blackBackgroundView?.alpha = 0
+                
+                }, completion: { (completed) in
+                    zoomOutImageView.removeFromSuperview()
+                    self.startingView?.hidden = false
+            })
+        }
+    }
    
 }
 
@@ -268,6 +323,15 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
         cell.gallery = galleryImage
         
         return cell
+    }
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if let cell = collectionView.cellForItemAtIndexPath(indexPath),
+           let cellImageView = cell.contentView.subviews[0] as? UIImageView{
+            
+            performZoomInForStartingImageView(cell.contentView, photoImage: cellImageView)
+            
+        }
     }
 }
 

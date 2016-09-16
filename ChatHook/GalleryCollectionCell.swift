@@ -9,7 +9,11 @@
 import UIKit
 
 class GalleryCollectionCell: UICollectionViewCell {
+    
+    var profileViewController:ProfileViewController?
+
     var galleryImageView: UIImageView!
+    
     var gallery: GalleryImage? {
         didSet {
             if let gallery = gallery {
@@ -20,9 +24,17 @@ class GalleryCollectionCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        contentView.layer.cornerRadius = 5.0
+        contentView.clipsToBounds = true
+        contentView.layer.shadowOpacity = 0.8
+        contentView.layer.shadowRadius = 5.0
+        contentView.layer.shadowOffset = CGSizeMake(0.0, 2.0)
+        contentView.layer.shadowColor = UIColor.blackColor().CGColor
+        
         //galleryImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 90, height: 120))
         galleryImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
         galleryImageView.contentMode = .ScaleAspectFill
+
         contentView.addSubview(galleryImageView)
     }
     
@@ -30,6 +42,6 @@ class GalleryCollectionCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+
 
 }
