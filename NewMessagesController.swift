@@ -20,6 +20,7 @@ class NewMessagesController: UITableViewController {
     let uid = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
     var userLat: Double?
     var userLong: Double?
+    var timer: NSTimer?
     
     
     override func viewDidLoad() {
@@ -32,61 +33,78 @@ class NewMessagesController: UITableViewController {
         
     }
     
-
     func observeUsersOnline(){
             
-            groupedUsersArray = []
+        groupedUsersArray = []
 
-            let searchLat = Int(CurrentUser._location.coordinate.latitude)
-            let searchLong = Int(CurrentUser._location.coordinate.longitude)
+        let searchLat = Int(CurrentUser._location.coordinate.latitude)
+        let searchLong = Int(CurrentUser._location.coordinate.longitude)
+
+        let ref = DataService.ds.REF_USERSONLINE.child("\(searchLat)").child("\(searchLong)")
         
-            let ref = DataService.ds.REF_USERSONLINE.child("\(searchLat)").child("\(searchLong)")
-            
-            ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
-                let userID = snapshot.key
-                var userLocation: CLLocation?
+        ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            let userID = snapshot.key
+            var userLocation: CLLocation?
 
-                let latLongRef = ref.child(userID)
-                
-                    latLongRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                        if let dictionary = snapshot.value as? [String: AnyObject]{
-                            
-                            userLocation = CLLocation(latitude: dictionary["userLatitude"] as! Double,
-                                                      longitude: dictionary["userLongitude"] as! Double)
-                            
-                            let userRef = DataService.ds.REF_USERS.child(userID)
-                                userRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                                    if let dictionary = snapshot.value as? [String: AnyObject]{
-                                        let userPostKey = snapshot.key
-                                        let user = User(postKey: userPostKey, dictionary: dictionary)
-                                            user.location = userLocation
-                                       
-                                        if user.postKey != CurrentUser._postKey{
-                                            let distanceFromMe = self.calculateDistance(user.location)
-                                            let distanceDouble = distanceFromMe["DistanceDouble"] as! Double
-                                            
-                                            switch distanceDouble{
-                                                case 0...1.099:
-                                                    self.usersArray1.append(user)
-                                                    self.groupedUsersArray.append(GroupedUsers(sectionName: "Within a mile", sectionUsers: self.usersArray1))
-                                                case 1.1...5.0:
-                                                    self.usersArray2.append(user)
-                                                    self.groupedUsersArray.append(GroupedUsers(sectionName: "Within 5 miles", sectionUsers: self.usersArray2))
-                                                default:
-                                                    self.usersArray3.append(user)
-                                                    self.groupedUsersArray.append(GroupedUsers(sectionName: "Over 5 miles", sectionUsers: self.usersArray3))
-                                            }
+            let latLongRef = ref.child(userID)
+            
+                latLongRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                    if let dictionary = snapshot.value as? [String: AnyObject]{
+                        
+                        userLocation = CLLocation(latitude: dictionary["userLatitude"] as! Double,
+                                                  longitude: dictionary["userLongitude"] as! Double)
+                        
+                        let userRef = DataService.ds.REF_USERS.child(userID)
+                            userRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                                if let dictionary = snapshot.value as? [String: AnyObject]{
+                                    let userPostKey = snapshot.key
+                                    let user = User(postKey: userPostKey, dictionary: dictionary)
+                                        user.location = userLocation
+                                   
+                                    if user.postKey != CurrentUser._postKey{
+                                        let distanceFromMe = self.calculateDistance(user.location)
+                                        let distanceDouble = distanceFromMe["DistanceDouble"] as! Double
+                                        
+                                        switch distanceDouble{
+                                            case 0...1.099:
+                                                self.usersArray1.append(user)
+                                            case 1.1...5.0:
+                                                self.usersArray2.append(user)
+                                            default:
+                                                self.usersArray3.append(user)
                                         }
                                         
-                                        dispatch_async(dispatch_get_main_queue(), {
-                                            self.tableView.reloadData()
-                                        })
+                                        self.timer?.invalidate()
+                                        self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.loadSections), userInfo: nil, repeats: false)
                                     }
-                            }, withCancelBlock: nil)
-                        }
-                    }, withCancelBlock: nil)
+                                    
+                                }
+                                
+                        }, withCancelBlock: nil)
+                        
+                    }
+                    
                 }, withCancelBlock: nil)
-  
+            
+            }, withCancelBlock: nil)
+        
+    }
+    
+    func loadSections(){
+        if usersArray1.count > 0 {
+            self.groupedUsersArray.append(GroupedUsers(sectionName: "Within a mile", sectionUsers: self.usersArray1))
+        }
+        if usersArray2.count > 0 {
+            self.groupedUsersArray.append(GroupedUsers(sectionName: "Within 5 miles", sectionUsers: self.usersArray2))
+        }
+        if usersArray3.count > 0 {
+            self.groupedUsersArray.append(GroupedUsers(sectionName: "Over 5 miles", sectionUsers: self.usersArray3))
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            self.tableView.reloadData()
+        })
+
     }
     
     func handleCancel(){
@@ -99,7 +117,6 @@ class NewMessagesController: UITableViewController {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return groupedUsersArray[section].sectionUsers.count
-        
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -130,7 +147,6 @@ class NewMessagesController: UITableViewController {
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
             let user = self.groupedUsersArray[indexPath.section].sectionUsers[indexPath.row]
             self.showProfileControllerForUser(user)
-        
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

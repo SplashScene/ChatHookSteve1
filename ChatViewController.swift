@@ -157,8 +157,6 @@ class ChatViewController: JSQMessagesViewController {
         return cell!
     }
     
-    
-    
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
         return nil
     }
@@ -220,10 +218,10 @@ class ChatViewController: JSQMessagesViewController {
             
             let userMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(senderId).child(toId!)
             let messageID = itemRef.key
-            userMessagesRef.updateChildValues([messageID: 1])
+                userMessagesRef.updateChildValues([messageID: 1])
             
             let recipientUserMessagesRef = DataService.ds.REF_BASE.child("user_messages").child(toId!).child(senderId)
-            recipientUserMessagesRef.updateChildValues([messageID: 1])
+                recipientUserMessagesRef.updateChildValues([messageID: 1])
         }
         
         JSQSystemSoundPlayer.jsq_playMessageSentSound()
@@ -246,9 +244,9 @@ class ChatViewController: JSQMessagesViewController {
             self.getMediaFrom(kUTTypeMovie)
         }
         
-        sheet.addAction(photoLibary)
-        sheet.addAction(videoLibrary)
-        sheet.addAction(cancel)
+            sheet.addAction(photoLibary)
+            sheet.addAction(videoLibrary)
+            sheet.addAction(cancel)
         self.presentViewController(sheet, animated: true, completion: nil)
     }
     
@@ -269,6 +267,7 @@ class ChatViewController: JSQMessagesViewController {
         userMessagesRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
             let messageID = snapshot.key
             let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
+            
             messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
                 
@@ -304,9 +303,7 @@ class ChatViewController: JSQMessagesViewController {
                 //self.finishReceivingMessage()
                 },
                 withCancelBlock: nil)
-
             }, withCancelBlock: nil)
-    
         }
     /*
     private func observeUser(id: String) -> String{
@@ -387,7 +384,6 @@ class ChatViewController: JSQMessagesViewController {
                 zoomingView.center = keyWindow.center
                 }, completion: nil)
         }
-        
     }
     
     func handleZoomOut(tapGesture: UITapGestureRecognizer){
@@ -433,7 +429,6 @@ extension ChatViewController: JSQMessagesCollectionViewCellDelegate{
                 
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying), name: AVPlayerItemDidPlayToEndTimeNotification, object: player.currentItem)
 
-                
             }else if let photoImage = message.media as? JSQPhotoMediaItem{
                 performZoomInForStartingImageView(cell.mediaView, photoImage: photoImage)
             }
