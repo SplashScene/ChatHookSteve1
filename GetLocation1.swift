@@ -23,18 +23,11 @@ class GetLocation1: UIViewController {
     
     var userLatInt: Int!
     var userLngInt: Int!
-
-    
-//    var currentUserName: String?
-//    var currentProfilePicURL: String?
-//    var currentProfileImage: UIImage?
     
     let currentUserRef = DataService.ds.REF_USER_CURRENT
-    //var currentUser: CurrentUser? = nil
-    
+  
     var timer: NSTimer!
 
-    
     let mapView: MKMapView = {
         let map = MKMapView()
             map.translatesAutoresizingMaskIntoConstraints = false
@@ -69,13 +62,6 @@ class GetLocation1: UIViewController {
 
         return msgLabel
     }()
-    
-//    lazy var onlineSwitch: UISwitch = {
-//        let onOffSwitch = UISwitch()
-//            onOffSwitch.translatesAutoresizingMaskIntoConstraints = false
-//            onOffSwitch.addTarget(self, action: #selector(switchChanged), forControlEvents: .ValueChanged)
-//        return onOffSwitch
-//    }()
  
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,7 +75,6 @@ class GetLocation1: UIViewController {
         checkAuthorizationStatus()
         setupUI()
     }
-    
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return .LightContent
@@ -108,7 +93,6 @@ class GetLocation1: UIViewController {
                 }
             }, withCancelBlock: nil)
     }
-    
     
     func checkAuthorizationStatus(){
         let authStatus = CLLocationManager.authorizationStatus()
@@ -175,9 +159,8 @@ class GetLocation1: UIViewController {
     
     func handleLogout(){
         do{
-            
             let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child("\(userLatInt)").child("\(userLngInt)").child(CurrentUser._postKey)
-            usersOnlineRef.removeValue()
+                usersOnlineRef.removeValue()
 
             try FIRAuth.auth()?.signOut()
             
@@ -186,37 +169,7 @@ class GetLocation1: UIViewController {
         }
         dismissViewControllerAnimated(true, completion: nil)
     }
-    /*
-    func switchChanged(){
-        guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
-        if onlineSwitch.on{
-            locationManager?.requestLocation()
-            userOnline = true
-            onlineLabel.text = "Online"
-            topView.backgroundColor = UIColor(r: 80, g: 101, b: 161)
-            if let currentUserLocation = userLocation{
-                let userLatInt = Int(currentUserLocation.coordinate.latitude)
-                let userLngInt = Int(currentUserLocation.coordinate.longitude)
-                let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child("\(userLatInt)").child("\(userLngInt)").child(uid)
-                let userLocal = ["userLatitude":currentUserLocation.coordinate.latitude, "userLongitude": currentUserLocation.coordinate.longitude]
-                usersOnlineRef.setValue(userLocal)
-            }
-            
-            centerMapOnLocation(userLocation!)
-            self.mapView.showsUserLocation = true
-            addRadiusCircle(userLocation!)
-        }else{
-            userOnline = false
-            onlineLabel.text = "Offline"
-            topView.backgroundColor = UIColor.darkGrayColor()
-            let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child(uid)
-                usersOnlineRef.removeValue()
-            centerMapOnLocation(userLocation!)
-            self.mapView.showsUserLocation = false
-            //addRadiusCircle(userLocation!)
-        }
-    }
-    */
+    
     func showLocationServicesDeniedAlert(){
         let alert = UIAlertController(title: "Location Services Disabled", message: "Please enable location services for this app in Settings", preferredStyle: .Alert)
         let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
@@ -224,12 +177,12 @@ class GetLocation1: UIViewController {
         presentViewController(alert, animated: true, completion: nil)
     }
     
-    func startTimerForLocationUpdate(){
-        if timer != nil{
-            timer.invalidate()
-        }
-        timer = NSTimer.scheduledTimerWithTimeInterval(900.0, target: self, selector: #selector(CurrentLocationViewcontrollerViewController.startLocationManager), userInfo: nil, repeats: true)
-    }
+//    func startTimerForLocationUpdate(){
+//        if timer != nil{
+//            timer.invalidate()
+//        }
+//        timer = NSTimer.scheduledTimerWithTimeInterval(900.0, target: self, selector: #selector(CurrentLocationViewcontrollerViewController.startLocationManager), userInfo: nil, repeats: true)
+//    }
     
 }//end class
 

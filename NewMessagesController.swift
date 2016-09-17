@@ -13,7 +13,10 @@ import CoreLocation
 class NewMessagesController: UITableViewController {
 
     let cellID = "cellID"
-    var usersArray = [User]()
+    var groupedUsersArray = [GroupedUsers]()
+    var usersArray1 = [User]()
+    var usersArray2 = [User]()
+    var usersArray3 = [User]()
     let uid = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
     var userLat: Double?
     var userLong: Double?
@@ -31,10 +34,12 @@ class NewMessagesController: UITableViewController {
     
 
     func observeUsersOnline(){
+            
+            groupedUsersArray = []
 
             let searchLat = Int(CurrentUser._location.coordinate.latitude)
             let searchLong = Int(CurrentUser._location.coordinate.longitude)
-            usersArray = []
+        
             let ref = DataService.ds.REF_USERSONLINE.child("\(searchLat)").child("\(searchLong)")
             
             ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
@@ -42,33 +47,45 @@ class NewMessagesController: UITableViewController {
                 var userLocation: CLLocation?
 
                 let latLongRef = ref.child(userID)
-                    print("The LATLONGREF is: \(latLongRef)")
+                
                     latLongRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                            if let dictionary = snapshot.value as? [String: AnyObject]{
-                                userLocation = CLLocation(latitude: dictionary["userLatitude"] as! Double, longitude: dictionary["userLongitude"] as! Double)
-//                                self.userLat = dictionary["userLatitude"] as? Double
-//                                self.userLong = dictionary["userLongitude"] as? Double
-                                print("The Latitude is: \(userLocation?.coordinate.latitude) and the Longytude is: \(userLocation?.coordinate.longitude)")
-                                let userRef = DataService.ds.REF_USERS.child(userID)
+                        if let dictionary = snapshot.value as? [String: AnyObject]{
+                            
+                            userLocation = CLLocation(latitude: dictionary["userLatitude"] as! Double,
+                                                      longitude: dictionary["userLongitude"] as! Double)
+                            
+                            let userRef = DataService.ds.REF_USERS.child(userID)
                                 userRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                                     if let dictionary = snapshot.value as? [String: AnyObject]{
                                         let userPostKey = snapshot.key
                                         let user = User(postKey: userPostKey, dictionary: dictionary)
-                                        print("The USER \(user.userName) latii is: \(userLocation?.coordinate.latitude) and the longii is: \(userLocation?.coordinate.longitude)")
-                                        user.location = userLocation
-                                        //                                user.location = CLLocation(latitude: self.userLat!, longitude: self.userLong!)
+                                            user.location = userLocation
+                                       
                                         if user.postKey != CurrentUser._postKey{
+                                            let distanceFromMe = self.calculateDistance(user.location)
+                                            let distanceDouble = distanceFromMe["DistanceDouble"] as! Double
                                             
-                                            self.usersArray.append(user)
+                                            switch distanceDouble{
+                                                case 0...1.099:
+                                                    self.usersArray1.append(user)
+                                                    self.groupedUsersArray.append(GroupedUsers(sectionName: "Within a mile", sectionUsers: self.usersArray1))
+                                                case 1.1...5.0:
+                                                    self.usersArray2.append(user)
+                                                    self.groupedUsersArray.append(GroupedUsers(sectionName: "Within 5 miles", sectionUsers: self.usersArray2))
+                                                default:
+                                                    self.usersArray3.append(user)
+                                                    self.groupedUsersArray.append(GroupedUsers(sectionName: "Over 5 miles", sectionUsers: self.usersArray3))
+                                            }
                                         }
+                                        
                                         dispatch_async(dispatch_get_main_queue(), {
                                             self.tableView.reloadData()
                                         })
                                     }
-                                }, withCancelBlock: nil)
-                            }
-                        }, withCancelBlock: nil)
+                            }, withCancelBlock: nil)
+                        }
                     }, withCancelBlock: nil)
+                }, withCancelBlock: nil)
   
     }
     
@@ -77,54 +94,63 @@ class NewMessagesController: UITableViewController {
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return groupedUsersArray.count
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return usersArray.count
-    }
-    
-    func calculateDistance(otherLocation: CLLocation) -> String {
-        let myLocation = CurrentUser._location
+        return groupedUsersArray[section].sectionUsers.count
         
-            let distanceInMeters = myLocation.distanceFromLocation(otherLocation)
-            let distanceInMiles = (distanceInMeters / 1000) * 0.62137
-            print("The distance in meters is: \(distanceInMeters)")
-            let stringDistance = String(format: "%.2f", distanceInMiles)
-            let passedString = "\(stringDistance) miles away"
-            return passedString
-
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! UserCell
-        let user = usersArray[indexPath.row]
-            print("The user \(user.userName) latitude is: \(user.location?.coordinate.latitude) and the longitude is: \(user.location?.coordinate.longitude)")
-            cell.textLabel?.text = user.userName
-            cell.detailTextLabel?.text = calculateDistance(user.location!)
-            cell.accessoryType = UITableViewCellAccessoryType.DetailButton
-            
-            if let profileImageUrl = user.profileImageUrl{
-                cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
+        let user = groupedUsersArray[indexPath.section].sectionUsers[indexPath.row]
+        let distanceDictionary = calculateDistance(user.location!)
+        let distanceString = distanceDictionary["DistanceString"] as! String
+    
+        cell.textLabel?.text = user.userName
+        cell.detailTextLabel?.text = distanceString
+        cell.accessoryType = UITableViewCellAccessoryType.DetailButton
+        
+        if let profileImageUrl = user.profileImageUrl{
+            cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
         }
-        return cell
-    }
+    return cell
+}
     
     var messagesController: MessagesController?
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         dismissViewControllerAnimated(true){
-            
-            let user = self.usersArray[indexPath.row]
+            let user = self.groupedUsersArray[indexPath.section].sectionUsers[indexPath.row]
             self.messagesController?.showChatControllerForUser(user)
         }
     }
     
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        
-            let user = self.usersArray[indexPath.row]
+            let user = self.groupedUsersArray[indexPath.section].sectionUsers[indexPath.row]
             self.showProfileControllerForUser(user)
         
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return groupedUsersArray[section].sectionName
+    }
+    
+    func calculateDistance(otherLocation: CLLocation) -> [String: AnyObject] {
+        var distanceDictionary:[String: AnyObject]
+        let myLocation = CurrentUser._location
+        
+        let distanceInMeters = myLocation.distanceFromLocation(otherLocation)
+        let distanceInMiles = (distanceInMeters / 1000) * 0.62137
+        
+        let stringDistance = String(format: "%.2f", distanceInMiles)
+        let passedString = "\(stringDistance) miles away"
+
+        distanceDictionary = ["DistanceDouble": distanceInMiles, "DistanceString": passedString]
+        
+        return distanceDictionary
+
     }
     
     func showProfileControllerForUser(user: User){
