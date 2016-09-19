@@ -64,16 +64,25 @@ class NewMessagesController: UITableViewController {
                                     if user.postKey != CurrentUser._postKey{
                                         let distanceFromMe = self.calculateDistance(user.location)
                                         let distanceDouble = distanceFromMe["DistanceDouble"] as! Double
-                                        
+                                            user.distance = distanceDouble
                                         switch distanceDouble{
                                             case 0...1.099:
                                                 self.usersArray1.append(user)
+                                                self.usersArray1.sortInPlace({ (user1, user2) -> Bool in
+                                                    return user1.distance < user2.distance
+                                                })
                                             case 1.1...5.0:
                                                 self.usersArray2.append(user)
+                                                self.usersArray2.sortInPlace({ (user1, user2) -> Bool in
+                                                    return user1.distance < user2.distance
+                                                })
                                             default:
                                                 self.usersArray3.append(user)
+                                                self.usersArray3.sortInPlace({ (user1, user2) -> Bool in
+                                                    return user1.distance < user2.distance
+                                                })
                                         }
-                                        
+                                                                              
                                         self.timer?.invalidate()
                                         self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.loadSections), userInfo: nil, repeats: false)
                                     }

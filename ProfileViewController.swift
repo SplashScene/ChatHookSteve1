@@ -77,6 +77,20 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupMainView()
+        
+        collectionView!.registerClass(GalleryCollectionCell.self, forCellWithReuseIdentifier: "Cell")
+
+        checkUserAndSetupUI()
+        setupBackgroundImageView()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+    
+    }
+    
+    func setupMainView(){
         screenSize = UIScreen.mainScreen().bounds
         screenWidth = screenSize.width
         screenHeight = screenSize.height
@@ -87,12 +101,12 @@ class ProfileViewController: UIViewController {
         if selectedUser != nil{
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(handleCancel))
         }
-
+        
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-            layout.sectionInset = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
-            //layout.itemSize = CGSize(width: 90, height: 120)
-            layout.itemSize = CGSize(width: screenWidth / 5, height: 120)
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
+        //layout.itemSize = CGSize(width: 90, height: 120)
+        layout.itemSize = CGSize(width: screenWidth / 5, height: 120)
         
         let frame = CGRectMake(0, view.center.y, view.frame.width, view.frame.height / 2)
         
@@ -108,29 +122,21 @@ class ProfileViewController: UIViewController {
         addPhotosToGalleryLabel.centerYAnchor.constraintEqualToAnchor(collectionView.centerYAnchor).active = true
         
         self.view.addSubview(collectionView)
-        
-        collectionView!.registerClass(GalleryCollectionCell.self, forCellWithReuseIdentifier: "Cell")
-        
-        
-        
+    }
+    
+    func checkUserAndSetupUI(){
         if selectedUser == nil{
-            guard let uid = FIRAuth.auth()?.currentUser?.uid else { return }
-            fetchCurrentUser()
-            observeGallery(uid)
+            self.profileImageView.loadImageUsingCacheWithUrlString(CurrentUser._profileImageUrl)
+            self.currentUserNameLabel.text = CurrentUser._userName
+            self.navigationItem.title = CurrentUser._userName
+            
+            observeGallery(CurrentUser._postKey)
         }else{
             setupSelectedUserProfile()
             observeGallery((selectedUser?.postKey)!)
             addPhotosToGalleryLabel.text = "No Photos in Gallery"
             addPhotoButton.hidden = true
         }
-
-        setupBackgroundImageView()
-    
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-    
     }
     
     func handleCancel(){
@@ -167,19 +173,6 @@ class ProfileViewController: UIViewController {
         presentViewController(mediaPicker, animated: true, completion: nil)
     }
 
-    
-    func fetchCurrentUser(){
-        currentUserRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                if let dictionary = snapshot.value as? [String: AnyObject]{
-                    let currentUserPostKey = snapshot.key
-                    self.currentUser = User(postKey: currentUserPostKey, dictionary: dictionary)
-                        self.profileImageView.loadImageUsingCacheWithUrlString((self.currentUser?.profileImageUrl)!)
-                        self.currentUserNameLabel.text = self.currentUser?.userName
-                        self.navigationItem.title = self.currentUser?.userName
-                }
-            }, withCancelBlock: nil)
-    }
-    
     func setupSelectedUserProfile(){
         self.profileImageView.loadImageUsingCacheWithUrlString((self.selectedUser?.profileImageUrl)!)
         self.currentUserNameLabel.text = self.selectedUser?.userName

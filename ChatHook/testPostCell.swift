@@ -11,16 +11,23 @@ import Firebase
 
 class testPostCell: UITableViewCell {
     var postViewController:PostsVC?
-    
+    var likeRef: FIRDatabaseReference!
+
     var userPost: UserPost?{
         didSet{
-                let ref = DataService.ds.REF_POSTS.child(userPost!.postKey!)
-                    ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                likeRef = DataService.ds.REF_USER_CURRENT.child("Likes").child(userPost!.postKey!)
+                let postRef = DataService.ds.REF_POSTS.child(userPost!.postKey!)
+                    postRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                     if let dictionary = snapshot.value as? [String: AnyObject]{
                         
                         self.userNameLabel.text = dictionary["authorName"] as? String
                         self.descriptionText.text = dictionary["postText"] as? String
-                        self.likeCount.text = String(dictionary["likes"]!)
+                        if let numberOfLikes = dictionary["likes"] as? Int{
+                            self.likeCount.text = String(numberOfLikes)
+                            self.likesLabel.text = numberOfLikes == 1 ? "Like" : "Likes"
+                        }
+                        
+                        
                         if let profileImageUrl = dictionary["authorPic"] as? String {
                             self.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
                         }
@@ -38,6 +45,16 @@ class testPostCell: UITableViewCell {
                         }
                       }
                     }, withCancelBlock: nil)
+            
+                    likeRef.observeSingleEventOfType(.Value, withBlock: { snapshot in
+                        if let _ = snapshot.value as? NSNull{
+                            //This means that we have not liked this specific post
+                            self.likeImageView.image = UIImage(named: "Like")
+                        }else{
+                            self.likeImageView.image = UIImage(named: "iLike")
+                        }
+                    })
+
             
             
             
@@ -88,7 +105,7 @@ class testPostCell: UITableViewCell {
             imageView.image = UIImage(named: "Like")
             imageView.translatesAutoresizingMaskIntoConstraints = false
             imageView.contentMode = .ScaleAspectFill
-            imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleLike)))
+            imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(likeTapped)))
             imageView.userInteractionEnabled = true
         
         return imageView
@@ -116,7 +133,7 @@ class testPostCell: UITableViewCell {
     
     let likesLabel: UILabel = {
         let label = UILabel()
-            label.text = "Likes"
+//            label.text = "Likes"
             label.font = UIFont(name: "Avenir Medium", size:  12.0)
             label.textColor = UIColor.darkGrayColor()
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -196,8 +213,24 @@ class testPostCell: UITableViewCell {
         showcaseImageView.topAnchor.constraintEqualToAnchor(descriptionText.bottomAnchor, constant: 8).active = true
         showcaseImageView.widthAnchor.constraintEqualToAnchor(self.widthAnchor, constant: -16).active = true
         showcaseImageView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor, constant: -8).active = true
-
-
+    }
+    
+    func likeTapped(sender: UITapGestureRecognizer){
+        likeRef.observeSingleEventOfType(.Value, withBlock: { snapshot in
+            if let _ = snapshot.value as? NSNull{
+                //This means that we have not liked this specific post
+                self.likeImageView.image = UIImage(named: "iLike")
+                self.userPost!.adjustLikes(true)
+                self.likeRef.setValue(true)
+                self.postViewController!.handleReloadPosts()
+            }else{
+                self.likeImageView.image = UIImage(named: "Like")
+                self.userPost!.adjustLikes(false)
+                self.likeRef.removeValue()
+                self.postViewController!.handleReloadPosts()
+            }
+        })
+        
     }
 
     func toggleLike(){
@@ -248,7 +281,4 @@ class testPostCell: UITableViewCell {
         activityIndicatorView.heightAnchor.constraintEqualToConstant(50).active = true
     }
     
-   
-
-
 }

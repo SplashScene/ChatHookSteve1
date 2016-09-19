@@ -60,17 +60,17 @@ class PublicRoomCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
         addSubview(profileImageView)
-        addSubview(timeLabel)
+        //addSubview(timeLabel)
         //need x, y, width, height anchors
         profileImageView.leftAnchor.constraintEqualToAnchor(self.leftAnchor, constant: 8).active = true
         profileImageView.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor).active = true
         profileImageView.widthAnchor.constraintEqualToConstant(48).active = true
         profileImageView.heightAnchor.constraintEqualToConstant(48).active = true
         
-        timeLabel.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
-        timeLabel.topAnchor.constraintEqualToAnchor(self.topAnchor, constant: 17).active = true
-        timeLabel.widthAnchor.constraintEqualToConstant(100).active = true
-        timeLabel.heightAnchor.constraintEqualToAnchor(textLabel?.heightAnchor).active = true
+//        timeLabel.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
+//        timeLabel.topAnchor.constraintEqualToAnchor(self.topAnchor, constant: 17).active = true
+//        timeLabel.widthAnchor.constraintEqualToConstant(100).active = true
+//        timeLabel.heightAnchor.constraintEqualToAnchor(textLabel?.heightAnchor).active = true
     }
     
     required init?(coder aDecoder: NSCoder) {

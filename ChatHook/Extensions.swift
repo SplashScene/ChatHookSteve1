@@ -60,7 +60,8 @@ extension PostsVC:UIImagePickerControllerDelegate, UINavigationControllerDelegat
             postedVideo = video
             imageSelectorView.image = UIImage(named: "movieIcon")
         }
-        
+        self.postButton.userInteractionEnabled = true
+        self.postButton.alpha = 1.0
         dismissViewControllerAnimated(true, completion: nil)
     }
     

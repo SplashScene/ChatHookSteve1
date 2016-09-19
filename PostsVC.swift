@@ -21,11 +21,10 @@ class PostsVC: UIViewController{
     var postedImage: UIImage?
     var postedVideo: NSURL?
     var postedText: String?
-    var currentUserName: String!
-    var currentProfilePicURL: String!
     var messageImage: UIImage?
     var parentRoom: PublicRoom?
     var timer: NSTimer?
+    var navBar: UINavigationBar = UINavigationBar()
     
     
     var postsArray = [UserPost]()
@@ -59,6 +58,8 @@ class PostsVC: UIViewController{
         let pb = MaterialButton()
             pb.translatesAutoresizingMaskIntoConstraints = false
             pb.setTitle("Post", forState: .Normal)
+            pb.userInteractionEnabled = false
+            pb.alpha = 0.5
             pb.addTarget(self, action: #selector(handlePostButtonTapped), forControlEvents: .TouchUpInside)
         return pb
     }()
@@ -93,12 +94,14 @@ class PostsVC: UIViewController{
     }
     
     func handlePostButtonTapped(){
+
         postedText = postTextField.text
-        
+
         if let unwrappedImage = postedImage{
             uploadToFirebaseStorageUsingSelectedMedia(unwrappedImage, video: nil, completion: { (imageUrl) in
                 self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("image/jpg", postText: self.postedText, thumbnailURL: nil, fileURL: imageUrl)
                 //self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("image/jpg", thumbnailURL: nil, fileURL:imageUrl)
+                
             })
 
         }else if let unwrappedVideo = postedVideo{
@@ -110,8 +113,6 @@ class PostsVC: UIViewController{
         }else{
             self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("text", postText: postedText, thumbnailURL: nil, fileURL: nil)
         }
-        
-        
     }
     
     let postTableView: UITableView = {
@@ -133,60 +134,47 @@ class PostsVC: UIViewController{
         postTableView.registerClass(testPostCell.self, forCellReuseIdentifier: "cellID")
         postTableView.estimatedRowHeight = 350
         
+        postTextField.delegate = self
+        
         setupTopView()
         setupPostTableView()
         setupNavBarWithUserOrProgress(nil)
-        fetchCurrentUser()
         observePosts()
     }
+    
+    
     
     func handleBack(){
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func fetchCurrentUser(){
-        let currentUser = DataService.ds.REF_USER_CURRENT
-        
-        currentUser.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                if let dictionary = snapshot.value as? [String: AnyObject]{
-                    self.currentUserName = dictionary["UserName"] as! String
-                    self.currentProfilePicURL = dictionary["ProfileImage"] as! String
-                }
-            }, withCancelBlock: nil)
-    }
-    
-    
     func setupNavBarWithUserOrProgress(progress:String?){
-//        postsArray.removeAll()
-//        //messagesDictionary.removeAll()
-//        postTableView.reloadData()
-//        
-//        observePosts()
         
         let titleView = UIView()
-        titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+            titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 60)
         
         let containerView = UIView()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.translatesAutoresizingMaskIntoConstraints = false
         
         titleView.addSubview(containerView)
         
         let profileImageView = UIImageView()
             profileImageView.translatesAutoresizingMaskIntoConstraints = false
             profileImageView.contentMode = .ScaleAspectFill
-            profileImageView.layer.cornerRadius = 20
+            profileImageView.layer.cornerRadius = 15
             profileImageView.clipsToBounds = true
             profileImageView.image = messageImage
         
         containerView.addSubview(profileImageView)
         
-        profileImageView.leftAnchor.constraintEqualToAnchor(containerView.leftAnchor).active = true
-        profileImageView.centerYAnchor.constraintEqualToAnchor(containerView.centerYAnchor).active = true
-        profileImageView.widthAnchor.constraintEqualToConstant(40).active = true
-        profileImageView.heightAnchor.constraintEqualToConstant(40).active = true
+        profileImageView.centerXAnchor.constraintEqualToAnchor(containerView.centerXAnchor).active = true
+        profileImageView.topAnchor.constraintEqualToAnchor(containerView.topAnchor, constant: 4).active = true
+        profileImageView.widthAnchor.constraintEqualToConstant(30).active = true
+        profileImageView.heightAnchor.constraintEqualToConstant(30).active = true
         
         let nameLabel = UILabel()
             nameLabel.translatesAutoresizingMaskIntoConstraints = false
+            nameLabel.font = UIFont(name: "Avenir-Medium", size: 14.0)
         
         if let progressText = progress{
             nameLabel.text = progressText
@@ -198,13 +186,13 @@ class PostsVC: UIViewController{
         
         containerView.addSubview(nameLabel)
         
-        nameLabel.leftAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 8).active = true
-        nameLabel.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
-        nameLabel.rightAnchor.constraintEqualToAnchor(containerView.rightAnchor).active = true
-        nameLabel.heightAnchor.constraintEqualToAnchor(profileImageView.heightAnchor).active = true
+        nameLabel.centerXAnchor.constraintEqualToAnchor(containerView.centerXAnchor).active = true
+        nameLabel.topAnchor.constraintEqualToAnchor(profileImageView.bottomAnchor).active = true
+        nameLabel.widthAnchor.constraintEqualToAnchor(containerView.widthAnchor).active = true
+        nameLabel.heightAnchor.constraintEqualToConstant(20).active = true
         
         containerView.centerXAnchor.constraintEqualToAnchor(titleView.centerXAnchor).active = true
-        containerView.centerYAnchor.constraintEqualToAnchor(titleView.centerYAnchor).active = true
+        containerView.topAnchor.constraintEqualToAnchor(titleView.topAnchor).active = true
         
         self.navigationItem.titleView = titleView
     }
@@ -232,6 +220,7 @@ class PostsVC: UIViewController{
                 withCancelBlock: nil)
             }, withCancelBlock: nil)
     }
+    
     
     func handleReloadPosts(){
         dispatch_async(dispatch_get_main_queue()){
@@ -426,7 +415,8 @@ extension PostsVC{
                 
                 uploadTask.observeStatus(.Success) { (snapshot) in
                     self.setupNavBarWithUserOrProgress(nil)
-                    self.handleReloadPosts()
+                    
+                    //self.handleReloadPosts()
                 }
             }
             
@@ -461,7 +451,8 @@ extension PostsVC{
                 
                 uploadTask.observeStatus(.Success) { (snapshot) in
                     self.setupNavBarWithUserOrProgress(nil)
-                    self.handleReloadPosts()
+                    
+                    //self.handleReloadPosts()
                 }
             }
         }
@@ -480,10 +471,10 @@ extension PostsVC{
                            "toRoom": toRoom!,
                            "mediaType": "VIDEO",
                            "thumbnailUrl": thumbnailURL!,
-                           "likes": 0,
+                           "likes": 0 as Int,
                            "showcaseUrl": fileURL!,
-                           "authorName": currentUserName,
-                           "authorPic": currentProfilePicURL]
+                           "authorName": CurrentUser._userName,
+                           "authorPic": CurrentUser._profileImageUrl]
         }else if metadata == "image/jpg"{
             messageItem = ["fromId": uid,
                            "timestamp" : timestamp,
@@ -491,16 +482,16 @@ extension PostsVC{
                            "mediaType": "PHOTO",
                            "likes": 0,
                            "showcaseUrl": fileURL!,
-                           "authorName": currentUserName,
-                           "authorPic": currentProfilePicURL]
+                           "authorName": CurrentUser._userName,
+                           "authorPic": CurrentUser._profileImageUrl]
         }else{
             messageItem = ["fromId": uid,
                            "timestamp" : timestamp,
                            "toRoom": toRoom!,
                            "mediaType": "TEXT",
                            "likes": 0,
-                           "authorName": currentUserName,
-                           "authorPic": currentProfilePicURL]
+                           "authorName": CurrentUser._userName,
+                           "authorPic": CurrentUser._profileImageUrl]
         }
         
         if let unwrappedText = postText{
@@ -525,12 +516,11 @@ extension PostsVC{
         self.postedImage = nil
         self.postedVideo = nil
         self.postedText = nil
+        self.postButton.userInteractionEnabled = false
+        self.postButton.alpha = 0.5
         
-        //self.postsArray.removeAll()
-        //messagesDictionary.removeAll()
         handleReloadPosts()
         
-        //observePosts()
     }
     
     private func thumbnailImageForVideoUrl(videoUrl: NSURL) -> UIImage?{
@@ -549,6 +539,29 @@ extension PostsVC{
     }
     
  }//end extension
+
+extension PostsVC: UITextFieldDelegate{
+
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        if textField == postTextField
+        {
+            let oldStr = postTextField.text! as NSString
+            let newStr = oldStr.stringByReplacingCharactersInRange(range, withString: string) as NSString
+            if newStr.length == 0
+            {
+                postButton.userInteractionEnabled = false
+            }else
+            {
+                postButton.userInteractionEnabled = true
+                postButton.alpha = 1.0
+            }
+        }
+        return true
+    }
+
+}
+
+
 
 
 

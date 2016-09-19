@@ -10,9 +10,6 @@ import UIKit
 import Firebase
 
 class RoomsViewController: UITableViewController {
-    let currentUser = DataService.ds.REF_USER_CURRENT
-    var currentUserName: String!
-    var currentProfilePicURL: String!
     var roomsArray = [PublicRoom]()
     var chosenRoom: PublicRoom?
     let cellID = "cellID"
@@ -29,17 +26,7 @@ class RoomsViewController: UITableViewController {
         
         tableView.registerClass(PublicRoomCell.self, forCellReuseIdentifier: cellID)
         
-        fetchCurrentUser()
         observeRooms()
-    }
-    
-    func fetchCurrentUser(){
-        currentUser.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-            if let dictionary = snapshot.value as? [String: AnyObject]{
-                self.currentUserName = dictionary["UserName"] as! String
-                self.currentProfilePicURL = dictionary["ProfileImage"] as! String
-            }
-            }, withCancelBlock: nil)
     }
     
     func observeRooms(){
@@ -86,8 +73,8 @@ class RoomsViewController: UITableViewController {
             let post: Dictionary<String, AnyObject> =
         
                 ["RoomName": unwrappedRoomName,
-                 "Author": currentUserName,
-                 "AuthorPic": currentProfilePicURL,
+                 "Author": CurrentUser._userName,
+                 "AuthorPic": CurrentUser._profileImageUrl,
                  "timestamp": timestamp,
                  "AuthorID" : authorID]
             
@@ -142,22 +129,6 @@ class RoomsViewController: UITableViewController {
         let room = roomsArray[indexPath.row]
         showPostControllerForRoom(room)
     }
-    
-    /*
-     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-     let message = messagesArray[indexPath.row]
-     guard let chatPartnerID = message.chatPartnerID() else { return }
-     
-     let ref = DataService.ds.REF_USERS.child(chatPartnerID)
-     
-     ref.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-     guard let dictionary = snapshot.value as? [String : AnyObject] else { return }
-     let user = User(postKey: snapshot.key, dictionary: dictionary)
-     self.showChatControllerForUser(user)
-     },
-     withCancelBlock: nil)
-     }
-     */
     
     
 }//end RoomsViewController

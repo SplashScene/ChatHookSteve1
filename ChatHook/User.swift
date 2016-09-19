@@ -27,6 +27,7 @@ class User{
     
     var email: String { return _email }
     var location: CLLocation!
+    var distance: Double?
     
     init(postKey: String, dictionary: Dictionary<String, AnyObject>){
         self._postKey = postKey
