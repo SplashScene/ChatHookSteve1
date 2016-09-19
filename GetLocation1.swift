@@ -19,12 +19,14 @@ class GetLocation1: UIViewController {
     var locationManager:CLLocationManager? = nil
     let regionRadius:CLLocationDistance = 5000
     var userLocation: CLLocation?
+    var otherUsersLocations: [UserLocation] = []
     var userOnline: Bool = false
     
     var userLatInt: Int!
     var userLngInt: Int!
     
     let currentUserRef = DataService.ds.REF_USER_CURRENT
+    
   
     var timer: NSTimer!
 
@@ -73,7 +75,9 @@ class GetLocation1: UIViewController {
         self.locationManager?.delegate = self
         self.locationManager?.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         checkAuthorizationStatus()
+        
         setupUI()
+        mapView.addAnnotations(otherUsersLocations)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -92,6 +96,36 @@ class GetLocation1: UIViewController {
                     self.userIsOnline()
                 }
             }, withCancelBlock: nil)
+    }
+    
+    func observeOtherUsersLocations(){
+        let otherUsersLocationsRef = DataService.ds.REF_USERSONLINE.child("\(userLatInt)").child("\(userLngInt)")
+            otherUsersLocationsRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]{
+                    let otherUserId = snapshot.key
+                    let otherUserLat = dictionary["userLatitude"] as! Double
+                    let otherUserLong = dictionary["userLongitude"] as! Double
+                    
+                        let otherUsersRef = DataService.ds.REF_USERS.child(otherUserId)
+                            otherUsersRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                                    if let userDict = snapshot.value as? [String: AnyObject]{
+                                        let otherUserName = userDict["UserName"] as! String
+                                        let otherUserImageUrl = userDict["ProfileImage"] as! String
+                                        
+                                        let otherUserLocation = UserLocation(latitude: otherUserLat, longitude: otherUserLong, name: otherUserName, imageName: otherUserImageUrl)
+                                        self.otherUsersLocations.append(otherUserLocation)
+                                        
+                                        self.timer?.invalidate()
+                                        self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.handleAnnotations), userInfo: nil, repeats: false)
+                                    }
+                                }, withCancelBlock: nil)
+                    
+                }
+            }, withCancelBlock: nil)
+    }
+    
+    func handleAnnotations(){
+        self.mapView.addAnnotations(self.otherUsersLocations)
     }
     
     func checkAuthorizationStatus(){
@@ -149,6 +183,7 @@ class GetLocation1: UIViewController {
             let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child("\(userLatInt)").child("\(userLngInt)").child(CurrentUser._postKey)
             let userLocal = ["userLatitude":currentUserLocation.coordinate.latitude, "userLongitude": currentUserLocation.coordinate.longitude]
             usersOnlineRef.setValue(userLocal)
+            observeOtherUsersLocations()
         }
         
         centerMapOnLocation(CurrentUser._location!)
@@ -226,6 +261,20 @@ extension GetLocation1: MKMapViewDelegate{
         let radiusFactor = userOnline ? 2 : 8
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, regionRadius * Double(radiusFactor), regionRadius * Double(radiusFactor))
         mapView.setRegion(coordinateRegion, animated: true)
+    }
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        if (annotation is MKUserLocation){
+            return nil
+        }
+        var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("otherLocation") as? MKPinAnnotationView
+        if annotationView == nil{
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "otherLocation")
+        }else{
+            annotationView?.annotation = annotation
+        }
+        
+        return annotationView
     }
     /*
     func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
