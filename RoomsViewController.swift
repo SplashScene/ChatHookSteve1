@@ -41,7 +41,6 @@ class RoomsViewController: UITableViewController {
                         let post = PublicRoom(key: snap.key)
                             post.setValuesForKeysWithDictionary(postDict)
                         self.roomsArray.insert(post, atIndex: 0)
-                        print("Rooms Array count is: \(self.roomsArray.count)")
                     }
                 }
             }

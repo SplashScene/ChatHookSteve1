@@ -56,7 +56,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
             
             uploadTask.observeStatus(.Success) { (snapshot) in
                 self.profileImageView.image = selectedImage
-                self.navigationItem.title = self.currentUser?.userName
+                self.navigationItem.title = CurrentUser._userName
                 
             }
         }
@@ -103,7 +103,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
             }
             
             uploadTask.observeStatus(.Success) { (snapshot) in
-                self.navigationItem.title = self.currentUser?.userName
+                self.navigationItem.title = CurrentUser._userName
             }
         }
         

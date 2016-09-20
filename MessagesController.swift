@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import CoreLocation
 
 
 class MessagesController: UITableViewController {
@@ -79,19 +80,19 @@ class MessagesController: UITableViewController {
     private func fetchMessageWithMessageId(messageID: String){
         let messagesRef = DataService.ds.REF_MESSAGES.child(messageID)
         
-        messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                if let dictionary = snapshot.value as? [String: AnyObject]{
-                    let message = Message()
-                    message.setValuesForKeysWithDictionary(dictionary)
-                    self.messagesArray.append(message)
-                    
-                    if let chatPartnerID = message.chatPartnerID(){
-                        self.messagesDictionary[chatPartnerID] = message
+            messagesRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                    if let dictionary = snapshot.value as? [String: AnyObject]{
+                        let message = Message()
+                            message.setValuesForKeysWithDictionary(dictionary)
+                        self.messagesArray.append(message)
+                        
+                        if let chatPartnerID = message.chatPartnerID(){
+                            self.messagesDictionary[chatPartnerID] = message
+                        }
+                        
+                        self.attemptReloadOfTable()
                     }
-                    
-                    self.attemptReloadOfTable()
-                }
-            }, withCancelBlock: nil)
+                }, withCancelBlock: nil)
     }
     
     private func attemptReloadOfTable(){
@@ -203,6 +204,22 @@ class MessagesController: UITableViewController {
         let navController = UINavigationController(rootViewController: profileController)
         presentViewController(navController, animated: true, completion: nil)
 
+    }
+    
+    func calculateDistance(otherLocation: CLLocation) -> [String: AnyObject] {
+        var distanceDictionary:[String: AnyObject]
+        let myLocation = CurrentUser._location
+        
+        let distanceInMeters = myLocation.distanceFromLocation(otherLocation)
+        let distanceInMiles = (distanceInMeters / 1000) * 0.62137
+        
+        let stringDistance = String(format: "%.2f", distanceInMiles)
+        let passedString = "\(stringDistance) miles away"
+        
+        distanceDictionary = ["DistanceDouble": distanceInMiles, "DistanceString": passedString]
+        
+        return distanceDictionary
+        
     }
 
     func handleNewMessage(){

@@ -16,8 +16,8 @@ class ProfileViewController: UIViewController {
     var screenSize: CGRect!
     var screenWidth: CGFloat!
     var screenHeight: CGFloat!
-    var currentUserRef = DataService.ds.REF_USER_CURRENT
-    var currentUser: User?
+    //var currentUserRef = DataService.ds.REF_USER_CURRENT
+    //var currentUser: User?
     var photoChoice: String?
     var galleryArray = [GalleryImage]()
     var timer: NSTimer?
@@ -32,12 +32,11 @@ class ProfileViewController: UIViewController {
         return backImageView
     }()
     
-    lazy var addPhotoButton: UIButton = {
+    lazy var addPhotoBlockUserButton: UIButton = {
         let btnImage = UIImage(named: "add_photo_btn")
         let addPicBtn = UIButton()
             addPicBtn.translatesAutoresizingMaskIntoConstraints = false
-            addPicBtn.setImage(btnImage, forState: .Normal)
-            addPicBtn.addTarget(self, action: #selector(handleAddPhotoButtonTapped), forControlEvents: .TouchUpInside)
+        
         return addPicBtn
     }()
     
@@ -59,6 +58,18 @@ class ProfileViewController: UIViewController {
             nameLabel.sizeToFit()
             nameLabel.textAlignment = NSTextAlignment.Center
         return nameLabel
+    }()
+    
+    let distanceLabel: UILabel = {
+        let distLabel = UILabel()
+            distLabel.translatesAutoresizingMaskIntoConstraints = false
+            distLabel.alpha = 1.0
+            distLabel.font = UIFont(name: "Avenir Medium", size:  14.0)
+            distLabel.backgroundColor = UIColor.clearColor()
+            distLabel.textColor = UIColor.whiteColor()
+            distLabel.sizeToFit()
+            distLabel.textAlignment = NSTextAlignment.Center
+        return distLabel
     }()
     
     let addPhotosToGalleryLabel: UILabel = {
@@ -96,7 +107,7 @@ class ProfileViewController: UIViewController {
         screenHeight = screenSize.height
         
         view.addSubview(backgroundImageView)
-        view.addSubview(addPhotoButton)
+        view.addSubview(addPhotoBlockUserButton)
         
         if selectedUser != nil{
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(handleCancel))
@@ -126,16 +137,20 @@ class ProfileViewController: UIViewController {
     
     func checkUserAndSetupUI(){
         if selectedUser == nil{
+            let btnImage = UIImage(named: "add_photo_btn")
             self.profileImageView.loadImageUsingCacheWithUrlString(CurrentUser._profileImageUrl)
             self.currentUserNameLabel.text = CurrentUser._userName
             self.navigationItem.title = CurrentUser._userName
-            
+            self.addPhotoBlockUserButton.setImage(btnImage, forState: .Normal)
+            self.addPhotoBlockUserButton.addTarget(self, action: #selector(handleAddPhotoButtonTapped), forControlEvents: .TouchUpInside)
             observeGallery(CurrentUser._postKey)
         }else{
+            let btnImage = UIImage(named: "blockUser")
             setupSelectedUserProfile()
             observeGallery((selectedUser?.postKey)!)
             addPhotosToGalleryLabel.text = "No Photos in Gallery"
-            addPhotoButton.hidden = true
+            self.addPhotoBlockUserButton.setImage(btnImage, forState: .Normal)
+            self.addPhotoBlockUserButton.addTarget(self, action: #selector(handleBlockUserTapped), forControlEvents: .TouchUpInside)
         }
     }
     
@@ -172,10 +187,32 @@ class ProfileViewController: UIViewController {
         
         presentViewController(mediaPicker, animated: true, completion: nil)
     }
+    
+    func handleBlockUserTapped(){
+        let alert = UIAlertController(title: "Block User", message: "Are you sure that you want to block this user?", preferredStyle: .Alert)
+        let okAction = UIAlertAction(title: "OK", style: .Default, handler: {(alert: UIAlertAction) in
+            let currentUserRef = DataService.ds.REF_USER_CURRENT
+            let blockedUserID = self.selectedUser!.postKey
+            currentUserRef.child("blocked_users").updateChildValues([blockedUserID: 1])
+        })
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        
+        alert.addAction(cancel)
+        alert.addAction(okAction)
+        
+        presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    var newMsgController = NewMessagesController()
 
     func setupSelectedUserProfile(){
         self.profileImageView.loadImageUsingCacheWithUrlString((self.selectedUser?.profileImageUrl)!)
         self.currentUserNameLabel.text = self.selectedUser?.userName
+        if let stringDistance = self.selectedUser?.distance {
+            let unwrappedString = String(format: "%.2f", (stringDistance))
+            self.distanceLabel.text = "\(unwrappedString) miles away"
+        }
+
         self.navigationItem.title = self.selectedUser?.userName
 
     }
@@ -215,6 +252,7 @@ class ProfileViewController: UIViewController {
         //backgroundImageView.addSubview(addPhotoButton)
         backgroundImageView.addSubview(profileImageView)
         backgroundImageView.addSubview(currentUserNameLabel)
+        backgroundImageView.addSubview(distanceLabel)
         
         
         profileImageView.centerXAnchor.constraintEqualToAnchor(backgroundImageView.centerXAnchor).active = true
@@ -225,10 +263,13 @@ class ProfileViewController: UIViewController {
         currentUserNameLabel.centerXAnchor.constraintEqualToAnchor(backgroundImageView.centerXAnchor).active = true
         currentUserNameLabel.topAnchor.constraintEqualToAnchor(profileImageView.bottomAnchor, constant: 8).active = true
         
-        addPhotoButton.centerXAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 24).active = true
-        addPhotoButton.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
-        addPhotoButton.widthAnchor.constraintEqualToConstant(40).active = true
-        addPhotoButton.heightAnchor.constraintEqualToConstant(40).active = true
+        distanceLabel.centerXAnchor.constraintEqualToAnchor(backgroundImageView.centerXAnchor).active = true
+        distanceLabel.topAnchor.constraintEqualToAnchor(currentUserNameLabel.bottomAnchor, constant: 8).active = true
+        
+        addPhotoBlockUserButton.centerXAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 24).active = true
+        addPhotoBlockUserButton.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
+        addPhotoBlockUserButton.widthAnchor.constraintEqualToConstant(40).active = true
+        addPhotoBlockUserButton.heightAnchor.constraintEqualToConstant(40).active = true
 
    
     }

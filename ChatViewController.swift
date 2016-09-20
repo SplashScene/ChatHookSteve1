@@ -21,7 +21,6 @@ class ChatViewController: JSQMessagesViewController {
     var incomingBubbleImageView: JSQMessagesBubbleImage!
     var messageImage: UIImage!
     var user: User?
-    var currentUserUID = FIRAuth.auth()?.currentUser?.uid
     
     var userIsTypingRef: FIRDatabaseReference!
     private var localTyping = false
@@ -134,7 +133,7 @@ class ChatViewController: JSQMessagesViewController {
     override func collectionView(collectionView: JSQMessagesCollectionView!,messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         let message = messages[indexPath.item]
         
-       return message.senderId == currentUserUID ? outgoingBubbleImageView : incomingBubbleImageView
+       return message.senderId == CurrentUser._postKey ? outgoingBubbleImageView : incomingBubbleImageView
 
     }
     
@@ -152,7 +151,7 @@ class ChatViewController: JSQMessagesViewController {
                 self.setupVideoCell(cell!, rawMessage: rawMessage)
             }
         
-        cell!.textView?.textColor = message!.senderId == currentUserUID ? UIColor.whiteColor() : UIColor.blackColor()
+        cell!.textView?.textColor = message!.senderId == CurrentUser._postKey ? UIColor.whiteColor() : UIColor.blackColor()
         
         return cell!
     }
@@ -284,13 +283,13 @@ class ChatViewController: JSQMessagesViewController {
                         let picture = UIImage(data: picData!)
                         let photo = JSQPhotoMediaItem(image: picture)
                         self.messages.append(JSQMessage(senderId: message.fromId, displayName: self.senderDisplayName, media: photo))
-                        photo.appliesMediaViewMaskAsOutgoing = message.fromId == self.currentUserUID ? true : false
+                        photo.appliesMediaViewMaskAsOutgoing = message.fromId == CurrentUser._postKey ? true : false
                     
                     case "VIDEO":
                         let video = NSURL(string: message.imageUrl!)
                         let videoItem = JSQVideoMediaItem(fileURL: video, isReadyToPlay: true)
                         self.messages.append(JSQMessage(senderId: message.fromId, displayName: self.senderDisplayName, media: videoItem))
-                        videoItem.appliesMediaViewMaskAsOutgoing = message.fromId == self.currentUserUID ? true : false
+                        videoItem.appliesMediaViewMaskAsOutgoing = message.fromId == CurrentUser._postKey ? true : false
                     
                     case "TEXT":
                         self.messages.append(JSQMessage(senderId: message.fromId, displayName: self.senderDisplayName, text: message.text!))

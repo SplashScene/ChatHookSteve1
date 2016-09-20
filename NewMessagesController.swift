@@ -23,6 +23,7 @@ class NewMessagesController: UITableViewController {
     var timer: NSTimer?
     
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,6 +37,7 @@ class NewMessagesController: UITableViewController {
     func observeUsersOnline(){
             
         groupedUsersArray = []
+        print("The count of the blocked users array is: \(CurrentUser._blockedUsersArray?.count)")
 
         let searchLat = Int(CurrentUser._location.coordinate.latitude)
         let searchLong = Int(CurrentUser._location.coordinate.longitude)
@@ -61,8 +63,10 @@ class NewMessagesController: UITableViewController {
                                     let user = User(postKey: userPostKey, dictionary: dictionary)
                                         user.location = userLocation
                                    
-                                    if user.postKey != CurrentUser._postKey{
-                                        let distanceFromMe = self.calculateDistance(user.location)
+                                    if user.postKey != CurrentUser._postKey {
+                                        let isBlockedUser = CurrentUser._blockedUsersArray?.contains(user.postKey)
+                                        print("\(user.userName) is a blocked user: \(isBlockedUser)")
+                                        let distanceFromMe = self.messagesController!.calculateDistance(user.location)
                                         let distanceDouble = distanceFromMe["DistanceDouble"] as! Double
                                             user.distance = distanceDouble
                                         switch distanceDouble{
@@ -96,7 +100,6 @@ class NewMessagesController: UITableViewController {
                 }, withCancelBlock: nil)
             
             }, withCancelBlock: nil)
-        
     }
     
     func loadSections(){
@@ -131,11 +134,15 @@ class NewMessagesController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! UserCell
         let user = groupedUsersArray[indexPath.section].sectionUsers[indexPath.row]
-        let distanceDictionary = calculateDistance(user.location!)
-        let distanceString = distanceDictionary["DistanceString"] as! String
-    
+        
+        if let stringDistance = user.distance {
+            let unwrappedString = String(format: "%.2f", (stringDistance))
+            let distanceString = "\(unwrappedString) miles away"
+            cell.detailTextLabel?.text = distanceString
+        }
+        
+
         cell.textLabel?.text = user.userName
-        cell.detailTextLabel?.text = distanceString
         cell.accessoryType = UITableViewCellAccessoryType.DetailButton
         
         if let profileImageUrl = user.profileImageUrl{
@@ -162,25 +169,10 @@ class NewMessagesController: UITableViewController {
         return groupedUsersArray[section].sectionName
     }
     
-    func calculateDistance(otherLocation: CLLocation) -> [String: AnyObject] {
-        var distanceDictionary:[String: AnyObject]
-        let myLocation = CurrentUser._location
-        
-        let distanceInMeters = myLocation.distanceFromLocation(otherLocation)
-        let distanceInMiles = (distanceInMeters / 1000) * 0.62137
-        
-        let stringDistance = String(format: "%.2f", distanceInMiles)
-        let passedString = "\(stringDistance) miles away"
-
-        distanceDictionary = ["DistanceDouble": distanceInMiles, "DistanceString": passedString]
-        
-        return distanceDictionary
-
-    }
     
     func showProfileControllerForUser(user: User){
         let profileController = ProfileViewController()
-        profileController.selectedUser = user
+            profileController.selectedUser = user
         
         let navController = UINavigationController(rootViewController: profileController)
         presentViewController(navController, animated: true, completion: nil)
@@ -189,4 +181,8 @@ class NewMessagesController: UITableViewController {
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 72
-    }}
+    }
+}
+
+
+

@@ -26,6 +26,7 @@ class GetLocation1: UIViewController {
     var userLngInt: Int!
     
     let currentUserRef = DataService.ds.REF_USER_CURRENT
+    var blockedUsers: [String] = []
     
   
     var timer: NSTimer!
@@ -93,9 +94,25 @@ class GetLocation1: UIViewController {
                     CurrentUser._location = userLocation
                     CurrentUser._email = dictionary["email"] as! String
                     CurrentUser._profileImageUrl = dictionary["ProfileImage"] as? String
+                    
+                    let blockedUsersRef = self.currentUserRef.child("blocked_users")
+                    blockedUsersRef.observeEventType(.Value, withBlock: { (snapshot) in
+                            if let snapshots = snapshot.children.allObjects as? [FIRDataSnapshot]{
+                                for snap in snapshots{
+                                    let blockedUserID = snap.key
+                                    self.blockedUsers.append(blockedUserID)
+                                    
+                                    self.handleLoadingBlockedUsers()
+                                }
+                            }
+                        },
+                        
+                        withCancelBlock: nil)
+                    
                     self.userIsOnline()
                 }
             }, withCancelBlock: nil)
+        
     }
     
     func observeOtherUsersLocations(){
@@ -126,6 +143,12 @@ class GetLocation1: UIViewController {
     
     func handleAnnotations(){
         self.mapView.addAnnotations(self.otherUsersLocations)
+    }
+    
+    func handleLoadingBlockedUsers(){
+        print("Inside handleLoadingBlockedUsers")
+        CurrentUser._blockedUsersArray = blockedUsers
+        print("Current User blocked array count is: \(CurrentUser._blockedUsersArray?.count)")
     }
     
     func checkAuthorizationStatus(){

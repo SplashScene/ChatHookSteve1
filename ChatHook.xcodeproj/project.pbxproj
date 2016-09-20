@@ -53,7 +53,6 @@
 		84B9AB571CE27B500002B132 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB541CE27B500002B132 /* FBSDKCoreKit.framework */; };
 		84B9AB581CE27B500002B132 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB551CE27B500002B132 /* FBSDKLoginKit.framework */; };
 		84BE9AC31D870B5E001F91B3 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BE9AC21D870B5E001F91B3 /* ProfileViewController.swift */; };
-		84C8CC891D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C8CC881D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift */; };
 		84D6878B1CF3799700944D1E /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6878A1CF3799700944D1E /* MaterialView.swift */; };
 		AB40F2A6C892CB8D250BC87E /* Pods_ChatHook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */; };
 /* End PBXBuildFile section */
@@ -109,7 +108,6 @@
 		84B9AB541CE27B500002B132 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		84B9AB551CE27B500002B132 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		84BE9AC21D870B5E001F91B3 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		84C8CC881D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CurrentLocationViewcontrollerViewController.swift; path = ../CurrentLocationViewcontrollerViewController.swift; sourceTree = "<group>"; };
 		84D6878A1CF3799700944D1E /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
 		9E4A6D1C186F9E739AC106F1 /* Pods-ChatHook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatHook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatHook/Pods-ChatHook.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -154,7 +152,6 @@
 		8437C26A1D50D58100C5CF59 /* Archives */ = {
 			isa = PBXGroup;
 			children = (
-				84C8CC881D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift */,
 			);
 			name = Archives;
 			sourceTree = "<group>";
@@ -435,7 +432,6 @@
 				84A28BE21CF89706004615DB /* ChatViewController.swift in Sources */,
 				8437C26C1D50D5E400C5CF59 /* PostsVC.swift in Sources */,
 				84B9AB461CE266B40002B132 /* MaterialImageView.swift in Sources */,
-				84C8CC891D0B609600DD0F5C /* CurrentLocationViewcontrollerViewController.swift in Sources */,
 				847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */,
 				84B2A98D1D908E600013EE71 /* UserLocation.swift in Sources */,
 				8458F5ED1D69F2420083BA0B /* FinishRegisterController.swift in Sources */,
