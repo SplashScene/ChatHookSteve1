@@ -14,6 +14,7 @@ class NewMessagesController: UITableViewController {
 
     let cellID = "cellID"
     var groupedUsersArray = [GroupedUsers]()
+    var blockedUsersArray = [String]()
     var usersArray1 = [User]()
     var usersArray2 = [User]()
     var usersArray3 = [User]()
@@ -24,6 +25,7 @@ class NewMessagesController: UITableViewController {
     
     
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,11 +33,12 @@ class NewMessagesController: UITableViewController {
         
         observeUsersOnline()
         tableView.registerClass(UserCell.self, forCellReuseIdentifier: "cellID")
-        
+        blockedUsersArray = []
+        print("My post key is: \(CurrentUser._postKey)")
     }
     
     func observeUsersOnline(){
-            
+        
         groupedUsersArray = []
         print("The count of the blocked users array is: \(CurrentUser._blockedUsersArray?.count)")
 
@@ -47,7 +50,7 @@ class NewMessagesController: UITableViewController {
         ref.observeEventType(.ChildAdded, withBlock: { (snapshot) in
             let userID = snapshot.key
             var userLocation: CLLocation?
-
+            
             let latLongRef = ref.child(userID)
             
                 latLongRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
@@ -62,35 +65,31 @@ class NewMessagesController: UITableViewController {
                                     let userPostKey = snapshot.key
                                     let user = User(postKey: userPostKey, dictionary: dictionary)
                                         user.location = userLocation
-                                   
-                                    if user.postKey != CurrentUser._postKey {
-                                        let isBlockedUser = CurrentUser._blockedUsersArray?.contains(user.postKey)
-                                        print("\(user.userName) is a blocked user: \(isBlockedUser)")
-                                        let distanceFromMe = self.messagesController!.calculateDistance(user.location)
-                                        let distanceDouble = distanceFromMe["DistanceDouble"] as! Double
-                                            user.distance = distanceDouble
-                                        switch distanceDouble{
-                                            case 0...1.099:
-                                                self.usersArray1.append(user)
-                                                self.usersArray1.sortInPlace({ (user1, user2) -> Bool in
-                                                    return user1.distance < user2.distance
-                                                })
-                                            case 1.1...5.0:
-                                                self.usersArray2.append(user)
-                                                self.usersArray2.sortInPlace({ (user1, user2) -> Bool in
-                                                    return user1.distance < user2.distance
-                                                })
-                                            default:
-                                                self.usersArray3.append(user)
-                                                self.usersArray3.sortInPlace({ (user1, user2) -> Bool in
-                                                    return user1.distance < user2.distance
-                                                })
+                                    if let isBlockedUser = CurrentUser._blockedUsersArray?.contains(user.postKey){
+                                        user.isBlocked = isBlockedUser
+                                        if user.isBlocked == true{
+                                            print("I cock blocked: \(user.userName)")
                                         }
-                                                                              
-                                        self.timer?.invalidate()
-                                        self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.loadSections), userInfo: nil, repeats: false)
                                     }
                                     
+                                    userRef.child("blocked_users").child(CurrentUser._postKey).observeEventType(.Value, withBlock: { (snapshot) in
+                                        if let _ = snapshot.value as? NSNull{
+                                            if user.postKey != CurrentUser._postKey{
+                                                
+                                                let distanceFromMe = self.messagesController!.calculateDistance(user.location)
+                                                let distanceDouble = distanceFromMe["DistanceDouble"] as! Double
+                                                user.distance = distanceDouble
+                                                
+                                                self.loadDistanceArrays(user.distance!, user: user)
+                                                
+                                                self.timer?.invalidate()
+                                                self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.loadSections), userInfo: nil, repeats: false)
+                                            }
+
+                                        }else{
+                                            print("\(user.userName) cock blocked me")
+                                        }
+                                    }, withCancelBlock: nil)
                                 }
                                 
                         }, withCancelBlock: nil)
@@ -100,6 +99,26 @@ class NewMessagesController: UITableViewController {
                 }, withCancelBlock: nil)
             
             }, withCancelBlock: nil)
+    }
+    
+    func loadDistanceArrays(distanceDouble: Double, user: User){
+        switch distanceDouble{
+            case 0...1.099:
+                self.usersArray1.append(user)
+                self.usersArray1.sortInPlace({ (user1, user2) -> Bool in
+                    return user1.distance < user2.distance
+                })
+            case 1.1...5.0:
+                self.usersArray2.append(user)
+                self.usersArray2.sortInPlace({ (user1, user2) -> Bool in
+                    return user1.distance < user2.distance
+                })
+            default:
+                self.usersArray3.append(user)
+                self.usersArray3.sortInPlace({ (user1, user2) -> Bool in
+                    return user1.distance < user2.distance
+                })
+            }
     }
     
     func loadSections(){
@@ -141,7 +160,12 @@ class NewMessagesController: UITableViewController {
             cell.detailTextLabel?.text = distanceString
         }
         
-
+        if user.isBlocked == true{
+            cell.backgroundColor = UIColor(r: 255, g: 99, b: 71)
+        }else{
+            cell.backgroundColor = UIColor.whiteColor()
+        }
+        
         cell.textLabel?.text = user.userName
         cell.accessoryType = UITableViewCellAccessoryType.DetailButton
         

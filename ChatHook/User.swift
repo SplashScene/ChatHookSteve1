@@ -28,6 +28,8 @@ class User{
     var email: String { return _email }
     var location: CLLocation!
     var distance: Double?
+    var isBlocked: Bool!
+    var blockedUsersArray: [String]?
     
     init(postKey: String, dictionary: Dictionary<String, AnyObject>){
         self._postKey = postKey
