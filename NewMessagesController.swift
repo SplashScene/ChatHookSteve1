@@ -12,33 +12,39 @@ import CoreLocation
 
 class NewMessagesController: UITableViewController {
 
+    var messagesController: MessagesController?
     let cellID = "cellID"
     var groupedUsersArray = [GroupedUsers]()
     var blockedUsersArray = [String]()
     var usersArray1 = [User]()
     var usersArray2 = [User]()
     var usersArray3 = [User]()
-    let uid = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
+    //let uid = NSUserDefaults.standardUserDefaults().valueForKey(KEY_UID) as! String
     var userLat: Double?
     var userLong: Double?
     var timer: NSTimer?
     
     
     
-    
+    //MARK: - View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(handleCancel))
         
+        navigationItem.title = "People Near You"
         observeUsersOnline()
         tableView.registerClass(UserCell.self, forCellReuseIdentifier: "cellID")
         blockedUsersArray = []
         print("My post key is: \(CurrentUser._postKey)")
     }
     
+    override func viewWillAppear(animated: Bool) {
+        tableView.reloadData()
+    }
+    
+    //MARK: - Observe Methods
     func observeUsersOnline(){
-        
         groupedUsersArray = []
         print("The count of the blocked users array is: \(CurrentUser._blockedUsersArray?.count)")
 
@@ -67,6 +73,7 @@ class NewMessagesController: UITableViewController {
                                         user.location = userLocation
                                     if let isBlockedUser = CurrentUser._blockedUsersArray?.contains(user.postKey){
                                         user.isBlocked = isBlockedUser
+                                        print("User is blocked is: \(isBlockedUser)")
                                         if user.isBlocked == true{
                                             print("I cock blocked: \(user.userName)")
                                         }
@@ -93,13 +100,13 @@ class NewMessagesController: UITableViewController {
                                 }
                                 
                         }, withCancelBlock: nil)
-                        
                     }
-                    
                 }, withCancelBlock: nil)
             
             }, withCancelBlock: nil)
     }
+    
+    //MARK: - Load Handlers
     
     func loadDistanceArrays(distanceDouble: Double, user: User){
         switch distanceDouble{
@@ -142,6 +149,16 @@ class NewMessagesController: UITableViewController {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
+    func showProfileControllerForUser(user: User){
+        let profileController = ProfileViewController()
+        profileController.selectedUser = user
+        
+        let navController = UINavigationController(rootViewController: profileController)
+        presentViewController(navController, animated: true, completion: nil)
+    }
+    
+    //MARK: - TableView Methods
+    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return groupedUsersArray.count
     }
@@ -172,10 +189,8 @@ class NewMessagesController: UITableViewController {
         if let profileImageUrl = user.profileImageUrl{
             cell.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
         }
-    return cell
-}
-    
-    var messagesController: MessagesController?
+        return cell
+    }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         dismissViewControllerAnimated(true){
@@ -191,16 +206,6 @@ class NewMessagesController: UITableViewController {
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return groupedUsersArray[section].sectionName
-    }
-    
-    
-    func showProfileControllerForUser(user: User){
-        let profileController = ProfileViewController()
-            profileController.selectedUser = user
-        
-        let navController = UINavigationController(rootViewController: profileController)
-        presentViewController(navController, animated: true, completion: nil)
-
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

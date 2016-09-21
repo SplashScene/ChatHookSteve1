@@ -16,14 +16,13 @@ class ProfileViewController: UIViewController {
     var screenSize: CGRect!
     var screenWidth: CGFloat!
     var screenHeight: CGFloat!
-    //var currentUserRef = DataService.ds.REF_USER_CURRENT
-    //var currentUser: User?
     var photoChoice: String?
     var galleryArray = [GalleryImage]()
     var timer: NSTimer?
     var selectedUser: User?
+    var newMsgController = NewMessagesController()
     
-    
+    //MARK: - Properties
     let backgroundImageView: UIImageView = {
         let backImageView = UIImageView()
             backImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -39,8 +38,6 @@ class ProfileViewController: UIViewController {
         
         return addPicBtn
     }()
-    
-    
     
     lazy var profileImageView: MaterialImageView = {
         let imageView = MaterialImageView(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
@@ -85,6 +82,7 @@ class ProfileViewController: UIViewController {
         return galleryLabel
     }()
     
+    //MARK: - View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -101,6 +99,16 @@ class ProfileViewController: UIViewController {
     
     }
     
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
+    }
+    
+    //MARK: - Setup Views
+    
+    func setupCollectionView(){
+        collectionView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+    }
+    
     func setupMainView(){
         screenSize = UIScreen.mainScreen().bounds
         screenWidth = screenSize.width
@@ -112,7 +120,6 @@ class ProfileViewController: UIViewController {
         if selectedUser != nil{
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .Plain, target: self, action: #selector(handleCancel))
         }
-        
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
@@ -135,6 +142,33 @@ class ProfileViewController: UIViewController {
         self.view.addSubview(collectionView)
     }
     
+    func setupBackgroundImageView(){
+        backgroundImageView.widthAnchor.constraintEqualToAnchor(view.widthAnchor).active = true
+        backgroundImageView.heightAnchor.constraintEqualToAnchor(view.heightAnchor, multiplier: 0.5).active = true
+        backgroundImageView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+        
+        //backgroundImageView.addSubview(addPhotoButton)
+        backgroundImageView.addSubview(profileImageView)
+        backgroundImageView.addSubview(currentUserNameLabel)
+        backgroundImageView.addSubview(distanceLabel)
+        
+        profileImageView.centerXAnchor.constraintEqualToAnchor(backgroundImageView.centerXAnchor).active = true
+        profileImageView.centerYAnchor.constraintEqualToAnchor(backgroundImageView.centerYAnchor).active = true
+        profileImageView.widthAnchor.constraintEqualToConstant(150).active = true
+        profileImageView.heightAnchor.constraintEqualToConstant(150).active = true
+        
+        currentUserNameLabel.centerXAnchor.constraintEqualToAnchor(backgroundImageView.centerXAnchor).active = true
+        currentUserNameLabel.topAnchor.constraintEqualToAnchor(profileImageView.bottomAnchor, constant: 8).active = true
+        
+        distanceLabel.centerXAnchor.constraintEqualToAnchor(backgroundImageView.centerXAnchor).active = true
+        distanceLabel.topAnchor.constraintEqualToAnchor(currentUserNameLabel.bottomAnchor, constant: 8).active = true
+        
+        addPhotoBlockUserButton.centerXAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 24).active = true
+        addPhotoBlockUserButton.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
+        addPhotoBlockUserButton.widthAnchor.constraintEqualToConstant(40).active = true
+        addPhotoBlockUserButton.heightAnchor.constraintEqualToConstant(40).active = true
+    }
+    
     func checkUserAndSetupUI(){
         if selectedUser == nil{
             let btnImage = UIImage(named: "add_photo_btn")
@@ -144,15 +178,34 @@ class ProfileViewController: UIViewController {
             self.addPhotoBlockUserButton.setImage(btnImage, forState: .Normal)
             self.addPhotoBlockUserButton.addTarget(self, action: #selector(handleAddPhotoButtonTapped), forControlEvents: .TouchUpInside)
             observeGallery(CurrentUser._postKey)
-        }else{
-            let btnImage = UIImage(named: "blockUser")
+        }else if selectedUser?.isBlocked == false{
+            let btnImage = UIImage(named: "block")
             setupSelectedUserProfile()
             observeGallery((selectedUser?.postKey)!)
             addPhotosToGalleryLabel.text = "No Photos in Gallery"
             self.addPhotoBlockUserButton.setImage(btnImage, forState: .Normal)
             self.addPhotoBlockUserButton.addTarget(self, action: #selector(handleBlockUserTapped), forControlEvents: .TouchUpInside)
+        }else{
+            let btnImage = UIImage(named: "unblock")
+            setupSelectedUserProfile()
+            observeGallery((selectedUser?.postKey)!)
+            addPhotosToGalleryLabel.text = "No Photos in Gallery"
+            self.addPhotoBlockUserButton.setImage(btnImage, forState: .Normal)
+            self.addPhotoBlockUserButton.addTarget(self, action: #selector(handleUnblockUserTapped), forControlEvents: .TouchUpInside)
         }
     }
+    
+    func setupSelectedUserProfile(){
+        self.profileImageView.loadImageUsingCacheWithUrlString((self.selectedUser?.profileImageUrl)!)
+        self.currentUserNameLabel.text = self.selectedUser?.userName
+            if let stringDistance = self.selectedUser?.distance {
+                let unwrappedString = String(format: "%.2f", (stringDistance))
+                self.distanceLabel.text = "\(unwrappedString) miles away"
+            }
+        self.navigationItem.title = self.selectedUser?.userName
+    }
+
+    //MARK: - Handlers
     
     func handleCancel(){
         dismissViewControllerAnimated(true, completion: nil)
@@ -189,11 +242,14 @@ class ProfileViewController: UIViewController {
     }
     
     func handleBlockUserTapped(){
-        let alert = UIAlertController(title: "Block User", message: "Are you sure that you want to block this user?", preferredStyle: .Alert)
+        let alert = UIAlertController(title: "Block User", message: "Are you sure that you want to BLOCK this user?", preferredStyle: .Alert)
         let okAction = UIAlertAction(title: "OK", style: .Default, handler: {(alert: UIAlertAction) in
             let currentUserRef = DataService.ds.REF_USER_CURRENT
             let blockedUserID = self.selectedUser!.postKey
             currentUserRef.child("blocked_users").updateChildValues([blockedUserID: 1])
+            self.selectedUser?.isBlocked = true
+            self.addPhotoBlockUserButton.setImage(UIImage(named: "unblock"), forState: .Normal)
+            self.addPhotoBlockUserButton.addTarget(self, action: #selector(self.handleUnblockUserTapped), forControlEvents: .TouchUpInside)
         })
         let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         
@@ -203,20 +259,36 @@ class ProfileViewController: UIViewController {
         presentViewController(alert, animated: true, completion: nil)
     }
     
-    var newMsgController = NewMessagesController()
+    func handleUnblockUserTapped(){let alert = UIAlertController(title: "Unblock User", message: "Are you sure that you want to UNBLOCK this user?", preferredStyle: .Alert)
+        
+        let okAction = UIAlertAction(title: "OK", style: .Default, handler: {(alert: UIAlertAction) in
+            let currentUserRef = DataService.ds.REF_USER_CURRENT
+            let blockedUserID = self.selectedUser!.postKey
+            currentUserRef.child("blocked_users").child(blockedUserID).removeValue()
+            CurrentUser._blockedUsersArray = CurrentUser._blockedUsersArray?.filter({$0 != blockedUserID})
+            self.selectedUser?.isBlocked = false
+            self.addPhotoBlockUserButton.setImage(UIImage(named: "block"), forState: .Normal)
+            self.addPhotoBlockUserButton.addTarget(self, action: #selector(self.handleBlockUserTapped), forControlEvents: .TouchUpInside)
+        })
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        
+        alert.addAction(cancel)
+        alert.addAction(okAction)
+        
+        presentViewController(alert, animated: true, completion: nil)
 
-    func setupSelectedUserProfile(){
-        self.profileImageView.loadImageUsingCacheWithUrlString((self.selectedUser?.profileImageUrl)!)
-        self.currentUserNameLabel.text = self.selectedUser?.userName
-        if let stringDistance = self.selectedUser?.distance {
-            let unwrappedString = String(format: "%.2f", (stringDistance))
-            self.distanceLabel.text = "\(unwrappedString) miles away"
-        }
-
-        self.navigationItem.title = self.selectedUser?.userName
-
+        
     }
     
+    func handleReloadGallery(){
+        dispatch_async(dispatch_get_main_queue()){
+            self.collectionView.reloadData()
+        }
+    }
+    
+    //MARK: - Observe Methods
+
     func observeGallery(uid: String){
         //guard let uid = FIRAuth.auth()?.currentUser!.uid else { return }
         let userGalleryPostRef = DataService.ds.REF_USERS_GALLERY.child(uid)
@@ -238,50 +310,7 @@ class ProfileViewController: UIViewController {
             }, withCancelBlock: nil)
     }
     
-    func handleReloadGallery(){
-        dispatch_async(dispatch_get_main_queue()){
-            self.collectionView.reloadData()
-        }
-    }
-    
-    func setupBackgroundImageView(){
-        backgroundImageView.widthAnchor.constraintEqualToAnchor(view.widthAnchor).active = true
-        backgroundImageView.heightAnchor.constraintEqualToAnchor(view.heightAnchor, multiplier: 0.5).active = true
-        backgroundImageView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
-        
-        //backgroundImageView.addSubview(addPhotoButton)
-        backgroundImageView.addSubview(profileImageView)
-        backgroundImageView.addSubview(currentUserNameLabel)
-        backgroundImageView.addSubview(distanceLabel)
-        
-        
-        profileImageView.centerXAnchor.constraintEqualToAnchor(backgroundImageView.centerXAnchor).active = true
-        profileImageView.centerYAnchor.constraintEqualToAnchor(backgroundImageView.centerYAnchor).active = true
-        profileImageView.widthAnchor.constraintEqualToConstant(150).active = true
-        profileImageView.heightAnchor.constraintEqualToConstant(150).active = true
-        
-        currentUserNameLabel.centerXAnchor.constraintEqualToAnchor(backgroundImageView.centerXAnchor).active = true
-        currentUserNameLabel.topAnchor.constraintEqualToAnchor(profileImageView.bottomAnchor, constant: 8).active = true
-        
-        distanceLabel.centerXAnchor.constraintEqualToAnchor(backgroundImageView.centerXAnchor).active = true
-        distanceLabel.topAnchor.constraintEqualToAnchor(currentUserNameLabel.bottomAnchor, constant: 8).active = true
-        
-        addPhotoBlockUserButton.centerXAnchor.constraintEqualToAnchor(profileImageView.rightAnchor, constant: 24).active = true
-        addPhotoBlockUserButton.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
-        addPhotoBlockUserButton.widthAnchor.constraintEqualToConstant(40).active = true
-        addPhotoBlockUserButton.heightAnchor.constraintEqualToConstant(40).active = true
-
-   
-    }
-    
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
-    }
-    
-    func setupCollectionView(){
-        collectionView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
-    }
-    
+    //MARK: - Zoom In and Out
     var startingFrame: CGRect?
     var blackBackgroundView: UIView?
     var startingView: UIView?
@@ -334,8 +363,9 @@ class ProfileViewController: UIViewController {
             })
         }
     }
-   
-}
+}//end class
+
+//MARK: - Extension UICollectionView
 
 extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource{
     
@@ -367,6 +397,6 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout, UICollectio
             
         }
     }
-}
+}//end extension
 
 

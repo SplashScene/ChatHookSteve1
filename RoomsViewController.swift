@@ -14,6 +14,7 @@ class RoomsViewController: UITableViewController {
     var chosenRoom: PublicRoom?
     let cellID = "cellID"
 
+    //MARK: - View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -29,6 +30,7 @@ class RoomsViewController: UITableViewController {
         observeRooms()
     }
     
+    //MARK: - Observe Methods
     func observeRooms(){
         DataService.ds.REF_CHATROOMS.observeEventType(.Value, withBlock: {
             snapshot in
@@ -49,6 +51,8 @@ class RoomsViewController: UITableViewController {
             }
         })
     }
+    
+    //MARK: - Handler Methods
 
     func promptForAddRoom(){
         let ac = UIAlertController(title: "Enter Room Name", message: "What is the name of your public room?", preferredStyle: .Alert)
@@ -101,6 +105,8 @@ class RoomsViewController: UITableViewController {
         navigationController?.pushViewController(postController, animated: true)
     }
     
+    
+    //MARK: - TableView Methods
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let post = roomsArray[indexPath.row]
         

@@ -141,14 +141,15 @@ class testPostCell: UITableViewCell {
         return label
     }()
     
-    let descriptionText: UITextField = {
-        let descripText = UITextField()
-            descripText.translatesAutoresizingMaskIntoConstraints = false
-            descripText.text = "This is sample description text for the post"
-            descripText.font = UIFont(name: "Avenir Medium", size:  14.0)
-            descripText.textColor = UIColor.darkGrayColor()
-            descripText.userInteractionEnabled = false
-        return descripText
+    let descriptionText: UITextView = {
+        let descripTextView = UITextView()
+            descripTextView.translatesAutoresizingMaskIntoConstraints = false
+            descripTextView.text = "This is sample description text for the post"
+            descripTextView.font = UIFont(name: "Avenir Medium", size:  14.0)
+            descripTextView.textColor = UIColor.darkGrayColor()
+            descripTextView.editable = false
+            descripTextView.scrollEnabled = true
+        return descripTextView
     }()
     
     lazy var showcaseImageView: UIImageView = {
@@ -165,7 +166,6 @@ class testPostCell: UITableViewCell {
             imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoom)))
         return imageView
     }()
-
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
@@ -232,16 +232,6 @@ class testPostCell: UITableViewCell {
         })
         
     }
-
-    func toggleLike(){
-        if postLiked {
-            likeImageView.image = UIImage(named: "iLike")
-        }else{
-            likeImageView.image = UIImage(named: "Like")
-        }
-        
-        postLiked = !postLiked
-    }
     
     func handleZoom(tapGesture: UITapGestureRecognizer){
         
@@ -271,7 +261,6 @@ class testPostCell: UITableViewCell {
         let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
         activityIndicatorView.hidesWhenStopped = true
-        
         
         cell.showcaseImageView.addSubview(activityIndicatorView)
         

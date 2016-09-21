@@ -27,9 +27,9 @@ class GetLocation1: UIViewController {
     
     let currentUserRef = DataService.ds.REF_USER_CURRENT
     var blockedUsers: [String] = []
-    
-  
     var timer: NSTimer!
+    
+    //MARK: - Objects
 
     let mapView: MKMapView = {
         let map = MKMapView()
@@ -66,6 +66,7 @@ class GetLocation1: UIViewController {
         return msgLabel
     }()
  
+    //MARK: - View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(topView)
@@ -85,8 +86,69 @@ class GetLocation1: UIViewController {
         return .LightContent
     }
     
-    func fetchCurrentUser(userLocation: CLLocation){
+    //MARK: - Setup Methods
+    
+    func checkAuthorizationStatus(){
+        let authStatus = CLLocationManager.authorizationStatus()
         
+        switch(authStatus){
+            case .NotDetermined: locationManager?.requestWhenInUseAuthorization(); return
+            case .Denied: showLocationServicesDeniedAlert(); return
+            case .Restricted: showLocationServicesDeniedAlert(); return
+            default:
+                if authStatus != .AuthorizedWhenInUse{
+                    locationManager?.requestWhenInUseAuthorization()
+                }else{
+                    locationManager?.requestLocation()
+                }
+        }//end switch
+    }//end checkAuthorizationStatus
+    
+    func setupUI(){
+        //need x, y, width and height constraints
+        topView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+        topView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
+        topView.widthAnchor.constraintEqualToAnchor(view.widthAnchor).active = true
+        topView.heightAnchor.constraintEqualToConstant(70).active = true
+        
+        topView.addSubview(onlineLabel)
+        topView.addSubview(logoutButton)
+        
+        onlineLabel.rightAnchor.constraintEqualToAnchor(topView.rightAnchor, constant: -8).active = true
+        onlineLabel.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
+        
+        logoutButton.leftAnchor.constraintEqualToAnchor(topView.leftAnchor, constant: 8).active = true
+        logoutButton.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
+        logoutButton.widthAnchor.constraintEqualToConstant(60).active = true
+        logoutButton.heightAnchor.constraintEqualToConstant(30).active = true
+        
+        mapView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+        mapView.topAnchor.constraintEqualToAnchor(topView.bottomAnchor).active = true
+        mapView.widthAnchor.constraintEqualToAnchor(view.widthAnchor).active = true
+        mapView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
+    }
+    
+    func userIsOnline(){
+        userOnline = true
+        onlineLabel.text = "Online"
+        topView.backgroundColor = UIColor(r: 80, g: 101, b: 161)
+        
+        if let currentUserLocation = CurrentUser._location{
+            userLatInt = Int(currentUserLocation.coordinate.latitude)
+            userLngInt = Int(currentUserLocation.coordinate.longitude)
+            let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child("\(userLatInt)").child("\(userLngInt)").child(CurrentUser._postKey)
+            let userLocal = ["userLatitude":currentUserLocation.coordinate.latitude, "userLongitude": currentUserLocation.coordinate.longitude]
+            usersOnlineRef.setValue(userLocal)
+            observeOtherUsersLocations()
+        }
+        centerMapOnLocation(CurrentUser._location!)
+        self.mapView.showsUserLocation = true
+        addRadiusCircle(CurrentUser._location!)
+    }
+
+    //MARK: - Observe Methods
+    
+    func fetchCurrentUser(userLocation: CLLocation){
         currentUserRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
                 if let dictionary = snapshot.value as? [String: AnyObject]{
                     CurrentUser._postKey = snapshot.key
@@ -112,7 +174,6 @@ class GetLocation1: UIViewController {
                     self.userIsOnline()
                 }
             }, withCancelBlock: nil)
-        
     }
     
     func observeOtherUsersLocations(){
@@ -136,10 +197,11 @@ class GetLocation1: UIViewController {
                                         self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.handleAnnotations), userInfo: nil, repeats: false)
                                     }
                                 }, withCancelBlock: nil)
-                    
                 }
             }, withCancelBlock: nil)
     }
+    
+    //MARK: - Handlers
     
     func handleAnnotations(){
         self.mapView.addAnnotations(self.otherUsersLocations)
@@ -151,75 +213,11 @@ class GetLocation1: UIViewController {
         print("Current User blocked array count is: \(CurrentUser._blockedUsersArray?.count)")
     }
     
-    func checkAuthorizationStatus(){
-        let authStatus = CLLocationManager.authorizationStatus()
-        
-        switch(authStatus){
-            case .NotDetermined: locationManager?.requestWhenInUseAuthorization(); return
-            case .Denied: showLocationServicesDeniedAlert(); return
-            case .Restricted: showLocationServicesDeniedAlert(); return
-            default:
-                if authStatus != .AuthorizedWhenInUse{
-                    locationManager?.requestWhenInUseAuthorization()
-                }else{
-                    locationManager?.requestLocation()
-                }
-            }//end switch
-    }//end checkAuthorizationStatus
-    
-    func setupUI(){
-        //need x, y, width and height constraints
-        topView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-        topView.topAnchor.constraintEqualToAnchor(view.topAnchor).active = true
-        topView.widthAnchor.constraintEqualToAnchor(view.widthAnchor).active = true
-        topView.heightAnchor.constraintEqualToConstant(70).active = true
-        
-        topView.addSubview(onlineLabel)
-        topView.addSubview(logoutButton)
-        //topView.addSubview(onlineSwitch)
-        
-        onlineLabel.rightAnchor.constraintEqualToAnchor(topView.rightAnchor, constant: -8).active = true
-        onlineLabel.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
-        
-        logoutButton.leftAnchor.constraintEqualToAnchor(topView.leftAnchor, constant: 8).active = true
-        logoutButton.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
-        logoutButton.widthAnchor.constraintEqualToConstant(60).active = true
-        logoutButton.heightAnchor.constraintEqualToConstant(30).active = true
-        
-//        onlineSwitch.rightAnchor.constraintEqualToAnchor(topView.rightAnchor, constant: -16).active = true
-//        onlineSwitch.centerYAnchor.constraintEqualToAnchor(topView.centerYAnchor).active = true
-  
-        mapView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-        mapView.topAnchor.constraintEqualToAnchor(topView.bottomAnchor).active = true
-        mapView.widthAnchor.constraintEqualToAnchor(view.widthAnchor).active = true
-        mapView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
-    }
-    
-    func userIsOnline(){
-        userOnline = true
-        onlineLabel.text = "Online"
-        topView.backgroundColor = UIColor(r: 80, g: 101, b: 161)
-        
-        if let currentUserLocation = CurrentUser._location{
-            userLatInt = Int(currentUserLocation.coordinate.latitude)
-            userLngInt = Int(currentUserLocation.coordinate.longitude)
-            let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child("\(userLatInt)").child("\(userLngInt)").child(CurrentUser._postKey)
-            let userLocal = ["userLatitude":currentUserLocation.coordinate.latitude, "userLongitude": currentUserLocation.coordinate.longitude]
-            usersOnlineRef.setValue(userLocal)
-            observeOtherUsersLocations()
-        }
-        
-        centerMapOnLocation(CurrentUser._location!)
-        self.mapView.showsUserLocation = true
-        addRadiusCircle(CurrentUser._location!)
-
-    }
-    
     func handleLogout(){
         do{
             let usersOnlineRef = DataService.ds.REF_BASE.child("users_online").child("\(userLatInt)").child("\(userLngInt)").child(CurrentUser._postKey)
-                usersOnlineRef.removeValue()
-
+            usersOnlineRef.removeValue()
+            
             try FIRAuth.auth()?.signOut()
             
         }catch let logoutError{
@@ -228,12 +226,8 @@ class GetLocation1: UIViewController {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func showLocationServicesDeniedAlert(){
-        let alert = UIAlertController(title: "Location Services Disabled", message: "Please enable location services for this app in Settings", preferredStyle: .Alert)
-        let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-        alert.addAction(okAction)
-        presentViewController(alert, animated: true, completion: nil)
-    }
+    
+    
     
 //    func startTimerForLocationUpdate(){
 //        if timer != nil{
@@ -274,6 +268,13 @@ extension GetLocation1: CLLocationManagerDelegate{
         if status == .AuthorizedAlways || status == .AuthorizedWhenInUse{
             locationManager?.requestLocation()
         }
+    }
+    
+    func showLocationServicesDeniedAlert(){
+        let alert = UIAlertController(title: "Location Services Disabled", message: "Please enable location services for this app in Settings", preferredStyle: .Alert)
+        let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        alert.addAction(okAction)
+        presentViewController(alert, animated: true, completion: nil)
     }
 }//end extension
 

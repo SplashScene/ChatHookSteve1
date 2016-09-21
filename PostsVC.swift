@@ -25,6 +25,9 @@ class PostsVC: UIViewController{
     var parentRoom: PublicRoom?
     var timer: NSTimer?
     var navBar: UINavigationBar = UINavigationBar()
+    var startingFrame: CGRect?
+    var blackBackgroundView: UIView?
+    var startingView: UIView?
     
     
     var postsArray = [UserPost]()
@@ -64,57 +67,6 @@ class PostsVC: UIViewController{
         return pb
     }()
 
-    
-    func handleImageSelector(){
-        let sheet = UIAlertController(title: "Media Messages", message: "Please select a media", preferredStyle: .ActionSheet)
-        let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { (alert:UIAlertAction) in
-            sheet.dismissViewControllerAnimated(true, completion: nil)
-        }
-        let photoLibary = UIAlertAction(title: "Photo Library", style: .Default) { (alert: UIAlertAction) in
-            self.getMediaFrom(kUTTypeImage)
-        }
-        
-        let videoLibrary = UIAlertAction(title: "Video Library", style: .Default) { (alert: UIAlertAction) in
-            self.getMediaFrom(kUTTypeMovie)
-        }
-        
-        sheet.addAction(photoLibary)
-        sheet.addAction(videoLibrary)
-        sheet.addAction(cancel)
-        self.presentViewController(sheet, animated: true, completion: nil)
-
-    }
-    
-    private func getMediaFrom(type: CFString){
-        let mediaPicker = UIImagePickerController()
-            mediaPicker.delegate = self
-            mediaPicker.mediaTypes = [type as String]
-        
-        presentViewController(mediaPicker, animated: true, completion: nil)
-    }
-    
-    func handlePostButtonTapped(){
-
-        postedText = postTextField.text
-
-        if let unwrappedImage = postedImage{
-            uploadToFirebaseStorageUsingSelectedMedia(unwrappedImage, video: nil, completion: { (imageUrl) in
-                self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("image/jpg", postText: self.postedText, thumbnailURL: nil, fileURL: imageUrl)
-                //self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("image/jpg", thumbnailURL: nil, fileURL:imageUrl)
-                
-            })
-
-        }else if let unwrappedVideo = postedVideo{
-            
-            uploadToFirebaseStorageUsingSelectedMedia(nil, video: unwrappedVideo, completion: { (imageUrl) in
-//                self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("video/mp4", postText: self.postedText, thumbnailURL: nil, fileURL: imageUrl)
-                //self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("video/mp4",thumbnailURL: nil, fileURL:imageUrl)
-            })
-        }else{
-            self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("text", postText: postedText, thumbnailURL: nil, fileURL: nil)
-        }
-    }
-    
     let postTableView: UITableView = {
         let ptv = UITableView()
             ptv.translatesAutoresizingMaskIntoConstraints = false
@@ -123,7 +75,7 @@ class PostsVC: UIViewController{
         return ptv
     }()
     
-    
+    //MARK: - View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
@@ -142,19 +94,19 @@ class PostsVC: UIViewController{
         observePosts()
     }
     
-    
-    
-    func handleBack(){
-        dismissViewControllerAnimated(true, completion: nil)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        handleReloadPosts()
     }
     
+    //MARK: - Setup Methods
     func setupNavBarWithUserOrProgress(progress:String?){
         
         let titleView = UIView()
-            titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 60)
+        titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 60)
         
         let containerView = UIView()
-            containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.translatesAutoresizingMaskIntoConstraints = false
         
         titleView.addSubview(containerView)
         
@@ -196,38 +148,7 @@ class PostsVC: UIViewController{
         
         self.navigationItem.titleView = titleView
     }
-
-    func observePosts(){
-        guard let roomID = parentRoom?.postKey else { return }
-        let roomPostsRef = DataService.ds.REF_POSTSPERROOM.child(roomID)
-        
-        roomPostsRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
-            let postID = snapshot.key
-            let postsRef = DataService.ds.REF_POSTS.child(postID)
-            
-            postsRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
-                guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
-                
-                let post = UserPost(key: snapshot.key)
-                    post.setValuesForKeysWithDictionary(dictionary)
-                
-                    self.postsArray.insert(post, atIndex: 0)
-                
-                    self.timer?.invalidate()
-                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.handleReloadPosts), userInfo: nil, repeats: false)
-                
-                },
-                withCancelBlock: nil)
-            }, withCancelBlock: nil)
-    }
     
-    
-    func handleReloadPosts(){
-        dispatch_async(dispatch_get_main_queue()){
-            self.postTableView.reloadData()
-        }
-    }
-
     func setupTopView(){
         //need x, y, width and height constraints
         topView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
@@ -261,10 +182,96 @@ class PostsVC: UIViewController{
         postTableView.widthAnchor.constraintEqualToAnchor(view.widthAnchor, constant: -16).active = true
         postTableView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor).active = true
     }
+
+
+    //MARK: - Handler Methods
+    func handleBack(){
+        dismissViewControllerAnimated(true, completion: nil)
+    }
     
-    var startingFrame: CGRect?
-    var blackBackgroundView: UIView?
-    var startingView: UIView?
+    func handleImageSelector(){
+        let sheet = UIAlertController(title: "Media Messages", message: "Please select a media", preferredStyle: .ActionSheet)
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel)
+        { (alert:UIAlertAction) in
+            sheet.dismissViewControllerAnimated(true, completion: nil)
+        }
+        let photoLibary = UIAlertAction(title: "Photo Library", style: .Default)
+        { (alert: UIAlertAction) in
+            self.getMediaFrom(kUTTypeImage)
+        }
+        
+        let videoLibrary = UIAlertAction(title: "Video Library", style: .Default)
+        { (alert: UIAlertAction) in
+            self.getMediaFrom(kUTTypeMovie)
+        }
+        
+        sheet.addAction(photoLibary)
+        sheet.addAction(videoLibrary)
+        sheet.addAction(cancel)
+        self.presentViewController(sheet, animated: true, completion: nil)
+        
+    }
+    
+    private func getMediaFrom(type: CFString){
+        let mediaPicker = UIImagePickerController()
+        mediaPicker.delegate = self
+        mediaPicker.mediaTypes = [type as String]
+        
+        presentViewController(mediaPicker, animated: true, completion: nil)
+    }
+    
+    func handlePostButtonTapped(){
+        
+        postedText = postTextField.text
+        
+        if let unwrappedImage = postedImage{
+            uploadToFirebaseStorageUsingSelectedMedia(unwrappedImage, video: nil, completion: { (imageUrl) in
+                self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("image/jpg", postText: self.postedText, thumbnailURL: nil, fileURL: imageUrl)
+                //self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("image/jpg", thumbnailURL: nil, fileURL:imageUrl)
+            })
+            
+        }else if let unwrappedVideo = postedVideo{
+            uploadToFirebaseStorageUsingSelectedMedia(nil, video: unwrappedVideo, completion: { (imageUrl) in
+                //                self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("video/mp4", postText: self.postedText, thumbnailURL: nil, fileURL: imageUrl)
+                //self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("video/mp4",thumbnailURL: nil, fileURL:imageUrl)
+            })
+        }else{
+            self.enterIntoPostsAndPostsPerRoomDatabaseWithImageUrl("text", postText: postedText, thumbnailURL: nil, fileURL: nil)
+        }
+    }
+    
+    func handleReloadPosts(){
+        dispatch_async(dispatch_get_main_queue()){
+            self.postTableView.reloadData()
+        }
+    }
+
+    //MARK: - Observe Methods
+    func observePosts(){
+        guard let roomID = parentRoom?.postKey else { return }
+        let roomPostsRef = DataService.ds.REF_POSTSPERROOM.child(roomID)
+        
+        roomPostsRef.observeEventType(.ChildAdded, withBlock: { (snapshot) in
+            let postID = snapshot.key
+            let postsRef = DataService.ds.REF_POSTS.child(postID)
+            
+            postsRef.observeSingleEventOfType(.Value, withBlock: { (snapshot) in
+                guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+                
+                let post = UserPost(key: snapshot.key)
+                    post.setValuesForKeysWithDictionary(dictionary)
+                
+                    self.postsArray.insert(post, atIndex: 0)
+                
+                    self.timer?.invalidate()
+                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.handleReloadPosts), userInfo: nil, repeats: false)
+                
+                },
+                withCancelBlock: nil)
+            }, withCancelBlock: nil)
+    }
+     
+   //MARK: - Zoom In and Out Methods
     
     func performZoomInForStartingImageView(startingImageView: UIImageView){
         
@@ -287,17 +294,24 @@ class PostsVC: UIViewController{
             
             keyWindow.addSubview(zoomingView)
                 
-                UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .CurveEaseOut, animations: {
-                        self.blackBackgroundView!.alpha = 1
-                        self.startingView?.hidden = true
+                UIView.animateWithDuration(0.5,
+                                           delay: 0,
+                                           usingSpringWithDamping: 1,
+                                           initialSpringVelocity: 1,
+                                           options: .CurveEaseOut,
+                                           animations: {
+                                                self.blackBackgroundView!.alpha = 1
+                                                self.startingView?.hidden = true
 
-                      let height = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
-                    
-                        zoomingView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: height)
+                                                let height = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
                         
-                        zoomingView.center = keyWindow.center
-                    }, completion: nil)
-            
+                                                zoomingView.frame = CGRect(x: 0,
+                                                                           y: 0,
+                                                                           width: keyWindow.frame.width,
+                                                                           height: height)
+                                                zoomingView.center = keyWindow.center
+                                            },
+                                           completion: nil)
         }
   
     }
@@ -364,7 +378,7 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
 
     func playerDidFinishPlaying(note: NSNotification){
         print("Video stopped playing")
-       // handleReloadPosts()
+        handleReloadPosts()
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -378,7 +392,7 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let post = postsArray[indexPath.row]
         if post.showcaseUrl == nil{
-            return 100
+            return 150
         }else{
             return tableView.estimatedRowHeight
         }
@@ -558,8 +572,38 @@ extension PostsVC: UITextFieldDelegate{
         }
         return true
     }
-
 }
+
+extension PostsVC:UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        var selectedImageFromPicker: UIImage?
+        
+        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage{
+            selectedImageFromPicker = editedImage
+        } else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage{
+            selectedImageFromPicker = originalImage
+        }
+        
+        if let selectedImage = selectedImageFromPicker{
+            postedImage = selectedImage
+            imageSelectorView.image = postedImage
+        }
+        
+        if let video = info["UIImagePickerControllerMediaURL"] as? NSURL{
+            postedVideo = video
+            imageSelectorView.image = UIImage(named: "movieIcon")
+        }
+        self.postButton.userInteractionEnabled = true
+        self.postButton.alpha = 1.0
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+}//end extension
 
 
 
