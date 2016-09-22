@@ -54,6 +54,7 @@
 		84B9AB581CE27B500002B132 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B9AB551CE27B500002B132 /* FBSDKLoginKit.framework */; };
 		84BE9AC31D870B5E001F91B3 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BE9AC21D870B5E001F91B3 /* ProfileViewController.swift */; };
 		84D6878B1CF3799700944D1E /* MaterialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6878A1CF3799700944D1E /* MaterialView.swift */; };
+		84DB92DE1D942B33003BADAB /* TipInCellAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DB92DD1D942B33003BADAB /* TipInCellAnimator.swift */; };
 		AB40F2A6C892CB8D250BC87E /* Pods_ChatHook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1334573D382065CEFBF6FCF5 /* Pods_ChatHook.framework */; };
 /* End PBXBuildFile section */
 
@@ -109,6 +110,7 @@
 		84B9AB551CE27B500002B132 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		84BE9AC21D870B5E001F91B3 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		84D6878A1CF3799700944D1E /* MaterialView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MaterialView.swift; sourceTree = "<group>"; };
+		84DB92DD1D942B33003BADAB /* TipInCellAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TipInCellAnimator.swift; sourceTree = "<group>"; };
 		9E4A6D1C186F9E739AC106F1 /* Pods-ChatHook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatHook.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatHook/Pods-ChatHook.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -263,6 +265,7 @@
 				84B9AB3A1CE233100002B132 /* Constants.swift */,
 				8458F5FC1D6CB5B40083BA0B /* Extensions.swift */,
 				84A7AF371D7C6A080095EF26 /* FirebaseHelper.swift */,
+				84DB92DD1D942B33003BADAB /* TipInCellAnimator.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -434,6 +437,7 @@
 				84B9AB461CE266B40002B132 /* MaterialImageView.swift in Sources */,
 				847289661D3E62A0007E82DB /* PublicRoom.swift in Sources */,
 				84B2A98D1D908E600013EE71 /* UserLocation.swift in Sources */,
+				84DB92DE1D942B33003BADAB /* TipInCellAnimator.swift in Sources */,
 				8458F5ED1D69F2420083BA0B /* FinishRegisterController.swift in Sources */,
 				8458F5FD1D6CB5B40083BA0B /* Extensions.swift in Sources */,
 				8409FF5A1D8B20EF00939BC9 /* CurrentUser.swift in Sources */,

@@ -73,11 +73,17 @@ class testPostCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-//    override func layoutSubviews() {
-//        super.layoutSubviews()
-//        textLabel?.frame = CGRect(x: 64, y: textLabel!.frame.origin.y - 2, width: textLabel!.frame.width, height: textLabel!.frame.height)
-//        detailTextLabel?.frame = CGRect(x: 64, y: detailTextLabel!.frame.origin.y + 2, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height)
-//    }
+    
+    let cellContainerView: UIView = {
+        let containerView = UIView()
+            containerView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.backgroundColor = UIColor.whiteColor()
+            containerView.layer.cornerRadius = 5.0
+            containerView.layer.masksToBounds = true
+            containerView.sizeToFit()
+        return containerView
+    }()
+    
     
     let profileImageView: MaterialImageView = {
         let imageView = MaterialImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
@@ -148,7 +154,8 @@ class testPostCell: UITableViewCell {
             descripTextView.font = UIFont(name: "Avenir Medium", size:  14.0)
             descripTextView.textColor = UIColor.darkGrayColor()
             descripTextView.editable = false
-            descripTextView.scrollEnabled = true
+            descripTextView.scrollEnabled = false
+            descripTextView.sizeToFit()
         return descripTextView
     }()
     
@@ -169,17 +176,19 @@ class testPostCell: UITableViewCell {
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
-        addSubview(profileImageView)
-        addSubview(userNameLabel)
-        addSubview(likeImageView)
-        addSubview(likeCount)
-        addSubview(likesLabel)
-        addSubview(descriptionText)
-        addSubview(showcaseImageView)
+        self.layoutIfNeeded()
+        
+        cellContainerView.addSubview(profileImageView)
+        cellContainerView.addSubview(userNameLabel)
+        cellContainerView.addSubview(likeImageView)
+        cellContainerView.addSubview(likeCount)
+        cellContainerView.addSubview(likesLabel)
+        cellContainerView.addSubview(descriptionText)
+        cellContainerView.addSubview(showcaseImageView)
         
         //need x, y, width, height anchors
-        profileImageView.leftAnchor.constraintEqualToAnchor(self.leftAnchor, constant: 8).active = true
-        profileImageView.topAnchor.constraintEqualToAnchor(self.topAnchor, constant: 8).active = true
+        profileImageView.leftAnchor.constraintEqualToAnchor(cellContainerView.leftAnchor, constant: 8).active = true
+        profileImageView.topAnchor.constraintEqualToAnchor(cellContainerView.topAnchor, constant: 8).active = true
         profileImageView.widthAnchor.constraintEqualToConstant(48).active = true
         profileImageView.heightAnchor.constraintEqualToConstant(48).active = true
         
@@ -192,27 +201,36 @@ class testPostCell: UITableViewCell {
 //        timeLabel.widthAnchor.constraintEqualToConstant(100).active = true
 //        timeLabel.heightAnchor.constraintEqualToConstant(50).active = true
         
-        likeImageView.rightAnchor.constraintEqualToAnchor(self.rightAnchor, constant: -48).active = true
+        likeImageView.rightAnchor.constraintEqualToAnchor(likesLabel.leftAnchor, constant: -8).active = true
         likeImageView.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
         likeImageView.widthAnchor.constraintEqualToConstant(40).active = true
         likeImageView.heightAnchor.constraintEqualToConstant(40).active = true
         
-        likesLabel.rightAnchor.constraintEqualToAnchor(self.rightAnchor, constant: -8).active = true
+        likesLabel.rightAnchor.constraintEqualToAnchor(cellContainerView.rightAnchor, constant: -16).active = true
         likesLabel.topAnchor.constraintEqualToAnchor(likeImageView.centerYAnchor).active = true
 
         
         likeCount.centerXAnchor.constraintEqualToAnchor(likesLabel.centerXAnchor).active = true
         likeCount.bottomAnchor.constraintEqualToAnchor(likeImageView.centerYAnchor).active = true
         
-        descriptionText.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor).active = true
+        descriptionText.delegate = self
+        descriptionText.centerXAnchor.constraintEqualToAnchor(cellContainerView.centerXAnchor).active = true
         descriptionText.topAnchor.constraintEqualToAnchor(profileImageView.bottomAnchor, constant: 8).active = true
-        descriptionText.widthAnchor.constraintEqualToAnchor(self.widthAnchor, constant: -16).active = true
-        descriptionText.heightAnchor.constraintGreaterThanOrEqualToConstant(40).active = true
+        descriptionText.widthAnchor.constraintEqualToAnchor(cellContainerView.widthAnchor, constant: -16).active = true
+        //descriptionText.frame.size.height = descriptionText.contentSize.height
+        //descriptionText.heightAnchor.constraintGreaterThanOrEqualToConstant(40).active = true
         
-        showcaseImageView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor).active = true
+        showcaseImageView.centerXAnchor.constraintEqualToAnchor(cellContainerView.centerXAnchor).active = true
         showcaseImageView.topAnchor.constraintEqualToAnchor(descriptionText.bottomAnchor, constant: 8).active = true
-        showcaseImageView.widthAnchor.constraintEqualToAnchor(self.widthAnchor, constant: -16).active = true
-        showcaseImageView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor, constant: -8).active = true
+        showcaseImageView.widthAnchor.constraintEqualToAnchor(cellContainerView.widthAnchor, constant: -16).active = true
+        showcaseImageView.bottomAnchor.constraintEqualToAnchor(cellContainerView.bottomAnchor, constant: -24).active = true
+        
+        contentView.addSubview(cellContainerView)
+        
+        cellContainerView.centerXAnchor.constraintEqualToAnchor(contentView.centerXAnchor).active = true
+        cellContainerView.centerYAnchor.constraintEqualToAnchor(contentView.centerYAnchor).active = true
+        cellContainerView.widthAnchor.constraintEqualToAnchor(contentView.widthAnchor, constant: -16).active = true
+        cellContainerView.heightAnchor.constraintEqualToAnchor(contentView.heightAnchor, constant: -16).active = true
     }
     
     func likeTapped(sender: UITapGestureRecognizer){
@@ -270,4 +288,10 @@ class testPostCell: UITableViewCell {
         activityIndicatorView.heightAnchor.constraintEqualToConstant(50).active = true
     }
     
+}
+
+extension testPostCell: UITextViewDelegate{
+    func textViewDidChange(textView: UITextView) {
+        textView.sizeToFit()
+    }
 }

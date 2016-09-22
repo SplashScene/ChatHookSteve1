@@ -28,9 +28,13 @@ class PostsVC: UIViewController{
     var startingFrame: CGRect?
     var blackBackgroundView: UIView?
     var startingView: UIView?
-    
+    var player: AVPlayer?
+    var playerLayer: AVPlayerLayer?
+    var playButton: UIButton?
+    var activityIndicator: UIActivityIndicatorView?
     
     var postsArray = [UserPost]()
+    var preventAnimation = Set<NSIndexPath>()
     
     
     let topView: MaterialView = {
@@ -70,43 +74,50 @@ class PostsVC: UIViewController{
     let postTableView: UITableView = {
         let ptv = UITableView()
             ptv.translatesAutoresizingMaskIntoConstraints = false
+            //ptv.backgroundColor = UIColor.redColor()
             ptv.backgroundColor = UIColor(r: 220, g: 220, b: 220)
             ptv.allowsSelection = false
-        return ptv
+                    return ptv
     }()
     
     //MARK: - View Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = UIColor(r: 220, g: 220, b: 220)
         view.addSubview(topView)
         view.addSubview(postTableView)
         postTableView.delegate = self
         postTableView.dataSource = self
         postTableView.registerClass(testPostCell.self, forCellReuseIdentifier: "cellID")
-        postTableView.estimatedRowHeight = 350
-        
+        //postTableView.rowHeight = UITableViewAutomaticDimension
+        postTableView.estimatedRowHeight = 375
+
         postTextField.delegate = self
+        
         
         setupTopView()
         setupPostTableView()
         setupNavBarWithUserOrProgress(nil)
         observePosts()
+        
+        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        handleReloadPosts()
+        //handleReloadPosts()
+        //self.postTableView.layoutSubviews()
     }
     
     //MARK: - Setup Methods
     func setupNavBarWithUserOrProgress(progress:String?){
         
         let titleView = UIView()
-        titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 60)
+            titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 60)
         
         let containerView = UIView()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.translatesAutoresizingMaskIntoConstraints = false
         
         titleView.addSubview(containerView)
         
@@ -329,12 +340,59 @@ class PostsVC: UIViewController{
                     self.startingView?.hidden = false
             })
         }
-    }   
+    }
+    
+    //MARK: - Video Player Methods
+    
+    func handlePlayPostVideo(sender: UIButton){
+        
+        let buttonPosition = sender.convertPoint(CGPointZero, toView: self.postTableView)
+        let indexPath = self.postTableView.indexPathForRowAtPoint(buttonPosition)
+        let cell = self.postTableView.cellForRowAtIndexPath(indexPath!) as? testPostCell
+        let post = postsArray[indexPath!.row]
+        
+        self.playButton = sender
+             playButton!.hidden = true
+        self.activityIndicator = cell?.showcaseImageView.subviews[1] as? UIActivityIndicatorView
+        self.activityIndicator!.startAnimating()
+        
+        let url = NSURL(string: post.showcaseUrl!)
+        player = AVPlayer(URL: url!)
+        playerLayer = AVPlayerLayer(player: player)
+        playerLayer!.videoGravity = AVLayerVideoGravityResize
+        playerLayer!.masksToBounds = true
+        
+        cell!.showcaseImageView.layer.addSublayer(playerLayer!)
+        playerLayer!.frame = cell!.showcaseImageView.bounds
+        player!.play()
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying), name: AVPlayerItemDidPlayToEndTimeNotification, object: player!.currentItem)
+    }
+    
+    func playerDidFinishPlaying(note: NSNotification){
+        dispatch_async(dispatch_get_main_queue()) {
+            self.player!.pause()
+            self.playerLayer!.removeFromSuperlayer()
+        }
+        self.playButton!.hidden = false
+        self.activityIndicator!.hidden = true
+    }
+
 }//end class
 
 
-
 extension PostsVC:UITableViewDelegate, UITableViewDataSource{
+    
+     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        let customCell:testPostCell = cell as! testPostCell
+            customCell.backgroundColor = UIColor.clearColor()
+        if !preventAnimation.contains(indexPath){
+            preventAnimation.insert(indexPath)
+            TipInCellAnimator.animate(customCell)
+        }
+        
+    }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellID, forIndexPath: indexPath) as! testPostCell
@@ -342,43 +400,23 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
             cell.userPost = post
             cell.postViewController = self
         
-        if post.mediaType == "VIDEO"{
-            print("I am setting up a VIDEO cell for row \(indexPath.row)")
-            cell.setupVideoPostCell(cell)
+        if let mediaType = post.mediaType{
+            switch mediaType{
+                case "VIDEO":
+                    cell.showcaseImageView.hidden = false
+                    if cell.showcaseImageView.subviews.count == 0{
+                        cell.setupVideoPostCell(cell)
+                    }
+                    
+                case "PHOTO":
+                    cell.showcaseImageView.hidden = false
+                    self.playButton?.hidden = true
+                default: cell.showcaseImageView.hidden = true
+                
+            }
         }
-        
+        //cell.layoutIfNeeded()
         return cell
-    }
-    
-    
-    
-    func handlePlayPostVideo(sender: UIButton){
-        print("Inside play video from controller")
-        let buttonPosition = sender.convertPoint(CGPointZero, toView: self.postTableView)
-        let indexPath = self.postTableView.indexPathForRowAtPoint(buttonPosition)
-        print(indexPath?.row)
-        let cell = self.postTableView.cellForRowAtIndexPath(indexPath!) as? testPostCell
-        let post = postsArray[indexPath!.row]
-        let playButton = sender
-            playButton.hidden = true
-        let cellAIV = cell?.showcaseImageView.subviews[1] as? UIActivityIndicatorView
-            cellAIV?.startAnimating()
-        let url = NSURL(string: post.showcaseUrl!)
-        let player = AVPlayer(URL: url!)
-        let playerLayer = AVPlayerLayer(player: player)
-            playerLayer.videoGravity = AVLayerVideoGravityResize
-            playerLayer.masksToBounds = true
-        
-        cell!.showcaseImageView.layer.addSublayer(playerLayer)
-        playerLayer.frame = cell!.showcaseImageView.bounds
-        player.play()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying), name: AVPlayerItemDidPlayToEndTimeNotification, object: player.currentItem)
-    }
-
-    func playerDidFinishPlaying(note: NSNotification){
-        print("Video stopped playing")
-        handleReloadPosts()
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -390,6 +428,7 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        //return UITableViewAutomaticDimension
         let post = postsArray[indexPath.row]
         if post.showcaseUrl == nil{
             return 150
@@ -397,6 +436,10 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
             return tableView.estimatedRowHeight
         }
     }
+    
+//    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+//        return 375
+//    }
     
 }//end extension
 
