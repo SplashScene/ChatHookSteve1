@@ -19,8 +19,14 @@ class ChatViewController: JSQMessagesViewController {
     var rawMessages = [Message]()
     var outgoingBubbleImageView: JSQMessagesBubbleImage!
     var incomingBubbleImageView: JSQMessagesBubbleImage!
+    var message:JSQMessage?
     var messageImage: UIImage!
     var user: User?
+    var player: AVPlayer?
+    var playerLayer: AVPlayerLayer?
+    var pButton: UIButton?
+    var cellAIV: UIActivityIndicatorView?
+
     
     var userIsTypingRef: FIRDatabaseReference!
     private var localTyping = false
@@ -138,9 +144,8 @@ class ChatViewController: JSQMessagesViewController {
     }
     
     //var cell:JSQMessagesCollectionViewCell?
-    var message:JSQMessage?
-    var playButton: UIButton?
     
+   
     override func collectionView(collectionView: UICollectionView,cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as? JSQMessagesCollectionViewCell
             cell?.delegate = self
@@ -412,21 +417,21 @@ extension ChatViewController: JSQMessagesCollectionViewCellDelegate{
         if message.isMediaMessage{
             if let mediaItem = message.media as? JSQVideoMediaItem{
                 
-                let pButton = cell!.mediaView.subviews[1] as? UIButton
+                    pButton = cell!.mediaView.subviews[1] as? UIButton
                     pButton?.hidden = true
-                let cellAIV = cell!.mediaView.subviews[2] as? UIActivityIndicatorView
+                    cellAIV = cell!.mediaView.subviews[2] as? UIActivityIndicatorView
                     cellAIV?.startAnimating()
-                let player = AVPlayer(URL: mediaItem.fileURL)
-                let playerLayer = AVPlayerLayer(player: player)
-                    playerLayer.videoGravity = AVLayerVideoGravityResize
-                    playerLayer.masksToBounds = true
+                    player = AVPlayer(URL: mediaItem.fileURL)
+                    playerLayer = AVPlayerLayer(player: player)
+                    playerLayer!.videoGravity = AVLayerVideoGravityResize
+                    playerLayer!.masksToBounds = true
                 
                 
-                cell!.mediaView.layer.addSublayer(playerLayer)
-                playerLayer.frame = cell!.mediaView.bounds
-                player.play()
+                cell!.mediaView.layer.addSublayer(playerLayer!)
+                playerLayer!.frame = cell!.mediaView.bounds
+                player!.play()
                 
-                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying), name: AVPlayerItemDidPlayToEndTimeNotification, object: player.currentItem)
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(playerDidFinishPlaying), name: AVPlayerItemDidPlayToEndTimeNotification, object: player!.currentItem)
 
             }else if let photoImage = message.media as? JSQPhotoMediaItem{
                 performZoomInForStartingImageView(cell.mediaView, photoImage: photoImage)
@@ -439,11 +444,12 @@ extension ChatViewController: JSQMessagesCollectionViewCellDelegate{
         print("Tapped to expand video")
     }
     func playerDidFinishPlaying(note: NSNotification){
-        print("Player Stopped Playing")
- 
-//        let videoPlayer = note.object as! AVPlayer
-//        let videoPlayerLayer = videoPlayer.superclass as? AVPlayerLayer
-//        videoPlayerLayer?.removeFromSuperlayer()
+        dispatch_async(dispatch_get_main_queue()) {
+            self.player!.pause()
+            self.playerLayer!.removeFromSuperlayer()
+        }
+        self.pButton!.hidden = false
+        self.cellAIV!.hidden = true
     }
     
     func messagesCollectionViewCellDidTapAvatar(cell: JSQMessagesCollectionViewCell!) {

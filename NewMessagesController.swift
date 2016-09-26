@@ -36,7 +36,7 @@ class NewMessagesController: UITableViewController {
         observeUsersOnline()
         tableView.registerClass(UserCell.self, forCellReuseIdentifier: "cellID")
         blockedUsersArray = []
-        print("My post key is: \(CurrentUser._postKey)")
+        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -46,7 +46,6 @@ class NewMessagesController: UITableViewController {
     //MARK: - Observe Methods
     func observeUsersOnline(){
         groupedUsersArray = []
-        print("The count of the blocked users array is: \(CurrentUser._blockedUsersArray?.count)")
 
         let searchLat = Int(CurrentUser._location.coordinate.latitude)
         let searchLong = Int(CurrentUser._location.coordinate.longitude)
@@ -73,10 +72,6 @@ class NewMessagesController: UITableViewController {
                                         user.location = userLocation
                                     if let isBlockedUser = CurrentUser._blockedUsersArray?.contains(user.postKey){
                                         user.isBlocked = isBlockedUser
-                                        print("User is blocked is: \(isBlockedUser)")
-                                        if user.isBlocked == true{
-                                            print("I cock blocked: \(user.userName)")
-                                        }
                                     }
                                     
                                     userRef.child("blocked_users").child(CurrentUser._postKey).observeEventType(.Value, withBlock: { (snapshot) in

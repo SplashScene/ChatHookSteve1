@@ -64,6 +64,10 @@ class RoomsViewController: UITableViewController {
                     let roomName = ac.textFields![0]
                     self.postToFirebase(roomName.text!)
             })
+        
+            ac.addAction(UIAlertAction(title: "Cancel", style: .Cancel) { (action: UIAlertAction) in
+                ac.dismissViewControllerAnimated(true, completion: nil)
+            })
         presentViewController(ac, animated: true, completion: nil)
     }
     

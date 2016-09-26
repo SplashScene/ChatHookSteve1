@@ -179,14 +179,14 @@ class ProfileViewController: UIViewController {
             self.addPhotoBlockUserButton.addTarget(self, action: #selector(handleAddPhotoButtonTapped), forControlEvents: .TouchUpInside)
             observeGallery(CurrentUser._postKey)
         }else if selectedUser?.isBlocked == false{
-            let btnImage = UIImage(named: "block")
+            let btnImage = UIImage(named: "unblock")
             setupSelectedUserProfile()
             observeGallery((selectedUser?.postKey)!)
             addPhotosToGalleryLabel.text = "No Photos in Gallery"
             self.addPhotoBlockUserButton.setImage(btnImage, forState: .Normal)
             self.addPhotoBlockUserButton.addTarget(self, action: #selector(handleBlockUserTapped), forControlEvents: .TouchUpInside)
         }else{
-            let btnImage = UIImage(named: "unblock")
+            let btnImage = UIImage(named: "block")
             setupSelectedUserProfile()
             observeGallery((selectedUser?.postKey)!)
             addPhotosToGalleryLabel.text = "No Photos in Gallery"
@@ -248,7 +248,7 @@ class ProfileViewController: UIViewController {
             let blockedUserID = self.selectedUser!.postKey
             currentUserRef.child("blocked_users").updateChildValues([blockedUserID: 1])
             self.selectedUser?.isBlocked = true
-            self.addPhotoBlockUserButton.setImage(UIImage(named: "unblock"), forState: .Normal)
+            self.addPhotoBlockUserButton.setImage(UIImage(named: "block"), forState: .Normal)
             self.addPhotoBlockUserButton.addTarget(self, action: #selector(self.handleUnblockUserTapped), forControlEvents: .TouchUpInside)
         })
         let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
@@ -267,7 +267,7 @@ class ProfileViewController: UIViewController {
             currentUserRef.child("blocked_users").child(blockedUserID).removeValue()
             CurrentUser._blockedUsersArray = CurrentUser._blockedUsersArray?.filter({$0 != blockedUserID})
             self.selectedUser?.isBlocked = false
-            self.addPhotoBlockUserButton.setImage(UIImage(named: "block"), forState: .Normal)
+            self.addPhotoBlockUserButton.setImage(UIImage(named: "unblock"), forState: .Normal)
             self.addPhotoBlockUserButton.addTarget(self, action: #selector(self.handleBlockUserTapped), forControlEvents: .TouchUpInside)
         })
         

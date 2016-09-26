@@ -298,6 +298,8 @@ extension GetLocation1: MKMapViewDelegate{
             annotationView?.annotation = annotation
         }
         
+        //if let user = annotation as? User, let image = user.profile
+        
         return annotationView
     }
     /*

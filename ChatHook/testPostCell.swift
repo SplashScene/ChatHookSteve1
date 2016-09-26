@@ -22,11 +22,11 @@ class testPostCell: UITableViewCell {
                         
                         self.userNameLabel.text = dictionary["authorName"] as? String
                         self.descriptionText.text = dictionary["postText"] as? String
+                        
                         if let numberOfLikes = dictionary["likes"] as? Int{
                             self.likeCount.text = String(numberOfLikes)
                             self.likesLabel.text = numberOfLikes == 1 ? "Like" : "Likes"
                         }
-                        
                         
                         if let profileImageUrl = dictionary["authorPic"] as? String {
                             self.profileImageView.loadImageUsingCacheWithUrlString(profileImageUrl)
@@ -49,9 +49,13 @@ class testPostCell: UITableViewCell {
                     likeRef.observeSingleEventOfType(.Value, withBlock: { snapshot in
                         if let _ = snapshot.value as? NSNull{
                             //This means that we have not liked this specific post
-                            self.likeImageView.image = UIImage(named: "Like")
+                            let image = UIImage(named: "Like")
+                            self.likeButton.setImage(image, forState: .Normal)
+                            //self.likeImageView.image = UIImage(named: "Like")
                         }else{
-                            self.likeImageView.image = UIImage(named: "iLike")
+                            let image = UIImage(named: "iLike")
+                            self.likeButton.setImage(image, forState: .Normal)
+                           // self.likeImageView.image = UIImage(named: "iLike")
                         }
                     })
 
@@ -106,16 +110,26 @@ class testPostCell: UITableViewCell {
         return label
     }()
     
-    lazy var likeImageView: UIImageView = {
-        let imageView = UIImageView()
-            imageView.image = UIImage(named: "Like")
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            imageView.contentMode = .ScaleAspectFill
-            imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(likeTapped)))
-            imageView.userInteractionEnabled = true
-        
-        return imageView
+    lazy var likeButton: UIButton = {
+        let likeBtn = UIButton()
+        let image = UIImage(named: "Like")
+            likeBtn.setImage(image, forState: .Normal)
+            likeBtn.translatesAutoresizingMaskIntoConstraints = false
+            likeBtn.addTarget(self, action: #selector(handleLikeButtonTapped), forControlEvents: .TouchUpInside)
+        return likeBtn
     }()
+
+    
+//    lazy var likeImageView: UIImageView = {
+//        let imageView = UIImageView()
+//            imageView.image = UIImage(named: "Like")
+//            imageView.translatesAutoresizingMaskIntoConstraints = false
+//            imageView.contentMode = .ScaleAspectFill
+//            imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(likeTapped)))
+//            imageView.userInteractionEnabled = true
+//        
+//        return imageView
+//    }()
 
     let timeLabel: UILabel = {
         let label = UILabel()
@@ -126,7 +140,7 @@ class testPostCell: UITableViewCell {
         return label
     }()
     
-    let likeCount: UILabel = {
+    var likeCount: UILabel = {
         let label = UILabel()
             label.text = "0"
             label.font = UIFont(name: "Avenir Medium", size:  12.0)
@@ -147,6 +161,17 @@ class testPostCell: UITableViewCell {
         return label
     }()
     
+    let descriptionText: UILabel = {
+        let descripTextView = UILabel()
+            descripTextView.translatesAutoresizingMaskIntoConstraints = false
+            descripTextView.font = UIFont(name: "Avenir Medium", size:  14.0)
+            descripTextView.textColor = UIColor.darkGrayColor()
+            descripTextView.numberOfLines = 0
+        return descripTextView
+    }()
+
+    
+    /*
     let descriptionText: UITextView = {
         let descripTextView = UITextView()
             descripTextView.translatesAutoresizingMaskIntoConstraints = false
@@ -155,10 +180,16 @@ class testPostCell: UITableViewCell {
             descripTextView.textColor = UIColor.darkGrayColor()
             descripTextView.editable = false
             descripTextView.scrollEnabled = false
-            descripTextView.sizeToFit()
+//        let fixedWidth = descripTextView.frame.size.width
+//        descripTextView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.max))
+//        let newSize = descripTextView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.max))
+//        var newFrame = descripTextView.frame
+//        newFrame.size = CGSize(width: max(newSize.width, fixedWidth), height: newSize.height)
+//        descripTextView.frame = newFrame;
+            //descripTextView.sizeToFit()
         return descripTextView
     }()
-    
+    */
     lazy var showcaseImageView: UIImageView = {
         let imageView = UIImageView()
             imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -173,20 +204,36 @@ class testPostCell: UITableViewCell {
             imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoom)))
         return imageView
     }()
+    
+    let separatorLineView: UIView = {
+        let sepLineView = UIView()
+            sepLineView.translatesAutoresizingMaskIntoConstraints = false
+            sepLineView.backgroundColor = UIColor.darkGrayColor()
+        return sepLineView
+    }()
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
-        self.layoutIfNeeded()
+        //self.layoutIfNeeded()
+        //descriptionText.delegate = self
         
         cellContainerView.addSubview(profileImageView)
         cellContainerView.addSubview(userNameLabel)
-        cellContainerView.addSubview(likeImageView)
+        cellContainerView.addSubview(likeButton)
+        //cellContainerView.addSubview(likeImageView)
         cellContainerView.addSubview(likeCount)
         cellContainerView.addSubview(likesLabel)
         cellContainerView.addSubview(descriptionText)
         cellContainerView.addSubview(showcaseImageView)
+        cellContainerView.addSubview(separatorLineView)
         
         //need x, y, width, height anchors
+        setupProfileImageUserNameLikes()
+        setupDescriptionTextShowcaseImage()
+        
+            }
+    
+    func setupProfileImageUserNameLikes(){
         profileImageView.leftAnchor.constraintEqualToAnchor(cellContainerView.leftAnchor, constant: 8).active = true
         profileImageView.topAnchor.constraintEqualToAnchor(cellContainerView.topAnchor, constant: 8).active = true
         profileImageView.widthAnchor.constraintEqualToConstant(48).active = true
@@ -196,34 +243,40 @@ class testPostCell: UITableViewCell {
         userNameLabel.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
         
         
-//        timeLabel.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
-//        timeLabel.topAnchor.constraintEqualToAnchor(self.topAnchor, constant: 8).active = true
-//        timeLabel.widthAnchor.constraintEqualToConstant(100).active = true
-//        timeLabel.heightAnchor.constraintEqualToConstant(50).active = true
+        //        timeLabel.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
+        //        timeLabel.topAnchor.constraintEqualToAnchor(self.topAnchor, constant: 8).active = true
+        //        timeLabel.widthAnchor.constraintEqualToConstant(100).active = true
+        //        timeLabel.heightAnchor.constraintEqualToConstant(50).active = true
         
-        likeImageView.rightAnchor.constraintEqualToAnchor(likesLabel.leftAnchor, constant: -8).active = true
-        likeImageView.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
-        likeImageView.widthAnchor.constraintEqualToConstant(40).active = true
-        likeImageView.heightAnchor.constraintEqualToConstant(40).active = true
+        likeButton.rightAnchor.constraintEqualToAnchor(likesLabel.leftAnchor, constant: -8).active = true
+        likeButton.centerYAnchor.constraintEqualToAnchor(profileImageView.centerYAnchor).active = true
+        likeButton.widthAnchor.constraintEqualToConstant(40).active = true
+        likeButton.heightAnchor.constraintEqualToConstant(40).active = true
         
         likesLabel.rightAnchor.constraintEqualToAnchor(cellContainerView.rightAnchor, constant: -16).active = true
-        likesLabel.topAnchor.constraintEqualToAnchor(likeImageView.centerYAnchor).active = true
-
+        likesLabel.topAnchor.constraintEqualToAnchor(likeButton.centerYAnchor).active = true
+        
         
         likeCount.centerXAnchor.constraintEqualToAnchor(likesLabel.centerXAnchor).active = true
-        likeCount.bottomAnchor.constraintEqualToAnchor(likeImageView.centerYAnchor).active = true
-        
-        descriptionText.delegate = self
+        likeCount.bottomAnchor.constraintEqualToAnchor(likeButton.centerYAnchor).active = true
+    }
+    
+    func setupDescriptionTextShowcaseImage(){
         descriptionText.centerXAnchor.constraintEqualToAnchor(cellContainerView.centerXAnchor).active = true
         descriptionText.topAnchor.constraintEqualToAnchor(profileImageView.bottomAnchor, constant: 8).active = true
         descriptionText.widthAnchor.constraintEqualToAnchor(cellContainerView.widthAnchor, constant: -16).active = true
-        //descriptionText.frame.size.height = descriptionText.contentSize.height
-        //descriptionText.heightAnchor.constraintGreaterThanOrEqualToConstant(40).active = true
+        descriptionText.heightAnchor.constraintGreaterThanOrEqualToConstant(40).active = true
         
         showcaseImageView.centerXAnchor.constraintEqualToAnchor(cellContainerView.centerXAnchor).active = true
         showcaseImageView.topAnchor.constraintEqualToAnchor(descriptionText.bottomAnchor, constant: 8).active = true
         showcaseImageView.widthAnchor.constraintEqualToAnchor(cellContainerView.widthAnchor, constant: -16).active = true
-        showcaseImageView.bottomAnchor.constraintEqualToAnchor(cellContainerView.bottomAnchor, constant: -24).active = true
+        showcaseImageView.bottomAnchor.constraintEqualToAnchor(cellContainerView.bottomAnchor, constant: -28).active = true
+        
+        separatorLineView.leftAnchor.constraintEqualToAnchor(cellContainerView.leftAnchor).active = true
+        separatorLineView.bottomAnchor.constraintEqualToAnchor(cellContainerView.bottomAnchor, constant: -24).active = true
+        separatorLineView.widthAnchor.constraintEqualToAnchor(cellContainerView.widthAnchor).active = true
+        separatorLineView.heightAnchor.constraintEqualToConstant(1).active = true
+
         
         contentView.addSubview(cellContainerView)
         
@@ -231,24 +284,55 @@ class testPostCell: UITableViewCell {
         cellContainerView.centerYAnchor.constraintEqualToAnchor(contentView.centerYAnchor).active = true
         cellContainerView.widthAnchor.constraintEqualToAnchor(contentView.widthAnchor, constant: -16).active = true
         cellContainerView.heightAnchor.constraintEqualToAnchor(contentView.heightAnchor, constant: -16).active = true
+
     }
     
-    func likeTapped(sender: UITapGestureRecognizer){
+    func handleLikeButtonTapped(sender: UIButton){
         likeRef.observeSingleEventOfType(.Value, withBlock: { snapshot in
             if let _ = snapshot.value as? NSNull{
                 //This means that we have not liked this specific post
-                self.likeImageView.image = UIImage(named: "iLike")
+                let image = UIImage(named: "iLike")
+                self.likeButton.setImage(image, forState: .Normal)
+                self.userPost!.adjustLikes(true)
+                self.likeRef.setValue(true)
+                let likeBtn = sender
+                    likeBtn.tag = 1
+                self.postViewController!.adjustLikesInArrayDisplay(likeBtn)
+                //self.postViewController!.handleReloadPosts()
+            }else{
+                let image = UIImage(named: "Like")
+                self.likeButton.setImage(image, forState: .Normal)
+                self.userPost!.adjustLikes(false)
+                self.likeRef.removeValue()
+                let likeBtn = sender
+                likeBtn.tag = 0
+                self.postViewController!.adjustLikesInArrayDisplay(likeBtn)
+                //self.postViewController!.handleReloadPosts()
+            }
+        })
+
+        
+    }
+    
+    func likeTapped(tapGesture: UITapGestureRecognizer){
+        likeRef.observeSingleEventOfType(.Value, withBlock: { snapshot in
+            if let _ = snapshot.value as? NSNull{
+                //This means that we have not liked this specific post
+                let image = UIImage(named: "iLike")
+                self.likeButton.setImage(image, forState: .Normal)
+                //self.likeImageView.image = UIImage(named: "iLike")
                 self.userPost!.adjustLikes(true)
                 self.likeRef.setValue(true)
                 self.postViewController!.handleReloadPosts()
             }else{
-                self.likeImageView.image = UIImage(named: "Like")
+                let image = UIImage(named: "Like")
+                self.likeButton.setImage(image, forState: .Normal)
+                //self.likeImageView.image = UIImage(named: "Like")
                 self.userPost!.adjustLikes(false)
                 self.likeRef.removeValue()
                 self.postViewController!.handleReloadPosts()
             }
         })
-        
     }
     
     func handleZoom(tapGesture: UITapGestureRecognizer){
@@ -277,8 +361,8 @@ class testPostCell: UITableViewCell {
         playButton.heightAnchor.constraintEqualToConstant(50).active = true
         
         let activityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-        activityIndicatorView.hidesWhenStopped = true
+            activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+            activityIndicatorView.hidesWhenStopped = true
         
         cell.showcaseImageView.addSubview(activityIndicatorView)
         
@@ -290,8 +374,13 @@ class testPostCell: UITableViewCell {
     
 }
 
-extension testPostCell: UITextViewDelegate{
-    func textViewDidChange(textView: UITextView) {
-        textView.sizeToFit()
-    }
-}
+//extension testPostCell: UITextViewDelegate{
+//    func textViewDidChange(textView: UITextView) {
+//        let fixedWidth = textView.frame.size.width
+//        textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.max))
+//        let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.max))
+//        var newFrame = textView.frame
+//        newFrame.size = CGSize(width: max(newSize.width, fixedWidth), height: newSize.height)
+//        textView.frame = newFrame;
+//    }
+//}

@@ -74,7 +74,6 @@ class PostsVC: UIViewController{
     let postTableView: UITableView = {
         let ptv = UITableView()
             ptv.translatesAutoresizingMaskIntoConstraints = false
-            //ptv.backgroundColor = UIColor.redColor()
             ptv.backgroundColor = UIColor(r: 220, g: 220, b: 220)
             ptv.allowsSelection = false
                     return ptv
@@ -90,7 +89,6 @@ class PostsVC: UIViewController{
         postTableView.delegate = self
         postTableView.dataSource = self
         postTableView.registerClass(testPostCell.self, forCellReuseIdentifier: "cellID")
-        //postTableView.rowHeight = UITableViewAutomaticDimension
         postTableView.estimatedRowHeight = 375
 
         postTextField.delegate = self
@@ -106,8 +104,6 @@ class PostsVC: UIViewController{
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        //handleReloadPosts()
-        //self.postTableView.layoutSubviews()
     }
     
     //MARK: - Setup Methods
@@ -276,11 +272,34 @@ class PostsVC: UIViewController{
                 
                     self.timer?.invalidate()
                     self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: #selector(self.handleReloadPosts), userInfo: nil, repeats: false)
-                
                 },
                 withCancelBlock: nil)
             }, withCancelBlock: nil)
     }
+    
+    func adjustLikesInArrayDisplay(sender:UIButton){
+        let buttonPosition = sender.convertPoint(CGPointZero, toView: self.postTableView)
+        let indexPath = self.postTableView.indexPathForRowAtPoint(buttonPosition)
+        let cell = self.postTableView.cellForRowAtIndexPath(indexPath!) as? testPostCell
+        let post = postsArray[indexPath!.row]
+        var intLikes = Int(post.likes)
+        if sender.tag == 1{
+            intLikes += 1
+            let adjustedLikes = NSNumber(int: Int32(intLikes))
+            post.likes = adjustedLikes
+            cell?.likeCount.text = "\(Int(post.likes))"
+            cell?.likesLabel.text = intLikes == 1 ? "Like" : "Likes"
+        }else{
+            intLikes -= 1
+            let adjustedLikes = NSNumber(int: Int32(intLikes))
+            post.likes = adjustedLikes
+            cell?.likeCount.text = "\(Int(post.likes))"
+            cell?.likesLabel.text = intLikes == 1 ? "Like" : "Likes"
+        }
+        
+    }
+    
+    
      
    //MARK: - Zoom In and Out Methods
     
@@ -400,6 +419,10 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
             cell.userPost = post
             cell.postViewController = self
         
+        for views in cell.showcaseImageView.subviews{
+            print("For index path \(indexPath.row) the subviews are: \(views) for media type: \(post.mediaType)")
+        }
+        
         if let mediaType = post.mediaType{
             switch mediaType{
                 case "VIDEO":
@@ -407,15 +430,23 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
                     if cell.showcaseImageView.subviews.count == 0{
                         cell.setupVideoPostCell(cell)
                     }
-                    
                 case "PHOTO":
-                    cell.showcaseImageView.hidden = false
-                    self.playButton?.hidden = true
-                default: cell.showcaseImageView.hidden = true
+                    if cell.showcaseImageView.subviews.count > 0{
+                        for view in (cell.showcaseImageView.subviews){
+                            view.removeFromSuperview()
+                        }
+                    }
+
+                default:
+                    if cell.showcaseImageView.subviews.count > 0{
+                        for view in (cell.showcaseImageView.subviews){
+                            view.removeFromSuperview()
+                        }
+                }
                 
             }
         }
-        //cell.layoutIfNeeded()
+        
         return cell
     }
     
@@ -428,19 +459,13 @@ extension PostsVC:UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        //return UITableViewAutomaticDimension
         let post = postsArray[indexPath.row]
         if post.showcaseUrl == nil{
-            return 150
+            return 175
         }else{
             return tableView.estimatedRowHeight
         }
     }
-    
-//    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-//        return 375
-//    }
-    
 }//end extension
 
 
